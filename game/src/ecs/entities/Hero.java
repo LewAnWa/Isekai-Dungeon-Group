@@ -15,7 +15,7 @@ import graphic.Animation;
 public class Hero extends Entity {
 
     private final int fireballCoolDown = 5;
-    private final int frostBoltCoolDown = 1;
+    private final int frostBoltCoolDown = 4;
     private final float xSpeed = 0.3f;
     private final float ySpeed = 0.3f;
 
