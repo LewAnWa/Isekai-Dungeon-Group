@@ -16,6 +16,7 @@ import ecs.components.MissingComponentException;
 import ecs.components.PositionComponent;
 import ecs.entities.Entity;
 import ecs.entities.Hero;
+import ecs.entities.monsters.MonsterFactory;
 import ecs.systems.*;
 import graphic.DungeonCamera;
 import graphic.Painter;
@@ -72,6 +73,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
     public static ILevel currentLevel;
     private static PauseMenu<Actor> pauseMenu;
     private static Entity hero;
+    private static Entity[] monsters;
     private Logger gameLogger;
 
     public static void main(String[] args) {
@@ -121,6 +123,15 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         createSystems();
     }
 
+    /** Generates an array of Monsters */
+    protected void generateMonsters() {
+        monsters = new Entity[currentLevel.getFloorTiles().size() / 20]; // amount of monsters = amount of floor tiles / 20
+
+        for (int i = 0; i < monsters.length; i++) {
+            monsters[i] = MonsterFactory.generateMonster(3, currentLevel);
+        }
+    }
+
     /** Called at the beginning of each frame. Before the controllers call <code>update</code>. */
     protected void frame() {
         setCameraFocus();
@@ -134,6 +145,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         currentLevel = levelAPI.getCurrentLevel();
         entities.clear();
         getHero().ifPresent(this::placeOnLevelStart);
+        generateMonsters();
     }
 
     private void manageEntitiesSets() {
