@@ -1,4 +1,4 @@
-package ecs.components.stats;
+package ecs.components.xp.stats;
 
 import ecs.components.Component;
 import ecs.entities.Entity;
@@ -19,7 +19,7 @@ public class StatsComponent extends Component {
     /**
      * Get the DamageModifier object of the entity
      *
-     * @return {@link ecs.components.stats.DamageModifier} object
+     * @return {@link DamageModifier} object
      */
     public DamageModifier getDamageModifiers() {
         return this.damageModifier;
@@ -28,7 +28,7 @@ public class StatsComponent extends Component {
     /**
      * Overwrite the DamageModifier object of the entity
      *
-     * @param damageModifier new {@link ecs.components.stats.DamageModifier} object
+     * @param damageModifier new {@link DamageModifier} object
      */
     public void setDamageModifier(DamageModifier damageModifier) {
         this.damageModifier = damageModifier;

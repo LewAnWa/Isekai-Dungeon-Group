@@ -7,7 +7,7 @@ import ecs.components.AnimationComponent;
 import ecs.components.HealthComponent;
 import ecs.components.IOnDeathFunction;
 import ecs.components.MissingComponentException;
-import ecs.components.stats.StatsComponent;
+import ecs.components.xp.stats.StatsComponent;
 import ecs.damage.Damage;
 import ecs.damage.DamageType;
 import ecs.entities.Entity;

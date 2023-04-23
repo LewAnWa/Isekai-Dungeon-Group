@@ -15,6 +15,7 @@ import graphic.Animation;
 public class Hero extends Entity {
 
     private final int fireballCoolDown = 5;
+    private final int frostBoltCoolDown = 1;
     private final float xSpeed = 0.3f;
     private final float ySpeed = 0.3f;
 
@@ -23,6 +24,7 @@ public class Hero extends Entity {
     private final String pathToRunLeft = "knight/runLeft";
     private final String pathToRunRight = "knight/runRight";
     private Skill firstSkill;
+    private Skill secondSkill;
 
     /** Entity with Components */
     public Hero() {
@@ -33,7 +35,17 @@ public class Hero extends Entity {
         setupHitboxComponent();
         PlayableComponent pc = new PlayableComponent(this);
         setupFireballSkill();
+        setupFrostBoltSkill();
+        setupSkillComponent();
         pc.setSkillSlot1(firstSkill);
+        pc.setSkillSlot2(secondSkill);
+
+    }
+
+    private void setupSkillComponent(){
+        SkillComponent skillComponent = new SkillComponent(this);
+        skillComponent.addSkill(firstSkill);
+        skillComponent.addSkill(secondSkill);
     }
 
     private void setupVelocityComponent() {
@@ -59,5 +71,11 @@ public class Hero extends Entity {
                 this,
                 (you, other, direction) -> System.out.println("heroCollisionEnter"),
                 (you, other, direction) -> System.out.println("heroCollisionLeave"));
+    }
+
+    private void setupFrostBoltSkill() {
+        secondSkill =
+            new Skill(
+                new FrostBoltSkill(SkillTools::getCursorPositionAsPoint), frostBoltCoolDown);
     }
 }

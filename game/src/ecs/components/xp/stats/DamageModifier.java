@@ -1,4 +1,4 @@
-package ecs.components.stats;
+package ecs.components.xp.stats;
 
 import ecs.damage.DamageType;
 import java.util.HashMap;

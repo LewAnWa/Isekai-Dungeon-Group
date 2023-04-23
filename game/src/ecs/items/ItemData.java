@@ -6,7 +6,7 @@ import ecs.components.HitboxComponent;
 import ecs.components.InventoryComponent;
 import ecs.components.ItemComponent;
 import ecs.components.PositionComponent;
-import ecs.components.stats.DamageModifier;
+import ecs.components.xp.stats.DamageModifier;
 import ecs.entities.Entity;
 import graphic.Animation;
 import java.util.List;
