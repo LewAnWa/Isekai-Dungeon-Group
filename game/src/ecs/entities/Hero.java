@@ -89,5 +89,7 @@ public class Hero extends Entity {
         thirdSkill =
             new Skill(
                 new DashSkill());
+
+        Test
     }
 }
