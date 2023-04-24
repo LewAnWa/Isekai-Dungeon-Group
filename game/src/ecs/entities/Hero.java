@@ -88,6 +88,6 @@ public class Hero extends Entity {
     private void setupDashSkill() {
         thirdSkill =
             new Skill(
-                new DashSkill());
+                new DashSkill(), dashCoolDown);
     }
 }

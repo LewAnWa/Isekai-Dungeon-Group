@@ -5,7 +5,7 @@ public class DashSkill extends MovementSkill {
 
     public DashSkill(){
         super(
-            1f,
+            100f,
             0.1f);
 
     }
