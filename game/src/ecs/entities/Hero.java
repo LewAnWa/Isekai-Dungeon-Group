@@ -68,15 +68,15 @@ public class Hero extends Entity {
 
     private void setupFireballSkill() {
         firstSkill =
-                new Skill(
-                        new FireballSkill(SkillTools::getCursorPositionAsPoint), fireballCoolDown);
+            new Skill(
+                new FireballSkill(SkillTools::getCursorPositionAsPoint), fireballCoolDown);
     }
 
     private void setupHitboxComponent() {
         new HitboxComponent(
-                this,
-                (you, other, direction) -> System.out.println("heroCollisionEnter"),
-                (you, other, direction) -> System.out.println("heroCollisionLeave"));
+            this,
+            (you, other, direction) -> System.out.println("heroCollisionEnter"),
+            (you, other, direction) -> System.out.println("heroCollisionLeave"));
     }
 
     private void setupFrostBoltSkill() {
