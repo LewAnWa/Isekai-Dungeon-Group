@@ -16,7 +16,6 @@ public class Hero extends Entity {
 
     private final int fireballCoolDown = 5;
     private final int frostBoltCoolDown = 4;
-    private final int dashCoolDown = 1;
     private final float xSpeed = 0.3f;
     private final float ySpeed = 0.3f;
 
@@ -24,10 +23,8 @@ public class Hero extends Entity {
     private final String pathToIdleRight = "knight/idleRight";
     private final String pathToRunLeft = "knight/runLeft";
     private final String pathToRunRight = "knight/runRight";
-    private Skill thirdSkill;
     private Skill firstSkill;
     private Skill secondSkill;
-
 
     /** Entity with Components */
     public Hero() {
@@ -39,11 +36,9 @@ public class Hero extends Entity {
         PlayableComponent pc = new PlayableComponent(this);
         setupFireballSkill();
         setupFrostBoltSkill();
-        setupDashSkill();
         setupSkillComponent();
         pc.setSkillSlot1(firstSkill);
         pc.setSkillSlot2(secondSkill);
-        pc.setSkillSlot3(thirdSkill);
 
     }
 
@@ -51,7 +46,6 @@ public class Hero extends Entity {
         SkillComponent skillComponent = new SkillComponent(this);
         skillComponent.addSkill(firstSkill);
         skillComponent.addSkill(secondSkill);
-        skillComponent.addSkill(thirdSkill);
     }
 
     private void setupVelocityComponent() {
@@ -83,11 +77,5 @@ public class Hero extends Entity {
         secondSkill =
             new Skill(
                 new FrostBoltSkill(SkillTools::getCursorPositionAsPoint), frostBoltCoolDown);
-    }
-
-    private void setupDashSkill() {
-        thirdSkill =
-            new Skill(
-                new DashSkill());
     }
 }
