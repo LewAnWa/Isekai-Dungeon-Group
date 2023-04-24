@@ -3,12 +3,17 @@ package ecs.entities.monsters;
 import ecs.components.ai.AIComponent;
 import ecs.components.ai.fight.CollideAI;
 import ecs.components.ai.transition.RangeTransition;
-import level.elements.ILevel;
 
 public class Bat extends Monster {
 
-    public Bat(float movementSpeed, ILevel currentLevel) {
-        super(movementSpeed, currentLevel);
+    /**
+     * Constructor for the Bat.
+     *
+     * @param movementSpeed the speed of the Monster.
+     * @param flux the possible fluctuation of the variables.
+     */
+    public Bat(float movementSpeed, int flux) {
+        super(movementSpeed, 7+flux);
 
         pathToIdleLeft = "monster/bat/idleLeft";
         pathToIdleRight = "monster/bat/idleRight";
@@ -18,13 +23,15 @@ public class Bat extends Monster {
         setupVelocityComponent();
         setupAnimationComponent();
         setupHitboxComponent();
-        setUpHealthComponent(10);
+        setUpHealthComponent(10 + flux);
         setUpAIComponent();
+        setUpDamageComponent(2 + flux);
     }
 
-    protected void setUpAIComponent() {
+    private void setUpAIComponent() {
         AIComponent aiComponent = new AIComponent(this);
         aiComponent.setFightAI(new CollideAI(1f));
         aiComponent.setTransitionAI(new RangeTransition(100f));
+        // has no IdleAI, because the bat always knows where the player is
     }
 }

@@ -23,6 +23,7 @@ import graphic.Painter;
 import graphic.hud.PauseMenu;
 import java.io.IOException;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 import level.IOnLevelLoader;
 import level.LevelAPI;
@@ -127,8 +128,11 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
     protected void generateMonsters() {
         monsters = new Entity[currentLevel.getFloorTiles().size() / 20]; // amount of monsters = amount of floor tiles / 20
 
+        // TODO: Find out how to get the position of the hero via the getComponent()-Method
+        // Point heroPosition = hero.getComponent(PositionComponent.class).
+
         for (int i = 0; i < monsters.length; i++) {
-            monsters[i] = MonsterFactory.generateMonster(3, currentLevel);
+            monsters[i] = MonsterFactory.generateMonster(3);
         }
     }
 

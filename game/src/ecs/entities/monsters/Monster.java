@@ -2,33 +2,60 @@ package ecs.entities.monsters;
 
 import dslToGame.AnimationBuilder;
 import ecs.components.*;
-import ecs.components.ai.AIComponent;
-import ecs.components.ai.idle.RadiusWalk;
+import ecs.components.xp.XPComponent;
+import ecs.damage.Damage;
+import ecs.damage.DamageType;
 import ecs.entities.Entity;
 import graphic.Animation;
-import level.elements.ILevel;
 
-public abstract class Monster extends Entity {
+public abstract class Monster extends Entity{
 
     private final float xSpeed;
     private final float ySpeed;
 
-    protected String pathToIdleLeft = "knight/idleLeft";
-    protected String pathToIdleRight = "knight/idleRight";
-    protected String pathToRunLeft = "knight/runLeft";
-    protected String pathToRunRight = "knight/runRight";
+    protected String pathToIdleLeft;
+    protected String pathToIdleRight;
+    protected String pathToRunLeft;
+    protected String pathToRunRight;
+    protected String pathToDeathAnim = "monster/deathAnimation";
 
-    public Monster(float movementSpeed, ILevel currentLevel) {
+    /**
+     * Default constructor for the monster.
+     *
+     * @param movementSpeed the speed of the monster.
+     * @param lootAmount the amount of loot that should be dropped on death.
+     */
+    public Monster(float movementSpeed, long lootAmount) {
         super();
 
         xSpeed = ySpeed = movementSpeed;
 
-        new PositionComponent(this, currentLevel.getRandomFloorTile().getCoordinateAsPoint());
+        setUpPositionComponent();
+        setUpXPSystem(lootAmount);
+    }
+
+    protected void setUpDamageComponent(int damageAmount) {
+        new Damage(damageAmount, DamageType.PHYSICAL, null);
+    }
+
+    protected void setUpPositionComponent() {
+        new PositionComponent(this);
+    }
+
+    protected void setUpXPSystem(long lootAmount) {
+        XPComponent xpComponent = new XPComponent(this);
+        xpComponent.setLootXP(lootAmount);
     }
 
     protected void setUpHealthComponent(int maxHealthPoints) {
         HealthComponent healthComponent = new HealthComponent(this);
         healthComponent.setMaximalHealthpoints(maxHealthPoints);
+
+        // A die- and hit-animation is required, else the game starts to bug out
+        Animation deathAnim = AnimationBuilder.buildAnimation(pathToDeathAnim);
+        healthComponent.setDieAnimation(deathAnim);
+        healthComponent.setGetHitAnimation(deathAnim);
+        healthComponent.setOnDeath(entity -> new AnimationComponent(entity, deathAnim)); // does nothing
     }
 
     protected void setupVelocityComponent() {
