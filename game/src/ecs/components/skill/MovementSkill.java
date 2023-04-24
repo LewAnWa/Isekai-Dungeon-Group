@@ -14,6 +14,7 @@ public abstract class MovementSkill implements ISkillFunction{
     }
     @Override
     public void execute(Entity entity) {
+
         entity.getComponent(VelocityComponent.class)
             .ifPresent(
                 hvc -> {
