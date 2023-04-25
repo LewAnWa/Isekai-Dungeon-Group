@@ -17,6 +17,7 @@ public class Hero extends Entity {
 
     private final int fireballCoolDown = 5;
     private final int frostBoltCoolDown = 4;
+    private final int dashCoolDown = 1;
     private final float xSpeed = 0.3f;
     private final float ySpeed = 0.3f;
 
@@ -26,6 +27,7 @@ public class Hero extends Entity {
     private final String pathToRunRight = "knight/runRight";
     private Skill firstSkill;
     private Skill secondSkill;
+    private Skill thirdSkill;
 
     /** Entity with Components */
     public Hero() {
@@ -38,9 +40,11 @@ public class Hero extends Entity {
         PlayableComponent pc = new PlayableComponent(this);
         setupFireballSkill();
         setupFrostBoltSkill();
+        setupDashSkill();
         setupSkillComponent();
         pc.setSkillSlot1(firstSkill);
         pc.setSkillSlot2(secondSkill);
+        pc.setSkillSlot3(thirdSkill);
 
     }
 
@@ -48,6 +52,7 @@ public class Hero extends Entity {
         SkillComponent skillComponent = new SkillComponent(this);
         skillComponent.addSkill(firstSkill);
         skillComponent.addSkill(secondSkill);
+        skillComponent.addSkill(thirdSkill);
     }
 
     private void setupVelocityComponent() {
@@ -64,15 +69,15 @@ public class Hero extends Entity {
 
     private void setupFireballSkill() {
         firstSkill =
-                new Skill(
-                        new FireballSkill(SkillTools::getCursorPositionAsPoint), fireballCoolDown);
+            new Skill(
+                new FireballSkill(SkillTools::getCursorPositionAsPoint), fireballCoolDown);
     }
 
     private void setupHitboxComponent() {
         new HitboxComponent(
-                this,
-                (you, other, direction) -> System.out.println("heroCollisionEnter"),
-                (you, other, direction) -> System.out.println("heroCollisionLeave"));
+            this,
+            (you, other, direction) -> System.out.println("heroCollisionEnter"),
+            (you, other, direction) -> System.out.println("heroCollisionLeave"));
     }
 
     private void setupFrostBoltSkill() {
@@ -81,8 +86,14 @@ public class Hero extends Entity {
                 new FrostBoltSkill(SkillTools::getCursorPositionAsPoint), frostBoltCoolDown);
     }
 
-    private void setupXPComponent(){
+    private void setupXPComponent() {
         XPComponent xpcomponent = new XPComponent(this);
         xpcomponent.setCurrentLevel(1);
+    }
+
+    private void setupDashSkill() {
+        thirdSkill =
+            new Skill(
+                new DashSkill(), dashCoolDown);
     }
 }
