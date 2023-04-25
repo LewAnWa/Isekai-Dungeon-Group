@@ -85,6 +85,16 @@ public class Hero extends Entity {
                 new FrostBoltSkill(SkillTools::getCursorPositionAsPoint), frostBoltCoolDown);
     }
 
+
+
+
+
+
+
+
+
+
+
     private void setupDashSkill() {
         thirdSkill =
             new Skill(
