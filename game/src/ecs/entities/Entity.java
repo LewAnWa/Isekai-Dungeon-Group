@@ -4,6 +4,8 @@ import ecs.components.Component;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.logging.Logger;
+
+import ecs.components.skill.DamageProjectileSkill;
 import semanticAnalysis.types.DSLContextPush;
 import semanticAnalysis.types.DSLType;
 import starter.Game;
@@ -16,12 +18,23 @@ public class Entity {
     public final int id = nextId++;
     private HashMap<Class, Component> components;
     private final Logger entityLogger;
+    private DamageProjectileSkill projectile;
+    private boolean isProjectile = false;
 
     public Entity() {
         components = new HashMap<>();
         Game.addEntity(this);
         entityLogger = Logger.getLogger(this.getClass().getName());
         entityLogger.info("The entity '" + this.getClass().getSimpleName() + "' was created.");
+    }
+
+    public Entity(DamageProjectileSkill projectile) {
+        components = new HashMap<>();
+        Game.addEntity(this);
+        entityLogger = Logger.getLogger(this.getClass().getName());
+        entityLogger.info("The entity '" + this.getClass().getSimpleName() + "' was created.");
+        this.projectile = projectile;
+        this.isProjectile = true;
     }
 
     /**
@@ -50,5 +63,14 @@ public class Entity {
      */
     public Optional<Component> getComponent(Class klass) {
         return Optional.ofNullable(components.get(klass));
+    }
+
+    // -------------------- Getter -------------------- //
+    public DamageProjectileSkill getProjectile() {
+        return projectile;
+    }
+
+    public boolean isProjectile() {
+        return isProjectile;
     }
 }

@@ -17,6 +17,7 @@ public abstract class DamageProjectileSkill implements ISkillFunction {
     private float projectileRange;
     private Damage projectileDamage;
     private Point projectileHitboxSize;
+    private Entity originUser;
 
     private ITargetSelection selectionFunction;
 
@@ -26,18 +27,20 @@ public abstract class DamageProjectileSkill implements ISkillFunction {
             Damage projectileDamage,
             Point projectileHitboxSize,
             ITargetSelection selectionFunction,
-            float projectileRange) {
+            float projectileRange,
+            Entity originUser) {
         this.pathToTexturesOfProjectile = pathToTexturesOfProjectile;
         this.projectileDamage = projectileDamage;
         this.projectileSpeed = projectileSpeed;
         this.projectileRange = projectileRange;
         this.projectileHitboxSize = projectileHitboxSize;
         this.selectionFunction = selectionFunction;
+        this.originUser = originUser;
     }
 
     @Override
     public void execute(Entity entity) {
-        Entity projectile = new Entity();
+        Entity projectile = new Entity(this);
         PositionComponent epc =
                 (PositionComponent)
                         entity.getComponent(PositionComponent.class)
@@ -71,5 +74,10 @@ public abstract class DamageProjectileSkill implements ISkillFunction {
 
         new HitboxComponent(
                 projectile, new Point(0.25f, 0.25f), projectileHitboxSize, collide, null);
+    }
+
+    // -------------------- Getter -------------------- //
+    public Entity getOriginUser() {
+        return originUser;
     }
 }

@@ -1,5 +1,6 @@
 package ecs.systems;
 
+import ecs.components.HealthComponent;
 import ecs.components.xp.XPComponent;
 import starter.Game;
 
@@ -31,5 +32,12 @@ public class XPSystem extends ECS_System {
         comp.setCurrentLevel(comp.getCurrentLevel() + 1);
         comp.setCurrentXP(xpLeft * -1);
         comp.levelUp(comp.getCurrentLevel());
+
+        comp.getEntity().getComponent(HealthComponent.class)
+            .ifPresent(
+                hc -> {
+                    HealthComponent hpComp = (HealthComponent) hc;
+                    hpComp.setMaximalHealthpoints(hpComp.getMaximalHealthpoints() + 20);
+                });
     }
 }

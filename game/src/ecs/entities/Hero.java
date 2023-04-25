@@ -6,6 +6,7 @@ import ecs.components.AnimationComponent;
 import ecs.components.PositionComponent;
 import ecs.components.VelocityComponent;
 import ecs.components.skill.*;
+import ecs.components.xp.ILevelUp;
 import ecs.components.xp.XPComponent;
 import graphic.Animation;
 
@@ -13,7 +14,7 @@ import graphic.Animation;
  * The Hero is the player character. It's entity in the ECS. This class helps to setup the hero with
  * all its components and attributes .
  */
-public class Hero extends Entity {
+public class Hero extends Entity implements ILevelUp {
 
     private final int fireballCoolDown = 5;
     private final int frostBoltCoolDown = 4;
@@ -45,7 +46,46 @@ public class Hero extends Entity {
         pc.setSkillSlot1(firstSkill);
         pc.setSkillSlot2(secondSkill);
         pc.setSkillSlot3(thirdSkill);
+        setupManaComponent();
+        setupStaminaComponent();
+    }
 
+    /**
+     * This is supposed to increase the hero's maxHP, maxMana and maxStamina.
+     * Time wasted here: 4 hours
+     * (Please add to the time wasted, if you are trying to fix this)
+     *
+     * @param nexLevel is the new level of the entity
+     */
+    @Override
+    public void onLevelUp(long nexLevel) {
+        System.out.println("LEVEL UP");
+
+        this.getComponent(HealthComponent.class).ifPresent(component -> {
+            HealthComponent comp = (HealthComponent) component;
+            comp.setMaximalHealthpoints(comp.getMaximalHealthpoints() + 20);
+            }
+        );
+
+        this.getComponent(ManaComponent.class).ifPresent(component -> {
+                ManaComponent comp = (ManaComponent) component;
+                comp.setMaximalManaPoints(comp.getMaximalManaPoints() + 20);
+            }
+        );
+
+        this.getComponent(StaminaComponent.class).ifPresent(component -> {
+                StaminaComponent comp = (StaminaComponent) component;
+                comp.setMaxStamina(comp.getMaxStamina() + 20);
+            }
+        );
+    }
+
+    private void setupStaminaComponent() {
+        new StaminaComponent(this, 20);
+    }
+
+    private void setupManaComponent() {
+        new ManaComponent(this, 20);
     }
 
     private void setupSkillComponent(){
@@ -70,7 +110,7 @@ public class Hero extends Entity {
     private void setupFireballSkill() {
         firstSkill =
             new Skill(
-                new FireballSkill(SkillTools::getCursorPositionAsPoint), fireballCoolDown);
+                new FireballSkill(SkillTools::getCursorPositionAsPoint, this), fireballCoolDown);
     }
 
     private void setupHitboxComponent() {

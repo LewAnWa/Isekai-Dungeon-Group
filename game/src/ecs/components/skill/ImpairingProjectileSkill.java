@@ -3,7 +3,6 @@ package ecs.components.skill;
 import dslToGame.AnimationBuilder;
 import ecs.components.*;
 import ecs.components.collision.ICollide;
-import ecs.damage.Damage;
 import ecs.entities.Entity;
 import graphic.Animation;
 import starter.Game;
@@ -16,6 +15,7 @@ public abstract class ImpairingProjectileSkill implements ISkillFunction{
     private float projectileRange;
     private float projectileInfluence; //beeinflussung der Gegner mittels slow etc.
     private Point projectileHitboxSize;
+    private int manaCost;
 
     private ITargetSelection selectionFunction;
 
@@ -25,54 +25,71 @@ public abstract class ImpairingProjectileSkill implements ISkillFunction{
             float projectileInfluence,
             Point projectileHitboxSize,
             ITargetSelection selectionFunction,
-            float projectileRange) {
+            float projectileRange,
+            int manaCost) {
         this.pathToTexturesOfProjectile = pathToTexturesOfProjectile;
         this.projectileInfluence = projectileInfluence;
         this.projectileSpeed = projectileSpeed;
         this.projectileRange = projectileRange;
         this.projectileHitboxSize = projectileHitboxSize;
         this.selectionFunction = selectionFunction;
+        this.manaCost = manaCost;
     }
 
     @Override
     public void execute(Entity entity) {
-        Entity projectile = new Entity();
+        // get the ManaComponent of the Entity that want to execute this Skill
+        entity.getComponent(ManaComponent.class).ifPresent(component -> {
+            ManaComponent comp = (ManaComponent) component;
 
-        PositionComponent epc =
-            (PositionComponent)
-                entity.getComponent(PositionComponent.class)
-                    .orElseThrow(
-                        () -> new MissingComponentException("PositionComponent"));
-        new PositionComponent(projectile, epc.getPosition());
+            // if enough Mana is present, then execute the Skill
+            if (comp.getCurrentManaPoints() - manaCost >= 0) {
+                // reduce the ManaPoints by the cost
+                comp.setCurrentManaPoints(comp.getCurrentManaPoints() - manaCost);
 
-        Animation animation = AnimationBuilder.buildAnimation(pathToTexturesOfProjectile);
-        new AnimationComponent(projectile, animation);
+                Entity projectile = new Entity();
 
-        Point aimedOn = selectionFunction.selectTargetPoint();
-        Point targetPoint =
-            SkillTools.calculateLastPositionInRange(
-                epc.getPosition(), aimedOn, projectileRange);
-        Point velocity =
-            SkillTools.calculateVelocity(epc.getPosition(), targetPoint, projectileSpeed);
-        VelocityComponent vc =
-            new VelocityComponent(projectile, velocity.x, velocity.y, animation, animation);
-        new ProjectileComponent(projectile, epc.getPosition(), targetPoint);
+                PositionComponent epc =
+                    (PositionComponent)
+                        entity.getComponent(PositionComponent.class)
+                            .orElseThrow(
+                                () -> new MissingComponentException("PositionComponent"));
+                new PositionComponent(projectile, epc.getPosition());
 
-        ICollide collide =
-            (a, b, from) -> {
-                if (b != entity) {
-                    b.getComponent(VelocityComponent.class)
-                        .ifPresent(
-                            evc -> { //evc --> enemy velocity component
-                                ((VelocityComponent) evc).setXVelocity(projectileInfluence);
-                                ((VelocityComponent) evc).setYVelocity(projectileInfluence);
-                                Game.removeEntity(projectile);
-                            });
-                }
-            };
+                Animation animation = AnimationBuilder.buildAnimation(pathToTexturesOfProjectile);
+                new AnimationComponent(projectile, animation);
 
-        new HitboxComponent(
-            projectile, new Point(0.25f, 0.25f), projectileHitboxSize, collide, null);
+                Point aimedOn = selectionFunction.selectTargetPoint();
+                Point targetPoint =
+                    SkillTools.calculateLastPositionInRange(
+                        epc.getPosition(), aimedOn, projectileRange);
+                Point velocity =
+                    SkillTools.calculateVelocity(epc.getPosition(), targetPoint, projectileSpeed);
+                VelocityComponent vc =
+                    new VelocityComponent(projectile, velocity.x, velocity.y, animation, animation);
+                new ProjectileComponent(projectile, epc.getPosition(), targetPoint);
 
+                ICollide collide =
+                    (a, b, from) -> {
+                        if (b != entity) {
+                            b.getComponent(VelocityComponent.class)
+                                .ifPresent(
+                                    evc -> { //evc --> enemy velocity component
+                                        ((VelocityComponent) evc).setXVelocity(projectileInfluence);
+                                        ((VelocityComponent) evc).setYVelocity(projectileInfluence);
+                                        Game.removeEntity(projectile);
+                                    });
+                        }
+                    };
+
+                new HitboxComponent(
+                    projectile, new Point(0.25f, 0.25f), projectileHitboxSize, collide, null);
+
+
+            }
+            else {
+                System.out.println("NO MANA???");
+            }
+        });
     }
 }

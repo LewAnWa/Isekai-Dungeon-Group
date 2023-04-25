@@ -10,6 +10,7 @@ public class FrostBoltSkill extends ImpairingProjectileSkill{
             0.04f,
              new Point(10,10),
             targetSelection,
-            5f);
+            5f,
+            5);
     }
 }
