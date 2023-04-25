@@ -6,6 +6,7 @@ import ecs.components.AnimationComponent;
 import ecs.components.PositionComponent;
 import ecs.components.VelocityComponent;
 import ecs.components.skill.*;
+import ecs.components.xp.XPComponent;
 import graphic.Animation;
 
 /**
@@ -33,6 +34,7 @@ public class Hero extends Entity {
         setupVelocityComponent();
         setupAnimationComponent();
         setupHitboxComponent();
+        setupXPComponent();
         PlayableComponent pc = new PlayableComponent(this);
         setupFireballSkill();
         setupFrostBoltSkill();
@@ -77,5 +79,10 @@ public class Hero extends Entity {
         secondSkill =
             new Skill(
                 new FrostBoltSkill(SkillTools::getCursorPositionAsPoint), frostBoltCoolDown);
+    }
+
+    private void setupXPComponent(){
+        XPComponent xpcomponent = new XPComponent(this);
+        xpcomponent.setCurrentLevel(1);
     }
 }
