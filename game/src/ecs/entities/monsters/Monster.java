@@ -31,7 +31,7 @@ public abstract class Monster extends Entity{
         xSpeed = ySpeed = movementSpeed;
 
         setUpPositionComponent();
-        setUpXPSystem(lootAmount);
+        setupXPComponent(lootAmount);
     }
 
     protected void setUpDamageComponent(int damageAmount) {
@@ -42,7 +42,7 @@ public abstract class Monster extends Entity{
         new PositionComponent(this);
     }
 
-    protected void setUpXPSystem(long lootAmount) {
+    protected void setupXPComponent(long lootAmount) {
         XPComponent xpComponent = new XPComponent(this);
         xpComponent.setLootXP(lootAmount);
     }
