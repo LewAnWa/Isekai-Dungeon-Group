@@ -1,6 +1,8 @@
 package ecs.systems;
 
 import ecs.components.HealthComponent;
+import ecs.components.ManaComponent;
+import ecs.components.StaminaComponent;
 import ecs.components.xp.XPComponent;
 import starter.Game;
 
@@ -33,11 +35,27 @@ public class XPSystem extends ECS_System {
         comp.setCurrentXP(xpLeft * -1);
         comp.levelUp(comp.getCurrentLevel());
 
+
+        // gets the user of the xpComponent and increases stats if the components are available
         comp.getEntity().getComponent(HealthComponent.class)
             .ifPresent(
                 hc -> {
                     HealthComponent hpComp = (HealthComponent) hc;
                     hpComp.setMaximalHealthpoints(hpComp.getMaximalHealthpoints() + 20);
+                });
+
+        comp.getEntity().getComponent(ManaComponent.class)
+            .ifPresent(
+                hc -> {
+                    ManaComponent manaComp = (ManaComponent) hc;
+                    manaComp.setMaximalManaPoints(manaComp.getMaximalManaPoints() + 20);
+                });
+
+        comp.getEntity().getComponent(StaminaComponent.class)
+            .ifPresent(
+                hc -> {
+                    StaminaComponent staminaComp = (StaminaComponent) hc;
+                    staminaComp.setMaxStamina(staminaComp.getMaxStamina() + 20);
                 });
     }
 }

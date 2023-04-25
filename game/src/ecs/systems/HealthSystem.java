@@ -3,7 +3,6 @@ package ecs.systems;
 import ecs.components.AnimationComponent;
 import ecs.components.HealthComponent;
 import ecs.components.MissingComponentException;
-import ecs.components.skill.FireballSkill;
 import ecs.components.xp.stats.StatsComponent;
 import ecs.components.xp.XPComponent;
 import ecs.damage.DamageType;
@@ -102,21 +101,6 @@ public class HealthSystem extends ECS_System {
                 .ifPresent(
                         component -> {
                             XPComponent deadXPComponent = (XPComponent) component;
-
-                            /*
-                            Entity projectile = hsd.hc.getLastDamageCause();
-
-                            if (projectile.isProjectile()) {
-                                projectile.getProjectile().getOriginUser().getComponent(XPSystem.class).ifPresent(c -> {
-                                    XPComponent killerXPComponent = (XPComponent) c;
-                                    killerXPComponent.addXP(
-                                        deadXPComponent.getLootXP());
-
-                                    System.out.println("Given XP to user:");
-                                    System.out.println(killerXPComponent.getCurrentXP());
-                                });
-                            }
-                             */
 
                             hsd.hc
                                     .getLastDamageCause()
