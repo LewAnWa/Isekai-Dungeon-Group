@@ -14,6 +14,7 @@ import controller.AbstractController;
 import controller.SystemController;
 import ecs.components.MissingComponentException;
 import ecs.components.PositionComponent;
+import ecs.components.xp.XPComponent;
 import ecs.entities.Entity;
 import ecs.entities.Hero;
 import ecs.entities.monsters.MonsterFactory;
@@ -131,9 +132,18 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         // TODO: Find out how to get the position of the hero via the getComponent()-Method
         // Point heroPosition = hero.getComponent(PositionComponent.class).
 
-        for (int i = 0; i < monsters.length; i++) {
-            monsters[i] = MonsterFactory.generateMonster(3);
-        }
+        hero.getComponent(XPComponent.class).ifPresent(component -> {
+
+            XPComponent comp = (XPComponent) component;
+
+            hero.getComponent(PositionComponent.class).ifPresent(component1 -> {
+                PositionComponent posComp = (PositionComponent) component1;
+
+                for (int i = 0; i < monsters.length; i++) {
+                    monsters[i] = MonsterFactory.generateMonster((int) comp.getCurrentLevel(), posComp.getPosition(), currentLevel);
+                }
+            });
+        });
     }
 
     /** Called at the beginning of each frame. Before the controllers call <code>update</code>. */

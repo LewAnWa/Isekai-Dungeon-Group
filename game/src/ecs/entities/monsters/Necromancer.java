@@ -4,11 +4,13 @@ import ecs.components.ai.AIComponent;
 import ecs.components.ai.fight.CollideAI;
 import ecs.components.ai.idle.RadiusWalk;
 import ecs.components.ai.transition.RangeTransition;
+import level.elements.ILevel;
+import tools.Point;
 
 public class Necromancer extends Monster {
 
-    public Necromancer(float movementSpeed, int flux) {
-        super(movementSpeed, 10+flux);
+    public Necromancer(float movementSpeed, int flux, Point playerPos, ILevel currentLevel) {
+        super(movementSpeed, 10+flux, playerPos, currentLevel);
 
         pathToIdleLeft = "monster/necromancer/idleLeft";
         pathToIdleRight = "monster/necromancer/idleRight";
