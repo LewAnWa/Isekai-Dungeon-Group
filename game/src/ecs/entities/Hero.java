@@ -37,6 +37,7 @@ public class Hero extends Entity {
         setupAnimationComponent();
         setupHitboxComponent();
         setupXPComponent();
+        setupHealthComponent();
         PlayableComponent pc = new PlayableComponent(this);
         setupFireballSkill();
         setupFrostBoltSkill();
@@ -45,7 +46,21 @@ public class Hero extends Entity {
         pc.setSkillSlot1(firstSkill);
         pc.setSkillSlot2(secondSkill);
         pc.setSkillSlot3(thirdSkill);
+        setupManaComponent();
+        setupStaminaComponent();
+    }
 
+    private void setupHealthComponent() {
+        HealthComponent comp = new HealthComponent(this);
+        comp.setMaximalHealthpoints(100);
+    }
+
+    private void setupStaminaComponent() {
+        new StaminaComponent(this, 20);
+    }
+
+    private void setupManaComponent() {
+        new ManaComponent(this, 20);
     }
 
     private void setupSkillComponent(){

@@ -93,15 +93,15 @@ public class HealthSystem extends ECS_System {
         // Entity appears to be dead, so let's clean up the mess
         hsd.hc.triggerOnDeath();
         hsd.ac.setCurrentAnimation(hsd.hc.getDieAnimation());
-        // TODO: Before removing the entity, check if the animation is finished (Issue #246)
-        Game.removeEntity(hsd.hc.getEntity());
 
         // Add XP
+        // FIXME: THIS DOES NOT WORK, BECAUSE THE ENTITY THAT RECEIVES THE XP IS THE FIREBALL
         hsd.e
                 .getComponent(XPComponent.class)
                 .ifPresent(
                         component -> {
                             XPComponent deadXPComponent = (XPComponent) component;
+
                             hsd.hc
                                     .getLastDamageCause()
                                     .flatMap(entity -> entity.getComponent(XPComponent.class))
@@ -112,6 +112,9 @@ public class HealthSystem extends ECS_System {
                                                         deadXPComponent.getLootXP());
                                             });
                         });
+
+        // TODO: Before removing the entity, check if the animation is finished (Issue #246)
+        Game.removeEntity(hsd.hc.getEntity());
     }
 
     private static MissingComponentException missingAC() {

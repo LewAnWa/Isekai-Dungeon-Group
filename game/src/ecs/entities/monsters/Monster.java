@@ -7,6 +7,8 @@ import ecs.damage.Damage;
 import ecs.damage.DamageType;
 import ecs.entities.Entity;
 import graphic.Animation;
+import level.elements.ILevel;
+import tools.Point;
 
 public abstract class Monster extends Entity{
 
@@ -24,13 +26,15 @@ public abstract class Monster extends Entity{
      *
      * @param movementSpeed the speed of the monster.
      * @param lootAmount the amount of loot that should be dropped on death.
+     * @param playerPos the position of the player in the level.
+     * @param currentLevel the current map.
      */
-    public Monster(float movementSpeed, long lootAmount) {
+    public Monster(float movementSpeed, long lootAmount, Point playerPos, ILevel currentLevel) {
         super();
 
         xSpeed = ySpeed = movementSpeed;
 
-        setUpPositionComponent();
+        setUpPositionComponent(playerPos, currentLevel);
         setupXPComponent(lootAmount);
     }
 
@@ -38,8 +42,15 @@ public abstract class Monster extends Entity{
         new Damage(damageAmount, DamageType.PHYSICAL, null);
     }
 
-    protected void setUpPositionComponent() {
-        new PositionComponent(this);
+    // Sets up the positionComponent of the Monster with a random point, which has a minimum distance to the player
+    protected void setUpPositionComponent(Point playerPos, ILevel currentLevel) {
+        Point randomPoint;
+
+        do {
+            randomPoint = currentLevel.getRandomFloorTile().getCoordinateAsPoint();
+        } while (Point.calculateDistance(playerPos, randomPoint) >= 20);
+
+        new PositionComponent(this, randomPoint);
     }
 
     protected void setupXPComponent(long lootAmount) {

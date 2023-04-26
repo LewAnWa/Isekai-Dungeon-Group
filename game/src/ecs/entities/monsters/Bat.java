@@ -3,6 +3,8 @@ package ecs.entities.monsters;
 import ecs.components.ai.AIComponent;
 import ecs.components.ai.fight.CollideAI;
 import ecs.components.ai.transition.RangeTransition;
+import level.elements.ILevel;
+import tools.Point;
 
 public class Bat extends Monster {
 
@@ -11,9 +13,11 @@ public class Bat extends Monster {
      *
      * @param movementSpeed the speed of the Monster.
      * @param flux the possible fluctuation of the variables.
+     * @param playerPos the position of the player in the level.
+     * @param currentLevel the current map.
      */
-    public Bat(float movementSpeed, int flux) {
-        super(movementSpeed, 7+flux);
+    public Bat(float movementSpeed, int flux, Point playerPos, ILevel currentLevel) {
+        super(movementSpeed, 7+flux, playerPos, currentLevel);
 
         pathToIdleLeft = "monster/bat/idleLeft";
         pathToIdleRight = "monster/bat/idleRight";
