@@ -29,6 +29,6 @@ public class ManaComponent extends Component {
 
     public void setMaximalManaPoints(int maximalManaPoints) {
         this.maximalManaPoints = maximalManaPoints;
-        currentManaPoints = Math.min(currentManaPoints, maximalManaPoints);
+        currentManaPoints = maximalManaPoints;
     }
 }

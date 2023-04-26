@@ -29,6 +29,6 @@ public class StaminaComponent extends Component {
 
     public void setMaxStamina(int maxStamina) {
         this.maxStamina = maxStamina;
-        currentStamina = Math.min(currentStamina, maxStamina);
+        currentStamina = maxStamina;
     }
 }

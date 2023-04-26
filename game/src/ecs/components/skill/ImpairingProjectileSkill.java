@@ -46,6 +46,7 @@ public abstract class ImpairingProjectileSkill implements ISkillFunction{
             if (comp.getCurrentManaPoints() - manaCost >= 0) {
                 // reduce the ManaPoints by the cost
                 comp.setCurrentManaPoints(comp.getCurrentManaPoints() - manaCost);
+                System.out.println(comp.getCurrentManaPoints()+"/"+comp.getMaximalManaPoints()+" MANA");
 
                 Entity projectile = new Entity();
 

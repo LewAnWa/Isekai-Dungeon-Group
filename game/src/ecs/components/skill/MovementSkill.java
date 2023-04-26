@@ -26,6 +26,7 @@ public abstract class MovementSkill implements ISkillFunction{
             if (comp.getCurrentStamina() - staminaCost >= 0) {
                 // reduce Stamina by the cost
                 comp.setCurrentStamina(comp.getCurrentStamina() - staminaCost);
+                System.out.println(comp.getCurrentStamina()+"/"+comp.getMaxStamina()+" STAMINA");
 
                 entity.getComponent(VelocityComponent.class)
                     .ifPresent(
