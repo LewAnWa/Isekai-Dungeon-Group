@@ -5,6 +5,7 @@ import configuration.KeyboardConfig;
 import ecs.components.MissingComponentException;
 import ecs.components.PlayableComponent;
 import ecs.components.VelocityComponent;
+import ecs.components.xp.XPComponent;
 import ecs.entities.Entity;
 import ecs.tools.interaction.InteractionTool;
 import starter.Game;
@@ -43,6 +44,14 @@ public class PlayerSystem extends ECS_System {
         else if (Gdx.input.isKeyPressed(KeyboardConfig.THIRD_SKILL.get()))
             ksd.pc.getSkillSlot3().ifPresent(skill -> skill.execute(ksd.e));
 
+        if (Gdx.input.isKeyPressed(KeyboardConfig.XPADDER_SKILL.get())){
+            Game.getHero().ifPresent(hero -> {
+                hero.getComponent(XPComponent.class).ifPresent(component -> {
+                    ((XPComponent) component).addXP(50);
+                    System.out.println("Added 50 XP");
+                });
+            });
+        }
     }
 
     private KSData buildDataObject(PlayableComponent pc) {

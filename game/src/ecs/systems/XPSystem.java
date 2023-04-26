@@ -42,6 +42,7 @@ public class XPSystem extends ECS_System {
                 hc -> {
                     HealthComponent hpComp = (HealthComponent) hc;
                     hpComp.setMaximalHealthpoints(hpComp.getMaximalHealthpoints() + 20);
+                    System.out.println("Health Level UP");
                 });
 
         comp.getEntity().getComponent(ManaComponent.class)
@@ -49,6 +50,7 @@ public class XPSystem extends ECS_System {
                 hc -> {
                     ManaComponent manaComp = (ManaComponent) hc;
                     manaComp.setMaximalManaPoints(manaComp.getMaximalManaPoints() + 20);
+                    System.out.println("Mana Level UP");
                 });
 
         comp.getEntity().getComponent(StaminaComponent.class)
@@ -56,6 +58,7 @@ public class XPSystem extends ECS_System {
                 hc -> {
                     StaminaComponent staminaComp = (StaminaComponent) hc;
                     staminaComp.setMaxStamina(staminaComp.getMaxStamina() + 20);
+                    System.out.println("Stamina Level UP");
                 });
     }
 }
