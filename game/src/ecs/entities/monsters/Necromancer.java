@@ -9,6 +9,15 @@ import tools.Point;
 
 public class Necromancer extends Monster {
 
+    /**
+     * Creates a new Necromancer
+     *
+     * @param movementSpeed the speed of the Monster.
+     * @param flux the possible fluctuation of the variables.
+     * @param playerPos the position of the player in the level.
+     * @param currentLevel the current map.
+     */
+
     public Necromancer(float movementSpeed, int flux, Point playerPos, ILevel currentLevel) {
         super(movementSpeed, 10+flux, playerPos, currentLevel);
 

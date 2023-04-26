@@ -3,6 +3,13 @@ package ecs.components.skill;
 import tools.Point;
 
 public class FrostBoltSkill extends ImpairingProjectileSkill{
+
+    /**
+     * This Skill is an ImpairingProjectileSkill
+     * It is a skill that can be shot at an enemy entity to reduce its movement speed (velocity)
+     * @param targetSelection the point that is aimed for with the skill
+     */
+
     public FrostBoltSkill(ITargetSelection targetSelection){
         super(
             "skills/frostbolt/",

@@ -10,6 +10,10 @@ import graphic.Animation;
 import level.elements.ILevel;
 import tools.Point;
 
+/**
+ * The Monster is an entity to encounter and fight against in the dungeon. There are several different monster in the game.
+ */
+
 public abstract class Monster extends Entity{
 
     private final float xSpeed;

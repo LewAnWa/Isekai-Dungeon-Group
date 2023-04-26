@@ -19,6 +19,16 @@ public abstract class ImpairingProjectileSkill implements ISkillFunction{
 
     private ITargetSelection selectionFunction;
 
+    /**
+     * @param pathToTexturesOfProjectile shows where to find the used textures for the Skill
+     * @param projectileSpeed the velocity of the projectile
+     * @param projectileInfluence the new lower velocity the hit entity will receive
+     * @param projectileHitboxSize the hitbox size of the projectile
+     * @param selectionFunction the point that is aimed for with the skill
+     * @param projectileRange the range of the projectile
+     * @param manaCost the mana needed to cast the Skill
+     */
+
     public ImpairingProjectileSkill(
             String pathToTexturesOfProjectile,
             float projectileSpeed,
@@ -35,6 +45,15 @@ public abstract class ImpairingProjectileSkill implements ISkillFunction{
         this.selectionFunction = selectionFunction;
         this.manaCost = manaCost;
     }
+
+    /**
+     * USING THE SKILL:
+     * Create a new Entity for the Forstbolt when the ability is used.
+     * this way, every Frostbolt projectile acts as an Entity
+     * Create the needed Components for the Entity to make it functional in game
+     * If the Frostbolt hits an enemy, the entity it collided with will receive reduced movement speed (Velocity)
+     * afterward the new created projectile Entity will be deleted
+     */
 
     @Override
     public void execute(Entity entity) {

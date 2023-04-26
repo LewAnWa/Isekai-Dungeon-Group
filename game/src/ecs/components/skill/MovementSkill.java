@@ -12,10 +12,21 @@ public abstract class MovementSkill implements ISkillFunction{
     private float heroSpeed;
     private int staminaCost;
 
+    /**
+     * @param heroSpeed is the velocity the Hero will receive upon using the skill
+     * @param staminaCost is the cost of stamina to use the skill
+     */
+
     public MovementSkill (float heroSpeed, int staminaCost){
         this.heroSpeed = heroSpeed;
         this.staminaCost = staminaCost;
     }
+
+    /**
+     * Upon use of this skill in game, the Entity that uses this skill (Hero) will receive a boost to its Velocity
+     * for a very short duration and appears to be dashing in the moving direction
+     */
+
     @Override
     public void execute(Entity entity) {
         // get the StaminaComponent of the Entity that want to execute this Skill

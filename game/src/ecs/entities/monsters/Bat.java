@@ -9,7 +9,7 @@ import tools.Point;
 public class Bat extends Monster {
 
     /**
-     * Constructor for the Bat.
+     * Creates a new Bat
      *
      * @param movementSpeed the speed of the Monster.
      * @param flux the possible fluctuation of the variables.

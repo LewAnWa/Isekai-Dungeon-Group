@@ -9,6 +9,15 @@ import tools.Point;
 
 public class Skeleton extends Monster {
 
+    /**
+     * Creates a new Skeleton
+     *
+     * @param movementSpeed the speed of the Monster.
+     * @param flux the possible fluctuation of the variables.
+     * @param playerPos the position of the player in the level.
+     * @param currentLevel the current map.
+     */
+
     public Skeleton(float movementSpeed, int flux, Point playerPos, ILevel currentLevel) {
         super(movementSpeed, 5+flux, playerPos, currentLevel);
 
