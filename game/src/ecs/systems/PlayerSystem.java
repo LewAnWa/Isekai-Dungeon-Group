@@ -45,13 +45,18 @@ public class PlayerSystem extends ECS_System {
             ksd.pc.getSkillSlot3().ifPresent(skill -> skill.execute(ksd.e));
 
         if (Gdx.input.isKeyPressed(KeyboardConfig.XPADDER_SKILL.get())){
-            Game.getHero().ifPresent(hero -> {
-                hero.getComponent(XPComponent.class).ifPresent(component -> {
-                    ((XPComponent) component).addXP(50);
-                    System.out.println("Added 50 XP");
-                });
+            Game.getHero().flatMap(hero -> hero.getComponent(XPComponent.class)).ifPresent(component -> {
+                ((XPComponent) component).addXP(50);
+                System.out.println("Added 50 XP");
             });
         }
+
+        if (Gdx.input.isKeyPressed(KeyboardConfig.HERO_INFO.get()))
+            Game.getHero().flatMap(hero -> hero.getComponent(XPComponent.class)).ifPresent(component -> {
+                XPComponent comp = (XPComponent) component;
+
+                System.out.println("HERO : LVL " + comp.getCurrentLevel() + "(" + comp.getCurrentXP() + "/" + (comp.getXPToNextLevel() + comp.getCurrentXP()) + ")");
+            });
     }
 
     private KSData buildDataObject(PlayableComponent pc) {

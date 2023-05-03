@@ -26,4 +26,6 @@ public class KeyboardConfig {
         new ConfigKey<>(new String[] {"skill", "third"}, new ConfigIntValue(Input.Keys.SPACE));
     public static final ConfigKey<Integer> XPADDER_SKILL =
         new ConfigKey<>(new String[] {"cheat", "XPADDER"}, new ConfigIntValue(Input.Keys.H));
+    public static final ConfigKey<Integer> HERO_INFO =
+        new ConfigKey<>(new String[] {"info", "print"}, new ConfigIntValue(Input.Keys.I));
 }

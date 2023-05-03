@@ -95,7 +95,6 @@ public class HealthSystem extends ECS_System {
         hsd.ac.setCurrentAnimation(hsd.hc.getDieAnimation());
 
         // Add XP
-        // FIXME: THIS DOES NOT WORK, BECAUSE THE ENTITY THAT RECEIVES THE XP IS THE FIREBALL
         hsd.e
                 .getComponent(XPComponent.class)
                 .ifPresent(

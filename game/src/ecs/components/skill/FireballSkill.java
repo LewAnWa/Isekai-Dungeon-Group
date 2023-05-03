@@ -6,13 +6,19 @@ import ecs.entities.Entity;
 import tools.Point;
 
 public class FireballSkill extends DamageProjectileSkill {
-    public FireballSkill(ITargetSelection targetSelection) {
+
+    /**
+     * The constructor for the fireball.
+     * @param targetSelection preferably the cursor position.
+     * @param user The Entity that shot the fireball. Can be null.
+     */
+    public FireballSkill(ITargetSelection targetSelection, Entity user) {
         super(
-                "skills/fireball/fireBall_Down/",
-                0.5f,
-                new Damage(1, DamageType.FIRE, null),
-                new Point(10, 10),
-                targetSelection,
-                5f);
+            "skills/fireball/fireBall_Down/",
+            0.5f,
+            new Damage(1, DamageType.FIRE, user),
+            new Point(10, 10),
+            targetSelection,
+            5f);
     }
 }
