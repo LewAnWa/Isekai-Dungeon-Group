@@ -12,6 +12,7 @@ import configuration.Configuration;
 import configuration.KeyboardConfig;
 import controller.AbstractController;
 import controller.SystemController;
+import ecs.components.HealthComponent;
 import ecs.components.MissingComponentException;
 import ecs.components.PositionComponent;
 import ecs.components.xp.XPComponent;
@@ -21,6 +22,7 @@ import ecs.entities.monsters.MonsterFactory;
 import ecs.systems.*;
 import graphic.DungeonCamera;
 import graphic.Painter;
+import graphic.hud.GameOverScreen;
 import graphic.hud.PauseMenu;
 import java.io.IOException;
 import java.util.*;
@@ -74,6 +76,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
 
     public static ILevel currentLevel;
     private static PauseMenu<Actor> pauseMenu;
+    private static GameOverScreen<Actor> gameOverScreen;
     private static Entity hero;
     private static Entity[] monsters;
     private Logger gameLogger;
@@ -119,6 +122,8 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         controller.add(systems);
         pauseMenu = new PauseMenu<>();
         controller.add(pauseMenu);
+        gameOverScreen = new GameOverScreen<>();
+        controller.add(gameOverScreen);
         hero = new Hero();
         levelAPI = new LevelAPI(batch, painter, new WallGenerator(new RandomWalkGenerator()), this);
         levelAPI.loadLevel(LEVELSIZE);
@@ -225,6 +230,10 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
             if (paused) pauseMenu.showMenu();
             else pauseMenu.hideMenu();
         }
+    }
+
+    public static void showGameOverScreen() {
+        gameOverScreen.showScreen();
     }
 
     /**

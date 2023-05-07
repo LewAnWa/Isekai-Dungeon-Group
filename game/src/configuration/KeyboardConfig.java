@@ -28,4 +28,6 @@ public class KeyboardConfig {
         new ConfigKey<>(new String[] {"cheat", "XPADDER"}, new ConfigIntValue(Input.Keys.H));
     public static final ConfigKey<Integer> HERO_INFO =
         new ConfigKey<>(new String[] {"info", "print"}, new ConfigIntValue(Input.Keys.I));
+    public static final ConfigKey<Integer> HERO_KILL =
+        new ConfigKey<>(new String[] {"kill", "hero"}, new ConfigIntValue(Input.Keys.K));
 }

@@ -112,6 +112,11 @@ public class HealthSystem extends ECS_System {
                                             });
                         });
 
+        // if the entity, that died, is the hero, then show game over screen
+        Game.getHero().ifPresent(Entity -> {
+            if (Entity.equals(hsd.e)) Game.showGameOverScreen();
+        });
+
         // TODO: Before removing the entity, check if the animation is finished (Issue #246)
         Game.removeEntity(hsd.hc.getEntity());
     }

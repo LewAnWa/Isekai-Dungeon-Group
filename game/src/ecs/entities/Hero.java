@@ -25,6 +25,7 @@ public class Hero extends Entity {
     private final String pathToIdleRight = "knight/idleRight";
     private final String pathToRunLeft = "knight/runLeft";
     private final String pathToRunRight = "knight/runRight";
+    private final String pathToHit = "knight/hit";
     private Skill firstSkill;
     private Skill secondSkill;
     private Skill thirdSkill;
@@ -53,6 +54,9 @@ public class Hero extends Entity {
     private void setupHealthComponent() {
         HealthComponent comp = new HealthComponent(this);
         comp.setMaximalHealthpoints(100);
+        comp.setCurrentHealthpoints(comp.getMaximalHealthpoints());
+        comp.setGetHitAnimation(AnimationBuilder.buildAnimation(pathToHit));
+        comp.setDieAnimation(AnimationBuilder.buildAnimation(pathToHit));
     }
 
     private void setupStaminaComponent() {

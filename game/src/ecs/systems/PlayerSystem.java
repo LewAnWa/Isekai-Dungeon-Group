@@ -2,10 +2,13 @@ package ecs.systems;
 
 import com.badlogic.gdx.Gdx;
 import configuration.KeyboardConfig;
+import ecs.components.HealthComponent;
 import ecs.components.MissingComponentException;
 import ecs.components.PlayableComponent;
 import ecs.components.VelocityComponent;
 import ecs.components.xp.XPComponent;
+import ecs.damage.Damage;
+import ecs.damage.DamageType;
 import ecs.entities.Entity;
 import ecs.tools.interaction.InteractionTool;
 import starter.Game;
@@ -56,6 +59,17 @@ public class PlayerSystem extends ECS_System {
                 XPComponent comp = (XPComponent) component;
 
                 System.out.println("HERO : LVL " + comp.getCurrentLevel() + "(" + comp.getCurrentXP() + "/" + (comp.getXPToNextLevel() + comp.getCurrentXP()) + ")");
+            });
+
+        if (Gdx.input.isKeyPressed(KeyboardConfig.HERO_KILL.get()))
+            Game.getHero().flatMap(hero -> hero.getComponent(HealthComponent.class)).ifPresent(component -> {
+                HealthComponent comp = (HealthComponent) component;
+
+                comp.receiveHit(new Damage(
+                    10,
+                    DamageType.PHYSICAL,
+                    null
+                ));
             });
     }
 
