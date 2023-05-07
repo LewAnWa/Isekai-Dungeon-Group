@@ -6,7 +6,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.utils.Align;
 import controller.ScreenController;
-import starter.DesktopLauncher;
 import starter.Game;
 import tools.Constants;
 import tools.Point;
@@ -16,7 +15,7 @@ public class GameOverScreen<T extends Actor> extends ScreenController<T> {
     /**
      * Creates a GameOverScreen with two buttons, one for restart and the other for exiting the game.
      */
-    public GameOverScreen() {
+    public GameOverScreen(Game game) {
         super(new SpriteBatch());
         ScreenText screenText =
             new ScreenText(
@@ -34,7 +33,7 @@ public class GameOverScreen<T extends Actor> extends ScreenController<T> {
 
         add((T) screenText);
         add((T) buildExitButton());
-        add((T) buildRestartButton());
+        add((T) buildRestartButton(game));
         hideScreen();
     }
 
@@ -52,7 +51,7 @@ public class GameOverScreen<T extends Actor> extends ScreenController<T> {
             });
     }
 
-    private ScreenButton buildRestartButton() {
+    private ScreenButton buildRestartButton(Game game) {
         return new ScreenButton(
             "RESTART",
             new Point(
@@ -61,7 +60,7 @@ public class GameOverScreen<T extends Actor> extends ScreenController<T> {
             new TextButtonListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    System.out.println("HAS TO BE IMPLEMENTED");
+                    game.doRestart();
                 }
             });
     }

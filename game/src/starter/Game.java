@@ -122,12 +122,18 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         controller.add(systems);
         pauseMenu = new PauseMenu<>();
         controller.add(pauseMenu);
-        gameOverScreen = new GameOverScreen<>();
+        gameOverScreen = new GameOverScreen<>(this);
         controller.add(gameOverScreen);
         hero = new Hero();
         levelAPI = new LevelAPI(batch, painter, new WallGenerator(new RandomWalkGenerator()), this);
         levelAPI.loadLevel(LEVELSIZE);
         createSystems();
+    }
+
+    public void doRestart() {
+        hero = new Hero();
+        gameOverScreen.hideScreen();
+        levelAPI.loadLevel(LEVELSIZE);
     }
 
     /** Generates an array of Monsters */
