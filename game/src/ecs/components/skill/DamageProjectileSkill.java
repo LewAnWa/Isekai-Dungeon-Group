@@ -11,14 +11,15 @@ import tools.Point;
 
 public abstract class DamageProjectileSkill implements ISkillFunction {
 
-    private String pathToTexturesOfProjectile;
-    private float projectileSpeed;
+    protected long dmgCalcTime;
+    protected String pathToTexturesOfProjectile;
+    protected float projectileSpeed;
 
-    private float projectileRange;
-    private Damage projectileDamage;
-    private Point projectileHitboxSize;
+    protected float projectileRange;
+    protected Damage projectileDamage;
+    protected Point projectileHitboxSize;
 
-    private ITargetSelection selectionFunction;
+    protected ITargetSelection selectionFunction;
 
     public DamageProjectileSkill(
             String pathToTexturesOfProjectile,
@@ -38,6 +39,9 @@ public abstract class DamageProjectileSkill implements ISkillFunction {
     @Override
     public void execute(Entity entity) {
         Entity projectile = new Entity();
+
+        dmgCalcTime = System.currentTimeMillis();
+
         PositionComponent epc =
                 (PositionComponent)
                         entity.getComponent(PositionComponent.class)
@@ -63,7 +67,7 @@ public abstract class DamageProjectileSkill implements ISkillFunction {
                         b.getComponent(HealthComponent.class)
                                 .ifPresent(
                                         hc -> {
-                                            ((HealthComponent) hc).receiveHit(projectileDamage);
+                                            ((HealthComponent) hc).receiveHit(calculateDmg());
                                             Game.removeEntity(projectile);
                                         });
                     }
@@ -71,5 +75,9 @@ public abstract class DamageProjectileSkill implements ISkillFunction {
 
         new HitboxComponent(
                 projectile, new Point(0.25f, 0.25f), projectileHitboxSize, collide, null);
+    }
+
+    protected Damage calculateDmg(){
+        return projectileDamage;
     }
 }

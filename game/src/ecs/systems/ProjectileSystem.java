@@ -1,6 +1,7 @@
 package ecs.systems;
 
 import ecs.components.*;
+import ecs.components.skill.BumerangSkill;
 import ecs.components.skill.ProjectileComponent;
 import ecs.entities.Entity;
 import starter.Game;

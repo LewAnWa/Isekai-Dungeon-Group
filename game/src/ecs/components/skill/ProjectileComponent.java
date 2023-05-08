@@ -32,4 +32,9 @@ public class ProjectileComponent extends Component {
     public Point getStartPosition() {
         return startPosition;
     }
+
+
+    public void setGoalLocation(Point newGoal){
+        goalLocation = newGoal;
+    }
 }
