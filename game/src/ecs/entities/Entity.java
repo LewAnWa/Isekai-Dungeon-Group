@@ -5,9 +5,11 @@ import java.util.HashMap;
 import java.util.Optional;
 import java.util.logging.Logger;
 
+import ecs.components.PositionComponent;
 import semanticAnalysis.types.DSLContextPush;
 import semanticAnalysis.types.DSLType;
 import starter.Game;
+import tools.Point;
 
 /** Entity is a unique identifier for an object in the game world */
 @DSLType(name = "game_object")
@@ -18,11 +20,23 @@ public class Entity {
     private HashMap<Class, Component> components;
     private final Logger entityLogger;
 
+    private boolean isBoomerang = false;
+    public boolean reachedMiddlePoint = false;
+
+
     public Entity() {
         components = new HashMap<>();
         Game.addEntity(this);
         entityLogger = Logger.getLogger(this.getClass().getName());
         entityLogger.info("The entity '" + this.getClass().getSimpleName() + "' was created.");
+    }
+
+    public Entity(boolean isBoomerang) {
+        components = new HashMap<>();
+        Game.addEntity(this);
+        entityLogger = Logger.getLogger(this.getClass().getName());
+        entityLogger.info("The entity '" + this.getClass().getSimpleName() + "' was created.");
+        isBoomerang = true;
     }
 
     /**
@@ -41,6 +55,11 @@ public class Entity {
      */
     public void removeComponent(Class klass) {
         components.remove(klass);
+    }
+
+    // -------------------- Getter and Setter -------------------- //
+    public boolean isBoomerang() {
+        return isBoomerang;
     }
 
     /**

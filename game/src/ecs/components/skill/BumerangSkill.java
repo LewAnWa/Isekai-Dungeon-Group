@@ -12,7 +12,6 @@ import tools.Point;
 
 public class BumerangSkill extends DamageProjectileSkill {
 
-    private Point middlePoint;
     public BumerangSkill(ITargetSelection targetSelection, Entity user) {
         super(
             "",
@@ -26,7 +25,8 @@ public class BumerangSkill extends DamageProjectileSkill {
 
     @Override
     public void execute(Entity entity) {
-        Entity projectile = new Entity();
+        // TODO: DOES THIS WORK?
+        Entity projectile = new Entity(true);
 
         dmgCalcTime = System.currentTimeMillis();
 
