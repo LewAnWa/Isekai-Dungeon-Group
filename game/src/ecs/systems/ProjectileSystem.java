@@ -133,7 +133,7 @@ public class ProjectileSystem extends ECS_System {
                     );
                     projectile.reachedMiddlePoint = true;
                 });
-            return true;
+            return false; //TODO: Reimplement
         } else {
             // The point has not yet reached the endpoint
             return false;

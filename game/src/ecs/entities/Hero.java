@@ -19,6 +19,8 @@ public class Hero extends Entity {
     private final int frostBoltCoolDown = 4;
     private final int dashCoolDown = 1;
     private final int schwertStichCooldown = 1;
+    private final int bumerangCooldown = 1;
+    private final int magicArrowCooldown = 1;
     private final float xSpeed = 0.3f;
     private final float ySpeed = 0.3f;
 
@@ -30,8 +32,12 @@ public class Hero extends Entity {
     private Skill secondSkill;
     private Skill thirdSkill;
     private Skill fourthSkill;
+    private Skill fifthSkill;
+    private Skill sixthSkill;
 
-    /** Entity with Components */
+    /**
+     * Entity with Components
+     */
     public Hero() {
         super();
         new PositionComponent(this);
@@ -45,11 +51,17 @@ public class Hero extends Entity {
         setupFrostBoltSkill();
         setupDashSkill();
         setupSchwertstichSkill();
+        setupBumerangSkill();
+        setupMagicArrowSkill();
+
+        //TODO: Abilities come first AND ONLY THEN the SkillComponent !!
         setupSkillComponent();
         pc.setSkillSlot1(firstSkill);
         pc.setSkillSlot2(secondSkill);
         pc.setSkillSlot3(thirdSkill);
         pc.setSkillSlot4(fourthSkill);
+        pc.setSkillSlot5(fifthSkill);
+        pc.setSkillSlot6(sixthSkill);
         setupManaComponent();
         setupStaminaComponent();
     }
@@ -67,12 +79,14 @@ public class Hero extends Entity {
         new ManaComponent(this, 20);
     }
 
-    private void setupSkillComponent(){
+    private void setupSkillComponent() {
         SkillComponent skillComponent = new SkillComponent(this);
         skillComponent.addSkill(firstSkill);
         skillComponent.addSkill(secondSkill);
         skillComponent.addSkill(thirdSkill);
         skillComponent.addSkill(fourthSkill);
+        skillComponent.addSkill(fifthSkill);
+        skillComponent.addSkill(sixthSkill);
     }
 
     private void setupVelocityComponent() {
@@ -100,11 +114,11 @@ public class Hero extends Entity {
             (you, other, direction) -> System.out.println("heroCollisionLeave"));
     }
 
-    private void setupFrostBoltSkill() {
-        secondSkill =
-            new Skill(
-                new FrostBoltSkill(SkillTools::getCursorPositionAsPoint), frostBoltCoolDown);
-    }
+        private void setupFrostBoltSkill() {
+            secondSkill =
+                new Skill(
+                    new FrostBoltSkill(SkillTools::getCursorPositionAsPoint), frostBoltCoolDown);
+        }
 
     private void setupXPComponent() {
         XPComponent xpcomponent = new XPComponent(this);
@@ -117,9 +131,21 @@ public class Hero extends Entity {
                 new DashSkill(), dashCoolDown);
     }
 
-    private void setupSchwertstichSkill(){
+    private void setupSchwertstichSkill() {
         fourthSkill =
             new Skill(
                 new SchwertstichSkill(SkillTools::getCursorPositionAsPoint, this), schwertStichCooldown);
     }
+
+    private void setupBumerangSkill() {
+        fifthSkill =
+            new Skill(
+                new BumerangSkill(SkillTools::getCursorPositionAsPoint, this), bumerangCooldown);
+    }
+
+    private void setupMagicArrowSkill() {
+        sixthSkill = new Skill(new MagicArrowSkill(SkillTools::getCursorPositionAsPoint, this), magicArrowCooldown);
+    }
+
+
 }

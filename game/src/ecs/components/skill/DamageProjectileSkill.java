@@ -14,11 +14,9 @@ public abstract class DamageProjectileSkill implements ISkillFunction {
     protected long dmgCalcTime;
     protected String pathToTexturesOfProjectile;
     protected float projectileSpeed;
-
     protected float projectileRange;
     protected Damage projectileDamage;
     protected Point projectileHitboxSize;
-
     protected ITargetSelection selectionFunction;
 
     public DamageProjectileSkill(
