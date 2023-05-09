@@ -21,6 +21,7 @@ public class Entity {
     private final Logger entityLogger;
 
     private boolean isBoomerang = false;
+    private Entity user;
     public boolean reachedMiddlePoint = false;
 
 
@@ -31,12 +32,14 @@ public class Entity {
         entityLogger.info("The entity '" + this.getClass().getSimpleName() + "' was created.");
     }
 
-    public Entity(boolean isBoomerang) {
+    public Entity(boolean isBoomerang, Entity user) {
         components = new HashMap<>();
         Game.addEntity(this);
         entityLogger = Logger.getLogger(this.getClass().getName());
         entityLogger.info("The entity '" + this.getClass().getSimpleName() + "' was created.");
-        isBoomerang = true;
+
+        this.isBoomerang = isBoomerang;
+        this.user = user;
     }
 
     /**
@@ -60,6 +63,10 @@ public class Entity {
     // -------------------- Getter and Setter -------------------- //
     public boolean isBoomerang() {
         return isBoomerang;
+    }
+
+    public Entity getUser() {
+        return user;
     }
 
     /**

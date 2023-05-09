@@ -9,55 +9,59 @@ import tools.Point;
 
 public class ProjectileSystem extends ECS_System {
 
-    private Point heroPos;
+    private static Point heroPos;
+    private boolean reachedMiddlePoint = false;
 
     // private record to hold all data during streaming
     private record PSData(
-            Entity e, ProjectileComponent prc, PositionComponent pc, VelocityComponent vc) {}
+        Entity e, ProjectileComponent prc, PositionComponent pc, VelocityComponent vc) {
+    }
 
-    /** sets the velocity and removes entities that reached their endpoint */
+    /**
+     * sets the velocity and removes entities that reached their endpoint
+     */
     @Override
     public void update() {
         Game.getEntities().stream()
-                // Consider only entities that have a ProjectileComponent
-                .flatMap(e -> e.getComponent(ProjectileComponent.class).stream())
-                .map(prc -> buildDataObject((ProjectileComponent) prc))
-                .map(this::setVelocity)
-                // Filter all entities that have reached their endpoint
-                .filter(
-                        psd -> {
-                            // if the entity is NOT a boomerang or if the entity(boomerang) has reached its middle-point
-                            if (!psd.e.isBoomerang() || psd.e.reachedMiddlePoint) {
-                                // check if endpoint reached
-                                return hasReachedEndpoint(
-                                        psd.prc.getStartPosition(),
-                                        psd.prc.getGoalLocation(),
-                                        psd.pc.getPosition());
-                            }
-                            else {
-                                // check if middle-point reached
-                                return hasReachedMiddlePoint(
-                                    psd.prc.getStartPosition(),
-                                    psd.prc.getGoalLocation(),
-                                    psd.pc.getPosition(),
-                                    psd.e);
-                            }
-                        })
-                // Remove all entities who reached their endpoint
-                .forEach(this::removeEntitiesOnEndpoint);
+            // Consider only entities that have a ProjectileComponent
+            .flatMap(e -> e.getComponent(ProjectileComponent.class).stream())
+            .map(prc -> buildDataObject((ProjectileComponent) prc))
+            .map(this::setVelocity)
+            // Filter all entities that have reached their endpoint
+            .filter(
+                psd -> {
+                    // if the entity is NOT a boomerang or if the entity(boomerang) has reached its middle-point
+                    if (!psd.e.isBoomerang() || psd.e.reachedMiddlePoint) {
+                        // check if endpoint reached
+                        return hasReachedEndpoint(
+                            psd.prc.getStartPosition(),
+                            psd.prc.getGoalLocation(),
+                            psd.pc.getPosition());
+                    } else {
+                        // check if middle-point reached
+                        hasReachedMiddlePoint(
+                            psd.prc.getStartPosition(),
+                            psd.prc.getGoalLocation(),
+                            psd.pc.getPosition(),
+                            psd.e);
+                        return false;
+                    }
+                })
+            // Remove all entities who reached their endpoint
+            .forEach(this::removeEntitiesOnEndpoint);
     }
 
     private PSData buildDataObject(ProjectileComponent prc) {
         Entity e = prc.getEntity();
 
         PositionComponent pc =
-                (PositionComponent)
-                        e.getComponent(PositionComponent.class)
-                                .orElseThrow(ProjectileSystem::missingAC);
+            (PositionComponent)
+                e.getComponent(PositionComponent.class)
+                    .orElseThrow(ProjectileSystem::missingAC);
         VelocityComponent vc =
-                (VelocityComponent)
-                        e.getComponent(VelocityComponent.class)
-                                .orElseThrow(ProjectileSystem::missingAC);
+            (VelocityComponent)
+                e.getComponent(VelocityComponent.class)
+                    .orElseThrow(ProjectileSystem::missingAC);
 
         return new PSData(e, prc, pc, vc);
     }
@@ -76,8 +80,8 @@ public class ProjectileSystem extends ECS_System {
     /**
      * checks if the endpoint is reached
      *
-     * @param start position to start the calculation
-     * @param end point to check if projectile has reached its goal
+     * @param start   position to start the calculation
+     * @param end     point to check if projectile has reached its goal
      * @param current current position
      * @return true if the endpoint was reached or passed, else false
      */
@@ -92,6 +96,7 @@ public class ProjectileSystem extends ECS_System {
 
         if (distanceToStart > totalDistance) {
             // The point has reached or passed the endpoint
+            reachedMiddlePoint = false;
             return true;
         } else {
             // The point has not yet reached the endpoint
@@ -102,14 +107,16 @@ public class ProjectileSystem extends ECS_System {
     /**
      * Works just like the hasReachedEndpoint, but with slight modifications.
      * This method should be used for the boomerang skill, and it checks if the boomerang has
-     * reached its endpoint. If that is the case, then the new and last endpoint will be the position of the hero.
-     * @param start position to start the calculation
-     * @param end point to check if projectile has reached its goal
-     * @param current current position
+     * reached its endpoint.
+     * If that is the case, then the old boomerang will be removed and a new one will be shot back
+     * to the hero.
+     *
+     * @param start      position to start the calculation
+     * @param end        point to check if projectile has reached its goal
+     * @param current    current position
      * @param projectile the entity that can return to its owner
-     * @return true if it reached the middle-point, false otherwise
      */
-    public boolean hasReachedMiddlePoint(Point start, Point end, Point current, Entity projectile) {
+    public void hasReachedMiddlePoint(Point start, Point end, Point current, Entity projectile) {
         float dx = start.x - current.x;
         float dy = start.y - current.y;
         double distanceToStart = Math.sqrt(dx * dx + dy * dy);
@@ -122,22 +129,18 @@ public class ProjectileSystem extends ECS_System {
             .flatMap(hero -> hero.getComponent(PositionComponent.class))
             .ifPresent(component -> {
                 heroPos = ((PositionComponent) component).getPosition();
-        });
+            });
 
-        if (distanceToStart > totalDistance) {
-            // The point has reached or passed the middle-point
-            projectile.getComponent(ProjectileComponent.class)
-                .ifPresent(component -> {
-                    ((ProjectileComponent) component).setGoalLocation(
-                        heroPos
-                    );
-                    projectile.reachedMiddlePoint = true;
-                });
-            return false; //TODO: Reimplement
-        } else {
-            // The point has not yet reached the endpoint
-            return false;
+        if (distanceToStart > totalDistance && !reachedMiddlePoint) { // The point has reached or passed the middle-point
+            reachedMiddlePoint = true;
+            Game.removeEntity(projectile);
+            BumerangSkill bumerangSkill = new BumerangSkill(ProjectileSystem::getHeroPos, projectile.getUser());
+            bumerangSkill.execute(projectile, true);
         }
+    }
+
+    private static Point getHeroPos() {
+        return heroPos;
     }
 
     private static MissingComponentException missingAC() {

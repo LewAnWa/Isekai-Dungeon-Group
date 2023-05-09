@@ -23,10 +23,60 @@ public class BumerangSkill extends DamageProjectileSkill {
 
     }
 
+    /*
+    This specific execute is used when the boomerang is being shot for the first time.
+     */
     @Override
     public void execute(Entity entity) {
-        // TODO: DOES THIS WORK?
-        Entity projectile = new Entity(true);
+        Entity projectile = new Entity(true, entity);
+
+        dmgCalcTime = System.currentTimeMillis();
+
+        PositionComponent epc =
+            (PositionComponent)
+                entity.getComponent(PositionComponent.class)
+                    .orElseThrow(
+                        () -> new MissingComponentException("PositionComponent"));
+        new PositionComponent(projectile, epc.getPosition());
+
+        Animation animation = AnimationBuilder.buildAnimation(pathToTexturesOfProjectile);
+        new AnimationComponent(projectile, animation);
+
+        Point aimedOn = selectionFunction.selectTargetPoint();
+        Point targetPoint =
+            SkillTools.calculateLastPositionInRange(
+                epc.getPosition(), aimedOn, projectileRange);
+        Point velocity =
+            SkillTools.calculateVelocity(epc.getPosition(), targetPoint, projectileSpeed);
+        VelocityComponent vc =
+            new VelocityComponent(projectile, velocity.x, velocity.y, animation, animation);
+
+        new ProjectileComponent(projectile, epc.getPosition(), targetPoint);
+
+        ICollide collide =
+            (a, b, from) -> {
+                if (b != entity) {
+                    b.getComponent(HealthComponent.class)
+                        .ifPresent(
+                            hc -> {
+                                ((HealthComponent) hc).receiveHit(calculateDmg());
+                                Game.removeEntity(projectile);
+                            });
+                }
+            };
+
+        new HitboxComponent(
+            projectile, new Point(0.25f, 0.25f), projectileHitboxSize, collide, null);
+    }
+
+    /**
+     * A specific execute for when the boomerang has to be shot back to the hero.
+     * @param entity                the original boomerang.
+     * @param reachedMiddlePoint    set this to true, else the boomerang will jump back and forth forever.
+     */
+    public void execute(Entity entity, boolean reachedMiddlePoint) {
+        Entity projectile = new Entity(true, entity);
+        projectile.reachedMiddlePoint = reachedMiddlePoint;
 
         dmgCalcTime = System.currentTimeMillis();
 
@@ -54,7 +104,7 @@ public class BumerangSkill extends DamageProjectileSkill {
 
         ICollide collide =
             (a, b, from) -> {
-                if (b != entity) {
+                if (b != entity.getUser()) {
                     b.getComponent(HealthComponent.class)
                         .ifPresent(
                             hc -> {
