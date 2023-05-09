@@ -68,6 +68,29 @@ public abstract class DamageProjectileSkill implements ISkillFunction {
                                             ((HealthComponent) hc).receiveHit(calculateDmg());
                                             Game.removeEntity(projectile);
                                         });
+
+                        /* // FIXME: THIS DOES NOT WORK, BECAUSE NORTH, EAST, SOUTH AND WEST ARE ALWAYS RELATIVE AND ARE NOT CONSTANTLY THE SAME!!!
+                        b.getComponent(PositionComponent.class)
+                                .ifPresent(
+                                        pc -> {
+                                            PositionComponent comp = (PositionComponent) pc;
+
+                                            switch (from) {
+                                                case N -> {comp.setPosition(new Point(comp.getPosition().x + 1f, comp.getPosition().y));
+                                                    System.out.println("incoming north");}
+                                                // knock back to WEST
+                                                case E -> {comp.setPosition(new Point(comp.getPosition().x, comp.getPosition().y - 1f));
+                                                    System.out.println("incoming east");}
+                                                // knock back to NORTH
+                                                case S -> {comp.setPosition(new Point(comp.getPosition().x - 1f, comp.getPosition().y));
+                                                    System.out.println("incoming south");}
+                                                // knock back to EAST
+                                                case W -> {comp.setPosition(new Point(comp.getPosition().x, comp.getPosition().y + 1f));
+                                                    System.out.println("incoming west");}
+                                            }
+                                        }
+                                );
+                        */
                     }
                 };
 
