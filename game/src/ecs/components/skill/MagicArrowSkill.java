@@ -11,7 +11,7 @@ public class MagicArrowSkill extends DamageProjectileSkill{
         super(
             "skills/arrow/",
             0.5f,
-            new Damage(2, DamageType.FIRE, user),
+            new Damage(15, DamageType.FIRE, user),
             new Point(10, 10),
             targetSelection,
             1000f);
@@ -19,7 +19,7 @@ public class MagicArrowSkill extends DamageProjectileSkill{
 
     @Override
     protected Damage calculateDmg(){
-        dmgCalcTime = System.currentTimeMillis() - dmgCalcTime;
+        dmgCalcTime = (System.currentTimeMillis() - dmgCalcTime) / 100;
         return new Damage((int) (projectileDamage.damageAmount()*dmgCalcTime), projectileDamage.damageType(), projectileDamage.cause() );
     }
 }

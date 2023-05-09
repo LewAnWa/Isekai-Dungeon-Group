@@ -16,7 +16,7 @@ public class SchwertstichSkill extends DamageProjectileSkill {
         super(
             "skills/schwertstich/schwert_Up/",
             1f,
-            new Damage(1, DamageType.PHYSICAL, user),
+            new Damage(15, DamageType.PHYSICAL, user),
             new Point(11,11),
             targetSelection,
             0.5f);
