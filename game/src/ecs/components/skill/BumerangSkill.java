@@ -14,7 +14,7 @@ public class BumerangSkill extends DamageProjectileSkill {
 
     public BumerangSkill(ITargetSelection targetSelection, Entity user) {
         super(
-            "skills/frostbolt/",
+            "skills/boomerrang/",
             0.5f,
             new Damage(1, DamageType.PHYSICAL, user),
             new Point(10, 10),
