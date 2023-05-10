@@ -24,7 +24,7 @@ public abstract class Monster extends Entity{
     protected String pathToIdleRight;
     protected String pathToRunLeft;
     protected String pathToRunRight;
-    protected String pathToDeathAnim = "monster/deathAnimation";
+    protected String pathToDeathAnim = "deathAnimation/";
 
     private Damage damage;
 
