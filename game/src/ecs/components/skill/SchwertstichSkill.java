@@ -15,10 +15,10 @@ public class SchwertstichSkill extends DamageProjectileSkill {
     public SchwertstichSkill(ITargetSelection targetSelection, Entity user){
         super(
             "skills/schwertstich/schwert_Up/",
-            1f,
+            0.5f,
             new Damage(15, DamageType.PHYSICAL, user),
             new Point(11,11),
             targetSelection,
-            0.5f);
+            1f);
     }
 }
