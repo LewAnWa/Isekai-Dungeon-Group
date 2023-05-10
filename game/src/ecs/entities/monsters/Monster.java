@@ -8,6 +8,7 @@ import ecs.damage.DamageType;
 import ecs.entities.Entity;
 import graphic.Animation;
 import level.elements.ILevel;
+import starter.Game;
 import tools.Point;
 
 /**
@@ -24,6 +25,8 @@ public abstract class Monster extends Entity{
     protected String pathToRunLeft;
     protected String pathToRunRight;
     protected String pathToDeathAnim = "monster/deathAnimation";
+
+    private Damage damage;
 
     /**
      * Default constructor for the monster.
@@ -43,7 +46,7 @@ public abstract class Monster extends Entity{
     }
 
     protected void setUpDamageComponent(int damageAmount) {
-        new Damage(damageAmount, DamageType.PHYSICAL, null);
+        damage = new Damage(damageAmount, DamageType.PHYSICAL, this);
     }
 
     // Sets up the positionComponent of the Monster with a random point, which has a minimum distance to the player
@@ -88,7 +91,17 @@ public abstract class Monster extends Entity{
     protected void setupHitboxComponent() {
         new HitboxComponent(
             this,
-            (you, other, direction) -> System.out.println("monsterCollisionEnter"),
-            (you, other, direction) -> System.out.println("monsterCollisionLeave"));
+            // on enter
+            (you, other, direction) -> {
+                Game.getHero().ifPresent(hero -> {
+                    if (other == hero) {
+                        hero.getComponent(HealthComponent.class)
+                            .ifPresent(component -> {
+                                ((HealthComponent) component).receiveHit(damage);
+                        });
+                    }
+                });
+            },
+            (you, other, direction) -> System.out.println("Monster left hit box"));
     }
 }
