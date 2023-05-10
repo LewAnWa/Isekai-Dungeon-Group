@@ -37,6 +37,7 @@ public class GameOverScreen<T extends Actor> extends ScreenController<T> {
         hideScreen();
     }
 
+    /* instantiates the exit button */
     private ScreenButton buildExitButton() {
         return new ScreenButton(
             "EXIT",
@@ -51,6 +52,7 @@ public class GameOverScreen<T extends Actor> extends ScreenController<T> {
             });
     }
 
+    /* instantiates the restart button */
     private ScreenButton buildRestartButton(Game game) {
         return new ScreenButton(
             "RESTART",

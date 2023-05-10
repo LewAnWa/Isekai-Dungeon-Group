@@ -130,6 +130,10 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         createSystems();
     }
 
+    /**
+     * Resets the game by overwriting the old hero with a new one, hiding the death
+     * screen and then loading a new level.
+     */
     public void doRestart() {
         hero = new Hero();
         gameOverScreen.hideScreen();
