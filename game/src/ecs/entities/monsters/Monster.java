@@ -52,7 +52,7 @@ public abstract class Monster extends Entity{
 
         do {
             randomPoint = currentLevel.getRandomFloorTile().getCoordinateAsPoint();
-        } while (Point.calculateDistance(playerPos, randomPoint) < 5);
+        } while (Point.calculateDistance(playerPos, randomPoint) < 3);
 
         new PositionComponent(this, randomPoint);
     }

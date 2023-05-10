@@ -12,6 +12,11 @@ import tools.Point;
 
 public class BumerangSkill extends DamageProjectileSkill {
 
+    /**
+     * The constructor for the Bumerang
+     * @param targetSelection preferably the cursor position.
+     * @param user The Entity that used the sword
+     */
     public BumerangSkill(ITargetSelection targetSelection, Entity user) {
         super(
             "skills/boomerrang/",

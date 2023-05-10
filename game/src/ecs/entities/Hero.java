@@ -114,11 +114,11 @@ public class Hero extends Entity {
             (you, other, direction) -> System.out.println("heroCollisionLeave"));
     }
 
-        private void setupFrostBoltSkill() {
-            secondSkill =
-                new Skill(
-                    new FrostBoltSkill(SkillTools::getCursorPositionAsPoint), frostBoltCoolDown);
-        }
+    private void setupFrostBoltSkill() {
+        secondSkill =
+            new Skill(
+                new FrostBoltSkill(SkillTools::getCursorPositionAsPoint), frostBoltCoolDown);
+    }
 
     private void setupXPComponent() {
         XPComponent xpcomponent = new XPComponent(this);
