@@ -55,7 +55,7 @@ public abstract class Monster extends Entity{
 
         do {
             randomPoint = currentLevel.getRandomFloorTile().getCoordinateAsPoint();
-        } while (Point.calculateDistance(playerPos, randomPoint) < 5);
+        } while (Point.calculateDistance(playerPos, randomPoint) < 3);
 
         new PositionComponent(this, randomPoint);
     }
@@ -68,6 +68,7 @@ public abstract class Monster extends Entity{
     protected void setUpHealthComponent(int maxHealthPoints) {
         HealthComponent healthComponent = new HealthComponent(this);
         healthComponent.setMaximalHealthpoints(maxHealthPoints);
+        healthComponent.setCurrentHealthpoints(maxHealthPoints);
 
         // A die- and hit-animation is required, else the game starts to bug out
         Animation deathAnim = AnimationBuilder.buildAnimation(pathToDeathAnim);

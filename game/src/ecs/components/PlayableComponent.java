@@ -2,8 +2,10 @@ package ecs.components;
 
 import ecs.components.skill.Skill;
 import ecs.entities.Entity;
+
 import java.util.Optional;
 import java.util.logging.Logger;
+
 import logging.CustomLogLevel;
 
 /**
@@ -19,9 +21,12 @@ public class PlayableComponent extends Component {
     private Skill skillSlot1;
     private Skill skillSlot2;
     private Skill skillSlot3;
+    private Skill skillSlot4;
+    private Skill skillSlot5;
+    private Skill skillSlot6;
 
     /**
-     * @param entity associated entity
+     * @param entity     associated entity
      * @param skillSlot1 skill that will be on the first skillslot
      * @param skillSlot2 skill that will be on the second skillslot
      */
@@ -32,7 +37,9 @@ public class PlayableComponent extends Component {
         this.skillSlot2 = skillSlot2;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public PlayableComponent(Entity entity) {
         super(entity);
         playable = true;
@@ -42,12 +49,7 @@ public class PlayableComponent extends Component {
      * @return the playable state
      */
     public boolean isPlayable() {
-        playableCompLogger.log(
-                CustomLogLevel.DEBUG,
-                "Checking if entity '"
-                        + entity.getClass().getSimpleName()
-                        + "' is playable: "
-                        + playable);
+        playableCompLogger.log(CustomLogLevel.DEBUG, "Checking if entity '" + entity.getClass().getSimpleName() + "' is playable: " + playable);
         return playable;
     }
 
@@ -76,6 +78,18 @@ public class PlayableComponent extends Component {
         this.skillSlot3 = skillSlot3;
     }
 
+    public void setSkillSlot4(Skill skillSlot4) {
+        this.skillSlot4 = skillSlot4;
+    }
+
+    public void setSkillSlot5(Skill skillSlot5) {
+        this.skillSlot5 = skillSlot5;
+    }
+
+    public void setSkillSlot6(Skill skillSlot6) {
+        this.skillSlot6 = skillSlot6;
+    }
+
     /**
      * @return skill on first skill slot
      */
@@ -92,5 +106,17 @@ public class PlayableComponent extends Component {
 
     public Optional<Skill> getSkillSlot3() {
         return Optional.ofNullable(skillSlot3);
+    }
+
+    public Optional<Skill> getSkillSlot4() {
+        return Optional.ofNullable(skillSlot4);
+    }
+
+    public Optional<Skill> getSkillSlot5() {
+        return Optional.ofNullable(skillSlot5);
+    }
+
+    public Optional<Skill> getSkillSlot6() {
+        return Optional.ofNullable(skillSlot6);
     }
 }

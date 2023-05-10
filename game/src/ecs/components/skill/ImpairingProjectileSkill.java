@@ -76,13 +76,14 @@ public abstract class ImpairingProjectileSkill implements ISkillFunction{
                                 () -> new MissingComponentException("PositionComponent"));
                 new PositionComponent(projectile, epc.getPosition());
 
-                Animation animation = AnimationBuilder.buildAnimation(pathToTexturesOfProjectile);
-                new AnimationComponent(projectile, animation);
-
                 Point aimedOn = selectionFunction.selectTargetPoint();
                 Point targetPoint =
                     SkillTools.calculateLastPositionInRange(
                         epc.getPosition(), aimedOn, projectileRange);
+
+                Animation animation = AnimationBuilder.buildAnimation(animationHelper(targetPoint, entity));
+                new AnimationComponent(projectile, animation);
+
                 Point velocity =
                     SkillTools.calculateVelocity(epc.getPosition(), targetPoint, projectileSpeed);
                 VelocityComponent vc =
@@ -111,5 +112,52 @@ public abstract class ImpairingProjectileSkill implements ISkillFunction{
                 System.out.println("NO MANA???");
             }
         });
+    }
+
+    /**
+     * Helps to choose the right path to textures of projectile (left, right, up, down)
+     * @param targetDirection preferably the cursor position.
+     * @param entity preferably the Hero
+     * @return the new path to textures of projectile
+     */
+    protected String animationHelper(Point targetDirection, Entity entity){
+        System.out.println("ich funktioniere");
+        PositionComponent epc =
+            (PositionComponent)
+                entity.getComponent(PositionComponent.class)
+                    .orElseThrow(
+                        () -> new MissingComponentException("PositionComponent"));
+
+        float xwert = epc.getPosition().x - targetDirection.x;
+        float ywert = epc.getPosition().y - targetDirection.y;
+        if (xwert > 0 && ywert < 0 ){ //rechts oberhalb
+            if (Math.abs(xwert) > Math.abs(ywert)){ //weiter rechts als oberhalb
+                return pathToTexturesOfProjectile.concat("left/");
+            }else {
+                return pathToTexturesOfProjectile.concat("up/");
+            }
+
+        } else if (xwert > 0 && ywert > 0) { //rechts unterhalb
+            if (Math.abs(xwert) > Math.abs(ywert)){
+                return pathToTexturesOfProjectile.concat("left/"); //weiter rechts als unterhalb
+            }else {
+                return pathToTexturesOfProjectile.concat("down/");
+            }
+        } else if (xwert < 0 && ywert < 0) { //links oberhalb
+            if (Math.abs(xwert) > Math.abs(ywert)){
+                return pathToTexturesOfProjectile.concat("right/"); //weiter links als oberhalb
+            }else {
+                return pathToTexturesOfProjectile.concat("up/");
+            }
+
+        } else if (xwert < 0 && ywert > 0) { //links unterhalb
+            if (Math.abs(xwert) > Math.abs(ywert)){
+                return pathToTexturesOfProjectile.concat("right/"); //weiter links als unterhalb
+            }else {
+                return pathToTexturesOfProjectile.concat("down/");
+            }
+
+        }
+        return  pathToTexturesOfProjectile;
     }
 }
