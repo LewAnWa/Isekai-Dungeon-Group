@@ -6,6 +6,7 @@ import ecs.components.collision.ICollide;
 import ecs.damage.Damage;
 import ecs.entities.Entity;
 import graphic.Animation;
+import level.tools.Coordinate;
 import starter.Game;
 import tools.Point;
 
@@ -71,29 +72,12 @@ public abstract class DamageProjectileSkill implements ISkillFunction {
                                             ((HealthComponent) hc).receiveHit(calculateDmg());
                                             Game.removeEntity(projectile);
                                         });
-
-                        /* // FIXME: THIS DOES NOT WORK, BECAUSE NORTH, EAST, SOUTH AND WEST ARE ALWAYS RELATIVE AND ARE NOT CONSTANTLY THE SAME!!!
                         b.getComponent(PositionComponent.class)
                                 .ifPresent(
-                                        pc -> {
-                                            PositionComponent comp = (PositionComponent) pc;
-
-                                            switch (from) {
-                                                case N -> {comp.setPosition(new Point(comp.getPosition().x + 1f, comp.getPosition().y));
-                                                    System.out.println("incoming north");}
-                                                // knock back to WEST
-                                                case E -> {comp.setPosition(new Point(comp.getPosition().x, comp.getPosition().y - 1f));
-                                                    System.out.println("incoming east");}
-                                                // knock back to NORTH
-                                                case S -> {comp.setPosition(new Point(comp.getPosition().x - 1f, comp.getPosition().y));
-                                                    System.out.println("incoming south");}
-                                                // knock back to EAST
-                                                case W -> {comp.setPosition(new Point(comp.getPosition().x, comp.getPosition().y + 1f));
-                                                    System.out.println("incoming west");}
-                                            }
-                                        }
-                                );
-                        */
+                                        bpc -> {
+                                            PositionComponent bComp = (PositionComponent) bpc;
+                                            knockBack(epc, bComp);
+                                        });
                     }
                 };
 
@@ -107,6 +91,73 @@ public abstract class DamageProjectileSkill implements ISkillFunction {
      */
     protected Damage calculateDmg(){
         return projectileDamage;
+    }
+
+    /**
+     * calculates the new Position of an Enemy after hitting it with a projectile
+     * @param epc position of the Hero
+     * @param bComp position of the Enemy
+     */
+    protected void knockBack(PositionComponent epc, PositionComponent bComp){
+        float xwert = epc.getPosition().x - bComp.getPosition().x;
+        float ywert = epc.getPosition().y - bComp.getPosition().y;
+
+        Point newPoint;
+
+        if (xwert > 0 && ywert < 0) { //rechts oberhalb
+            if (Math.abs(xwert) > Math.abs(ywert)) { //weiter rechts als oberhalb
+                newPoint = new Point(bComp.getPosition().x - 1f, bComp.getPosition().y);
+                if (Game.currentLevel.getTileAt(newPoint.toCoordinate()).isAccessible()) {
+                    bComp.setPosition(newPoint); //knock back nach links
+                }
+            } else {
+                newPoint = new Point(bComp.getPosition().x, bComp.getPosition().y + 1);
+                if (Game.currentLevel.getTileAt(newPoint.toCoordinate()).isAccessible()) {
+                    bComp.setPosition(newPoint);
+                }
+            }
+
+        } else if (xwert > 0 && ywert > 0) { //rechts unterhalb
+            if (Math.abs(xwert) > Math.abs(ywert)) { //weiter rechts als unterhalb
+                newPoint = new Point(bComp.getPosition().x - 1f, bComp.getPosition().y);
+                if (Game.currentLevel.getTileAt(newPoint.toCoordinate()).isAccessible()) {
+                    bComp.setPosition(newPoint);
+                }
+            } else {
+                newPoint = new Point(bComp.getPosition().x, bComp.getPosition().y - 1f);
+                if (Game.currentLevel.getTileAt(newPoint.toCoordinate()).isAccessible()) {
+                    bComp.setPosition(newPoint);
+                }
+            }
+
+        } else if (xwert < 0 && ywert < 0) { //links oberhalb
+            if (Math.abs(xwert) > Math.abs(ywert)) { //weiter links als oberhalb
+                newPoint = new Point(bComp.getPosition().x + 1f, bComp.getPosition().y);
+                if (Game.currentLevel.getTileAt(newPoint.toCoordinate()).isAccessible()) {
+                    bComp.setPosition(newPoint);
+                }
+
+            } else {
+                newPoint = new Point(bComp.getPosition().x, bComp.getPosition().y + 1f);
+                if (Game.currentLevel.getTileAt(newPoint.toCoordinate()).isAccessible()) {
+                    bComp.setPosition(newPoint);
+                }
+            }
+
+        } else if (xwert < 0 && ywert > 0) { //links unterhalb
+            if (Math.abs(xwert) > Math.abs(ywert)) { //weiter links als unterhalb
+                newPoint = new Point(bComp.getPosition().x + 1f, bComp.getPosition().y);
+                if (Game.currentLevel.getTileAt(newPoint.toCoordinate()).isAccessible()) {
+                    bComp.setPosition(newPoint);
+                }
+
+            } else {
+                newPoint = new Point(bComp.getPosition().x, bComp.getPosition().y - 1f);
+                if (Game.currentLevel.getTileAt(newPoint.toCoordinate()).isAccessible()) {
+                    bComp.setPosition(newPoint);
+                }
+            }
+        }
     }
 
     /**

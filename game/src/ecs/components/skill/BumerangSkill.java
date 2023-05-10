@@ -67,6 +67,12 @@ public class BumerangSkill extends DamageProjectileSkill {
                                 ((HealthComponent) hc).receiveHit(calculateDmg());
                                 Game.removeEntity(projectile);
                             });
+                    b.getComponent(PositionComponent.class)
+                        .ifPresent(
+                            bpc -> {
+                                PositionComponent bComp = (PositionComponent) bpc;
+                                knockBack(epc, bComp);
+                            });
                 }
             };
 
@@ -115,6 +121,12 @@ public class BumerangSkill extends DamageProjectileSkill {
                             hc -> {
                                 ((HealthComponent) hc).receiveHit(calculateDmg());
                                 Game.removeEntity(projectile);
+                            });
+                    b.getComponent(PositionComponent.class)
+                        .ifPresent(
+                            bpc -> {
+                                PositionComponent bComp = (PositionComponent) bpc;
+                                knockBack(epc, bComp);
                             });
                 }
             };
