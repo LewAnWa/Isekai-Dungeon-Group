@@ -47,13 +47,16 @@ public abstract class DamageProjectileSkill implements ISkillFunction {
                                         () -> new MissingComponentException("PositionComponent"));
         new PositionComponent(projectile, epc.getPosition());
 
-        Animation animation = AnimationBuilder.buildAnimation(pathToTexturesOfProjectile, 1);
-        new AnimationComponent(projectile, animation);
+
 
         Point aimedOn = selectionFunction.selectTargetPoint();
         Point targetPoint =
                 SkillTools.calculateLastPositionInRange(
                         epc.getPosition(), aimedOn, projectileRange);
+
+        Animation animation = AnimationBuilder.buildAnimation(animationHelper(targetPoint, entity), 1);
+        new AnimationComponent(projectile, animation);
+
         Point velocity =
                 SkillTools.calculateVelocity(epc.getPosition(), targetPoint, projectileSpeed);
         VelocityComponent vc =
@@ -100,5 +103,47 @@ public abstract class DamageProjectileSkill implements ISkillFunction {
 
     protected Damage calculateDmg(){
         return projectileDamage;
+    }
+
+    protected String animationHelper(Point targetDirection, Entity entity){
+        System.out.println("ich funktioniere");
+        PositionComponent epc =
+            (PositionComponent)
+                entity.getComponent(PositionComponent.class)
+                    .orElseThrow(
+                        () -> new MissingComponentException("PositionComponent"));
+
+        float xwert = epc.getPosition().x - targetDirection.x;
+        float ywert = epc.getPosition().y - targetDirection.y;
+        if (xwert > 0 && ywert < 0 ){ //rechts oberhalb vom monster
+            if (Math.abs(xwert) > Math.abs(ywert)){ //weiter rechts als oberhalb --> left animation
+                return pathToTexturesOfProjectile.concat("left/");
+            }else {
+                return pathToTexturesOfProjectile.concat("up/");
+            }
+
+        } else if (xwert > 0 && ywert > 0) { //rechts unterhalb des Monster
+            if (Math.abs(xwert) > Math.abs(ywert)){ //weiter rechts als unterhalb
+                return pathToTexturesOfProjectile.concat("left/"); //weriter rechts als unterhalb
+            }else {
+                return pathToTexturesOfProjectile.concat("down/");
+            }
+        } else if (xwert < 0 && ywert < 0) { //links oberhalb
+            if (Math.abs(xwert) > Math.abs(ywert)){
+                return pathToTexturesOfProjectile.concat("right/"); //weiter links als oberhalb
+            }else {
+                return pathToTexturesOfProjectile.concat("up/");
+            }
+
+        } else if (xwert < 0 && ywert > 0) { //links unterhalb
+            if (Math.abs(xwert) > Math.abs(ywert)){
+                return pathToTexturesOfProjectile.concat("right/"); //weiter links als unterhalb
+            }else {
+                return pathToTexturesOfProjectile.concat("down/");
+            }
+
+        }
+        System.out.println(pathToTexturesOfProjectile);
+        return  pathToTexturesOfProjectile;
     }
 }
