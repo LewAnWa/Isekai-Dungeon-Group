@@ -53,31 +53,42 @@ public class PlayerSystem extends ECS_System {
         else if (Gdx.input.isKeyPressed(KeyboardConfig.SIXTH_SKILL.get()))
             ksd.pc.getSkillSlot6().ifPresent(skill -> skill.execute(ksd.e));
 
-
-        if (Gdx.input.isKeyPressed(KeyboardConfig.XPADDER_SKILL.get())){
-            Game.getHero().flatMap(hero -> hero.getComponent(XPComponent.class)).ifPresent(component -> {
-                ((XPComponent) component).addXP(50);
-                System.out.println("Added 50 XP");
-            });
+        if (Gdx.input.isKeyPressed(KeyboardConfig.XPADDER_SKILL.get())) {
+            Game.getHero()
+                    .flatMap(hero -> hero.getComponent(XPComponent.class))
+                    .ifPresent(
+                            component -> {
+                                ((XPComponent) component).addXP(50);
+                                System.out.println("Added 50 XP");
+                            });
         }
 
         if (Gdx.input.isKeyPressed(KeyboardConfig.HERO_INFO.get()))
-            Game.getHero().flatMap(hero -> hero.getComponent(XPComponent.class)).ifPresent(component -> {
-                XPComponent comp = (XPComponent) component;
+            Game.getHero()
+                    .flatMap(hero -> hero.getComponent(XPComponent.class))
+                    .ifPresent(
+                            component -> {
+                                XPComponent comp = (XPComponent) component;
 
-                System.out.println("HERO : LVL " + comp.getCurrentLevel() + "(" + comp.getCurrentXP() + "/" + (comp.getXPToNextLevel() + comp.getCurrentXP()) + ")");
-            });
+                                System.out.println(
+                                        "HERO : LVL "
+                                                + comp.getCurrentLevel()
+                                                + "("
+                                                + comp.getCurrentXP()
+                                                + "/"
+                                                + (comp.getXPToNextLevel() + comp.getCurrentXP())
+                                                + ")");
+                            });
 
         if (Gdx.input.isKeyPressed(KeyboardConfig.HERO_KILL.get()))
-            Game.getHero().flatMap(hero -> hero.getComponent(HealthComponent.class)).ifPresent(component -> {
-                HealthComponent comp = (HealthComponent) component;
+            Game.getHero()
+                    .flatMap(hero -> hero.getComponent(HealthComponent.class))
+                    .ifPresent(
+                            component -> {
+                                HealthComponent comp = (HealthComponent) component;
 
-                comp.receiveHit(new Damage(
-                    10,
-                    DamageType.PHYSICAL,
-                    null
-                ));
-            });
+                                comp.receiveHit(new Damage(10, DamageType.PHYSICAL, null));
+                            });
     }
 
     private KSData buildDataObject(PlayableComponent pc) {

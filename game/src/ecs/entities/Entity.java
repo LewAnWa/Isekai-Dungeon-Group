@@ -4,12 +4,9 @@ import ecs.components.Component;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.logging.Logger;
-
-import ecs.components.PositionComponent;
 import semanticAnalysis.types.DSLContextPush;
 import semanticAnalysis.types.DSLType;
 import starter.Game;
-import tools.Point;
 
 /** Entity is a unique identifier for an object in the game world */
 @DSLType(name = "game_object")
@@ -23,7 +20,6 @@ public class Entity {
     private boolean isBoomerang = false;
     private Entity user;
     public boolean reachedMiddlePoint = false;
-
 
     public Entity() {
         components = new HashMap<>();

@@ -14,7 +14,6 @@ public class ManaComponent extends Component {
      * @param entity associated entity
      * @param maximalManaPoints maximum amount of mana-points
      */
-
     public ManaComponent(Entity entity, int maximalManaPoints) {
         super(entity);
 
@@ -27,7 +26,6 @@ public class ManaComponent extends Component {
     /**
      * @return The current mana-points the entity has
      */
-
     public int getCurrentManaPoints() {
         return currentManaPoints;
     }
@@ -37,7 +35,6 @@ public class ManaComponent extends Component {
      *
      * @param currentManaPoints new amount of current mana-points
      */
-
     public void setCurrentManaPoints(int currentManaPoints) {
         this.currentManaPoints = currentManaPoints;
     }
@@ -45,7 +42,6 @@ public class ManaComponent extends Component {
     /**
      * @return The maximum mana-points the entity can have
      */
-
     public int getMaximalManaPoints() {
         return maximalManaPoints;
     }
@@ -55,7 +51,6 @@ public class ManaComponent extends Component {
      *
      * @param maximalManaPoints new amount of maximum mana-points
      */
-
     public void setMaximalManaPoints(int maximalManaPoints) {
         this.maximalManaPoints = maximalManaPoints;
         currentManaPoints = maximalManaPoints;

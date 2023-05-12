@@ -17,9 +17,8 @@ public class Skeleton extends Monster {
      * @param playerPos the position of the player in the level.
      * @param currentLevel the current map.
      */
-
     public Skeleton(float movementSpeed, int flux, Point playerPos, ILevel currentLevel) {
-        super(movementSpeed, 5+flux, playerPos, currentLevel);
+        super(movementSpeed, 5 + flux, playerPos, currentLevel);
 
         pathToIdleLeft = "monster/skeleton/idleLeft";
         pathToIdleRight = "monster/skeleton/idleRight";

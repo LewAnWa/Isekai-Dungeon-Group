@@ -37,9 +37,7 @@ public class Hero extends Entity {
     private Skill fifthSkill;
     private Skill sixthSkill;
 
-    /**
-     * Entity with Components
-     */
+    /** Entity with Components */
     public Hero() {
         super();
         new PositionComponent(this);
@@ -56,7 +54,7 @@ public class Hero extends Entity {
         setupBumerangSkill();
         setupMagicArrowSkill();
 
-        //TODO: Abilities come first AND ONLY THEN the SkillComponent !!
+        // TODO: Abilities come first AND ONLY THEN the SkillComponent !!
         setupSkillComponent();
         pc.setSkillSlot1(firstSkill);
         pc.setSkillSlot2(secondSkill);
@@ -108,21 +106,23 @@ public class Hero extends Entity {
 
     private void setupFireballSkill() {
         firstSkill =
-            new Skill(
-                new FireballSkill(SkillTools::getCursorPositionAsPoint, this), fireballCoolDown);
+                new Skill(
+                        new FireballSkill(SkillTools::getCursorPositionAsPoint, this),
+                        fireballCoolDown);
     }
 
     private void setupHitboxComponent() {
         new HitboxComponent(
-            this,
-            (you, other, direction) -> System.out.println("heroCollisionEnter"),
-            (you, other, direction) -> System.out.println("heroCollisionLeave"));
+                this,
+                (you, other, direction) -> System.out.println("heroCollisionEnter"),
+                (you, other, direction) -> System.out.println("heroCollisionLeave"));
     }
 
     private void setupFrostBoltSkill() {
         secondSkill =
-            new Skill(
-                new FrostBoltSkill(SkillTools::getCursorPositionAsPoint), frostBoltCoolDown);
+                new Skill(
+                        new FrostBoltSkill(SkillTools::getCursorPositionAsPoint),
+                        frostBoltCoolDown);
     }
 
     private void setupXPComponent() {
@@ -131,26 +131,27 @@ public class Hero extends Entity {
     }
 
     private void setupDashSkill() {
-        thirdSkill =
-            new Skill(
-                new DashSkill(), dashCoolDown);
+        thirdSkill = new Skill(new DashSkill(), dashCoolDown);
     }
 
     private void setupSchwertstichSkill() {
         fourthSkill =
-            new Skill(
-                new SchwertstichSkill(SkillTools::getCursorPositionAsPoint, this), schwertStichCooldown);
+                new Skill(
+                        new SchwertstichSkill(SkillTools::getCursorPositionAsPoint, this),
+                        schwertStichCooldown);
     }
 
     private void setupBumerangSkill() {
         fifthSkill =
-            new Skill(
-                new BumerangSkill(SkillTools::getCursorPositionAsPoint, this), bumerangCooldown);
+                new Skill(
+                        new BumerangSkill(SkillTools::getCursorPositionAsPoint, this),
+                        bumerangCooldown);
     }
 
     private void setupMagicArrowSkill() {
-        sixthSkill = new Skill(new MagicArrowSkill(SkillTools::getCursorPositionAsPoint, this), magicArrowCooldown);
+        sixthSkill =
+                new Skill(
+                        new MagicArrowSkill(SkillTools::getCursorPositionAsPoint, this),
+                        magicArrowCooldown);
     }
-
-
 }

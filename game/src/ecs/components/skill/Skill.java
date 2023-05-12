@@ -27,7 +27,7 @@ public class Skill {
         if (!isOnCoolDown()) {
             skillFunction.execute(entity);
             activateCoolDown();
-        }else{
+        } else {
             System.out.println(currentCoolDownInFrames);
         }
     }
@@ -47,6 +47,5 @@ public class Skill {
     /** reduces the current cool down by frame */
     public void reduceCoolDown() {
         currentCoolDownInFrames = Math.max(0, --currentCoolDownInFrames);
-
     }
 }

@@ -17,7 +17,7 @@ public class Bat extends Monster {
      * @param currentLevel the current map.
      */
     public Bat(float movementSpeed, int flux, Point playerPos, ILevel currentLevel) {
-        super(movementSpeed, 7+flux, playerPos, currentLevel);
+        super(movementSpeed, 7 + flux, playerPos, currentLevel);
 
         pathToIdleLeft = "monster/bat/idleLeft";
         pathToIdleRight = "monster/bat/idleRight";

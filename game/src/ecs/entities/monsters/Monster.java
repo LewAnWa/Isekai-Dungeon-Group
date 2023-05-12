@@ -12,10 +12,10 @@ import starter.Game;
 import tools.Point;
 
 /**
- * The Monster is an entity to encounter and fight against in the dungeon. There are several different monster in the game.
+ * The Monster is an entity to encounter and fight against in the dungeon. There are several
+ * different monster in the game.
  */
-
-public abstract class Monster extends Entity{
+public abstract class Monster extends Entity {
 
     private final float xSpeed;
     private final float ySpeed;
@@ -49,7 +49,8 @@ public abstract class Monster extends Entity{
         damage = new Damage(damageAmount, DamageType.PHYSICAL, this);
     }
 
-    // Sets up the positionComponent of the Monster with a random point, which has a minimum distance to the player
+    // Sets up the positionComponent of the Monster with a random point, which has a minimum
+    // distance to the player
     protected void setUpPositionComponent(Point playerPos, ILevel currentLevel) {
         Point randomPoint;
 
@@ -74,7 +75,8 @@ public abstract class Monster extends Entity{
         Animation deathAnim = AnimationBuilder.buildAnimation(pathToDeathAnim);
         healthComponent.setDieAnimation(deathAnim);
         healthComponent.setGetHitAnimation(deathAnim);
-        healthComponent.setOnDeath(entity -> new AnimationComponent(entity, deathAnim)); // does nothing
+        healthComponent.setOnDeath(
+                entity -> new AnimationComponent(entity, deathAnim)); // does nothing
     }
 
     protected void setupVelocityComponent() {
@@ -91,18 +93,22 @@ public abstract class Monster extends Entity{
 
     protected void setupHitboxComponent() {
         new HitboxComponent(
-            this,
-            // on enter
-            (you, other, direction) -> {
-                Game.getHero().ifPresent(hero -> {
-                    if (other == hero) {
-                        hero.getComponent(HealthComponent.class)
-                            .ifPresent(component -> {
-                                ((HealthComponent) component).receiveHit(damage);
-                        });
-                    }
-                });
-            },
-            (you, other, direction) -> System.out.println("Monster left hit box"));
+                this,
+                // on enter
+                (you, other, direction) -> {
+                    Game.getHero()
+                            .ifPresent(
+                                    hero -> {
+                                        if (other == hero) {
+                                            hero.getComponent(HealthComponent.class)
+                                                    .ifPresent(
+                                                            component -> {
+                                                                ((HealthComponent) component)
+                                                                        .receiveHit(damage);
+                                                            });
+                                        }
+                                    });
+                },
+                (you, other, direction) -> System.out.println("Monster left hit box"));
     }
 }

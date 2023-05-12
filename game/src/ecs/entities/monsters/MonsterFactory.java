@@ -8,17 +8,21 @@ public class MonsterFactory {
 
     /**
      * Generates a random monster with random stats that fluctuate relative to the player's level.
+     *
      * @param playerLevel current level of the player.
      * @param playerPos the current position of the player in the level.
      * @param currentLevel the generated map.
      * @return a random monster.
      */
     public static Entity generateMonster(int playerLevel, Point playerPos, ILevel currentLevel) {
-        int flux = (int)(Math.random() * (playerLevel * 2)); // flux is for the fluctuation of their stats
+        int flux =
+                (int)
+                        (Math.random()
+                                * (playerLevel * 2)); // flux is for the fluctuation of their stats
         Monster monster = null;
 
         do {
-            switch ((int)(Math.random() * 3)) {
+            switch ((int) (Math.random() * 3)) {
                 case 0 -> {
                     monster = new Skeleton(0.12f, flux, playerPos, currentLevel);
                 }
@@ -35,7 +39,8 @@ public class MonsterFactory {
                 default -> {
                     monster = new Skeleton(0.10f, flux, playerPos, currentLevel);
                 }
-            };
+            }
+            ;
         } while (monster == null);
 
         return monster;

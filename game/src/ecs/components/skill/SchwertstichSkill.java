@@ -9,16 +9,17 @@ public class SchwertstichSkill extends DamageProjectileSkill {
 
     /**
      * The constructor for the schwertstich
+     *
      * @param targetSelection preferably the cursor position.
      * @param user The Entity that used the sword
      */
-    public SchwertstichSkill(ITargetSelection targetSelection, Entity user){
+    public SchwertstichSkill(ITargetSelection targetSelection, Entity user) {
         super(
-            "skills/schwertstich/",
-            0.5f,
-            new Damage(15, DamageType.PHYSICAL, user),
-            new Point(11,11),
-            targetSelection,
-            1f);
+                "skills/schwertstich/",
+                0.5f,
+                new Damage(15, DamageType.PHYSICAL, user),
+                new Point(11, 11),
+                targetSelection,
+                1f);
     }
 }

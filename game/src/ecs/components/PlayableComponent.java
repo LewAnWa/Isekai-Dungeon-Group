@@ -2,10 +2,8 @@ package ecs.components;
 
 import ecs.components.skill.Skill;
 import ecs.entities.Entity;
-
 import java.util.Optional;
 import java.util.logging.Logger;
-
 import logging.CustomLogLevel;
 
 /**
@@ -26,7 +24,7 @@ public class PlayableComponent extends Component {
     private Skill skillSlot6;
 
     /**
-     * @param entity     associated entity
+     * @param entity associated entity
      * @param skillSlot1 skill that will be on the first skillslot
      * @param skillSlot2 skill that will be on the second skillslot
      */
@@ -37,9 +35,7 @@ public class PlayableComponent extends Component {
         this.skillSlot2 = skillSlot2;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public PlayableComponent(Entity entity) {
         super(entity);
         playable = true;
@@ -49,7 +45,12 @@ public class PlayableComponent extends Component {
      * @return the playable state
      */
     public boolean isPlayable() {
-        playableCompLogger.log(CustomLogLevel.DEBUG, "Checking if entity '" + entity.getClass().getSimpleName() + "' is playable: " + playable);
+        playableCompLogger.log(
+                CustomLogLevel.DEBUG,
+                "Checking if entity '"
+                        + entity.getClass().getSimpleName()
+                        + "' is playable: "
+                        + playable);
         return playable;
     }
 

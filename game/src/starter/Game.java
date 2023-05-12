@@ -12,7 +12,6 @@ import configuration.Configuration;
 import configuration.KeyboardConfig;
 import controller.AbstractController;
 import controller.SystemController;
-import ecs.components.HealthComponent;
 import ecs.components.MissingComponentException;
 import ecs.components.PositionComponent;
 import ecs.components.xp.XPComponent;
@@ -26,7 +25,6 @@ import graphic.hud.GameOverScreen;
 import graphic.hud.PauseMenu;
 import java.io.IOException;
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.logging.Logger;
 import level.IOnLevelLoader;
 import level.LevelAPI;
@@ -131,8 +129,8 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
     }
 
     /**
-     * Resets the game by overwriting the old hero with a new one, hiding the death
-     * screen and then loading a new level.
+     * Resets the game by overwriting the old hero with a new one, hiding the death screen and then
+     * loading a new level.
      */
     public void doRestart() {
         hero = new Hero();
@@ -142,23 +140,34 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
 
     /** Generates an array of Monsters */
     protected void generateMonsters() {
-        monsters = new Entity[currentLevel.getFloorTiles().size() / 20]; // amount of monsters = amount of floor tiles / 20
+        monsters =
+                new Entity
+                        [currentLevel.getFloorTiles().size()
+                                / 20]; // amount of monsters = amount of floor tiles / 20
 
         // TODO: Find out how to get the position of the hero via the getComponent()-Method
         // Point heroPosition = hero.getComponent(PositionComponent.class).
 
-        hero.getComponent(XPComponent.class).ifPresent(component -> {
+        hero.getComponent(XPComponent.class)
+                .ifPresent(
+                        component -> {
+                            XPComponent comp = (XPComponent) component;
 
-            XPComponent comp = (XPComponent) component;
+                            hero.getComponent(PositionComponent.class)
+                                    .ifPresent(
+                                            component1 -> {
+                                                PositionComponent posComp =
+                                                        (PositionComponent) component1;
 
-            hero.getComponent(PositionComponent.class).ifPresent(component1 -> {
-                PositionComponent posComp = (PositionComponent) component1;
-
-                for (int i = 0; i < monsters.length; i++) {
-                    monsters[i] = MonsterFactory.generateMonster((int) comp.getCurrentLevel(), posComp.getPosition(), currentLevel);
-                }
-            });
-        });
+                                                for (int i = 0; i < monsters.length; i++) {
+                                                    monsters[i] =
+                                                            MonsterFactory.generateMonster(
+                                                                    (int) comp.getCurrentLevel(),
+                                                                    posComp.getPosition(),
+                                                                    currentLevel);
+                                                }
+                                            });
+                        });
     }
 
     /** Called at the beginning of each frame. Before the controllers call <code>update</code>. */

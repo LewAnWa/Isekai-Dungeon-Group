@@ -9,16 +9,17 @@ public class FireballSkill extends DamageProjectileSkill {
 
     /**
      * The constructor for the fireball.
+     *
      * @param targetSelection preferably the cursor position.
      * @param user The Entity that shot the fireball. Can be null.
      */
     public FireballSkill(ITargetSelection targetSelection, Entity user) {
         super(
-            "skills/fireball/",
-            0.5f,
-            new Damage(18, DamageType.FIRE, user),
-            new Point(10, 10),
-            targetSelection,
-            5f);
+                "skills/fireball/",
+                0.5f,
+                new Damage(18, DamageType.FIRE, user),
+                new Point(10, 10),
+                targetSelection,
+                5f);
     }
 }

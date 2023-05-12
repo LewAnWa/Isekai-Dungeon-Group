@@ -17,9 +17,8 @@ public class Necromancer extends Monster {
      * @param playerPos the position of the player in the level.
      * @param currentLevel the current map.
      */
-
     public Necromancer(float movementSpeed, int flux, Point playerPos, ILevel currentLevel) {
-        super(movementSpeed, 10+flux, playerPos, currentLevel);
+        super(movementSpeed, 10 + flux, playerPos, currentLevel);
 
         pathToIdleLeft = "monster/necromancer/idleLeft";
         pathToIdleRight = "monster/necromancer/idleRight";
