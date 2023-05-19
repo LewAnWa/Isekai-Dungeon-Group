@@ -3,8 +3,8 @@ package ecs.systems;
 import ecs.components.AnimationComponent;
 import ecs.components.HealthComponent;
 import ecs.components.MissingComponentException;
-import ecs.components.xp.stats.StatsComponent;
 import ecs.components.xp.XPComponent;
+import ecs.components.xp.stats.StatsComponent;
 import ecs.damage.DamageType;
 import ecs.entities.Entity;
 import java.util.stream.Stream;
@@ -110,6 +110,13 @@ public class HealthSystem extends ECS_System {
                                                 killerXPComponent.addXP(
                                                         deadXPComponent.getLootXP());
                                             });
+                        });
+
+        // if the entity, that died, is the hero, then show game over screen
+        Game.getHero()
+                .ifPresent(
+                        Entity -> {
+                            if (Entity.equals(hsd.e)) Game.showGameOverScreen();
                         });
 
         // TODO: Before removing the entity, check if the animation is finished (Issue #246)

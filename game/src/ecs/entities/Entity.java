@@ -4,7 +4,6 @@ import ecs.components.Component;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.logging.Logger;
-
 import semanticAnalysis.types.DSLContextPush;
 import semanticAnalysis.types.DSLType;
 import starter.Game;
@@ -18,11 +17,25 @@ public class Entity {
     private HashMap<Class, Component> components;
     private final Logger entityLogger;
 
+    private boolean isBoomerang = false;
+    private Entity user;
+    public boolean reachedMiddlePoint = false;
+
     public Entity() {
         components = new HashMap<>();
         Game.addEntity(this);
         entityLogger = Logger.getLogger(this.getClass().getName());
         entityLogger.info("The entity '" + this.getClass().getSimpleName() + "' was created.");
+    }
+
+    public Entity(boolean isBoomerang, Entity user) {
+        components = new HashMap<>();
+        Game.addEntity(this);
+        entityLogger = Logger.getLogger(this.getClass().getName());
+        entityLogger.info("The entity '" + this.getClass().getSimpleName() + "' was created.");
+
+        this.isBoomerang = isBoomerang;
+        this.user = user;
     }
 
     /**
@@ -41,6 +54,15 @@ public class Entity {
      */
     public void removeComponent(Class klass) {
         components.remove(klass);
+    }
+
+    // -------------------- Getter and Setter -------------------- //
+    public boolean isBoomerang() {
+        return isBoomerang;
+    }
+
+    public Entity getUser() {
+        return user;
     }
 
     /**

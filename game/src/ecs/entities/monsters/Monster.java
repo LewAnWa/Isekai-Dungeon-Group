@@ -8,13 +8,14 @@ import ecs.damage.DamageType;
 import ecs.entities.Entity;
 import graphic.Animation;
 import level.elements.ILevel;
+import starter.Game;
 import tools.Point;
 
 /**
- * The Monster is an entity to encounter and fight against in the dungeon. There are several different monster in the game.
+ * The Monster is an entity to encounter and fight against in the dungeon. There are several
+ * different monster in the game.
  */
-
-public abstract class Monster extends Entity{
+public abstract class Monster extends Entity {
 
     private final float xSpeed;
     private final float ySpeed;
@@ -23,7 +24,9 @@ public abstract class Monster extends Entity{
     protected String pathToIdleRight;
     protected String pathToRunLeft;
     protected String pathToRunRight;
-    protected String pathToDeathAnim = "monster/deathAnimation";
+    protected String pathToDeathAnim = "deathAnimation/";
+
+    private Damage damage;
 
     /**
      * Default constructor for the monster.
@@ -43,16 +46,17 @@ public abstract class Monster extends Entity{
     }
 
     protected void setUpDamageComponent(int damageAmount) {
-        new Damage(damageAmount, DamageType.PHYSICAL, null);
+        damage = new Damage(damageAmount, DamageType.PHYSICAL, this);
     }
 
-    // Sets up the positionComponent of the Monster with a random point, which has a minimum distance to the player
+    // Sets up the positionComponent of the Monster with a random point, which has a minimum
+    // distance to the player
     protected void setUpPositionComponent(Point playerPos, ILevel currentLevel) {
         Point randomPoint;
 
         do {
             randomPoint = currentLevel.getRandomFloorTile().getCoordinateAsPoint();
-        } while (Point.calculateDistance(playerPos, randomPoint) < 5);
+        } while (Point.calculateDistance(playerPos, randomPoint) < 3);
 
         new PositionComponent(this, randomPoint);
     }
@@ -65,12 +69,14 @@ public abstract class Monster extends Entity{
     protected void setUpHealthComponent(int maxHealthPoints) {
         HealthComponent healthComponent = new HealthComponent(this);
         healthComponent.setMaximalHealthpoints(maxHealthPoints);
+        healthComponent.setCurrentHealthpoints(maxHealthPoints);
 
         // A die- and hit-animation is required, else the game starts to bug out
         Animation deathAnim = AnimationBuilder.buildAnimation(pathToDeathAnim);
         healthComponent.setDieAnimation(deathAnim);
         healthComponent.setGetHitAnimation(deathAnim);
-        healthComponent.setOnDeath(entity -> new AnimationComponent(entity, deathAnim)); // does nothing
+        healthComponent.setOnDeath(
+                entity -> new AnimationComponent(entity, deathAnim)); // does nothing
     }
 
     protected void setupVelocityComponent() {
@@ -87,8 +93,22 @@ public abstract class Monster extends Entity{
 
     protected void setupHitboxComponent() {
         new HitboxComponent(
-            this,
-            (you, other, direction) -> System.out.println("monsterCollisionEnter"),
-            (you, other, direction) -> System.out.println("monsterCollisionLeave"));
+                this,
+                // on enter
+                (you, other, direction) -> {
+                    Game.getHero()
+                            .ifPresent(
+                                    hero -> {
+                                        if (other == hero) {
+                                            hero.getComponent(HealthComponent.class)
+                                                    .ifPresent(
+                                                            component -> {
+                                                                ((HealthComponent) component)
+                                                                        .receiveHit(damage);
+                                                            });
+                                        }
+                                    });
+                },
+                (you, other, direction) -> System.out.println("Monster left hit box"));
     }
 }

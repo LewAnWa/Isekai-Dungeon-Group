@@ -2,10 +2,13 @@ package ecs.systems;
 
 import com.badlogic.gdx.Gdx;
 import configuration.KeyboardConfig;
+import ecs.components.HealthComponent;
 import ecs.components.MissingComponentException;
 import ecs.components.PlayableComponent;
 import ecs.components.VelocityComponent;
 import ecs.components.xp.XPComponent;
+import ecs.damage.Damage;
+import ecs.damage.DamageType;
 import ecs.entities.Entity;
 import ecs.tools.interaction.InteractionTool;
 import starter.Game;
@@ -43,20 +46,49 @@ public class PlayerSystem extends ECS_System {
             ksd.pc.getSkillSlot2().ifPresent(skill -> skill.execute(ksd.e));
         else if (Gdx.input.isKeyPressed(KeyboardConfig.THIRD_SKILL.get()))
             ksd.pc.getSkillSlot3().ifPresent(skill -> skill.execute(ksd.e));
+        else if (Gdx.input.isKeyPressed(KeyboardConfig.FOURTH_SKILL.get()))
+            ksd.pc.getSkillSlot4().ifPresent(skill -> skill.execute(ksd.e));
+        else if (Gdx.input.isKeyPressed(KeyboardConfig.FIFTH_SKILL.get()))
+            ksd.pc.getSkillSlot5().ifPresent(skill -> skill.execute(ksd.e));
+        else if (Gdx.input.isKeyPressed(KeyboardConfig.SIXTH_SKILL.get()))
+            ksd.pc.getSkillSlot6().ifPresent(skill -> skill.execute(ksd.e));
 
-        if (Gdx.input.isKeyPressed(KeyboardConfig.XPADDER_SKILL.get())){
-            Game.getHero().flatMap(hero -> hero.getComponent(XPComponent.class)).ifPresent(component -> {
-                ((XPComponent) component).addXP(50);
-                System.out.println("Added 50 XP");
-            });
+        if (Gdx.input.isKeyPressed(KeyboardConfig.XPADDER_SKILL.get())) {
+            Game.getHero()
+                    .flatMap(hero -> hero.getComponent(XPComponent.class))
+                    .ifPresent(
+                            component -> {
+                                ((XPComponent) component).addXP(50);
+                                System.out.println("Added 50 XP");
+                            });
         }
 
         if (Gdx.input.isKeyPressed(KeyboardConfig.HERO_INFO.get()))
-            Game.getHero().flatMap(hero -> hero.getComponent(XPComponent.class)).ifPresent(component -> {
-                XPComponent comp = (XPComponent) component;
+            Game.getHero()
+                    .flatMap(hero -> hero.getComponent(XPComponent.class))
+                    .ifPresent(
+                            component -> {
+                                XPComponent comp = (XPComponent) component;
 
-                System.out.println("HERO : LVL " + comp.getCurrentLevel() + "(" + comp.getCurrentXP() + "/" + (comp.getXPToNextLevel() + comp.getCurrentXP()) + ")");
-            });
+                                System.out.println(
+                                        "HERO : LVL "
+                                                + comp.getCurrentLevel()
+                                                + "("
+                                                + comp.getCurrentXP()
+                                                + "/"
+                                                + (comp.getXPToNextLevel() + comp.getCurrentXP())
+                                                + ")");
+                            });
+
+        if (Gdx.input.isKeyPressed(KeyboardConfig.HERO_KILL.get()))
+            Game.getHero()
+                    .flatMap(hero -> hero.getComponent(HealthComponent.class))
+                    .ifPresent(
+                            component -> {
+                                HealthComponent comp = (HealthComponent) component;
+
+                                comp.receiveHit(new Damage(10, DamageType.PHYSICAL, null));
+                            });
     }
 
     private KSData buildDataObject(PlayableComponent pc) {

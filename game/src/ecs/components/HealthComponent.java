@@ -83,7 +83,7 @@ public class HealthComponent extends Component {
     }
 
     /**
-     * Calculate the amount of damage of a certain type
+     * Calculate the amount of damage to a certain type
      *
      * @param dt Type of damage object that still need to be accounted for
      * @return Sum of all damage objects of type dt (default: 0)
