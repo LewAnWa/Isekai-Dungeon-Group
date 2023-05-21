@@ -36,6 +36,7 @@ public class Hero extends Entity {
     private Skill fourthSkill;
     private Skill fifthSkill;
     private Skill sixthSkill;
+    private InventoryComponent iC;
 
     /** Entity with Components */
     public Hero() {
@@ -46,6 +47,7 @@ public class Hero extends Entity {
         setupHitboxComponent();
         setupXPComponent();
         setupHealthComponent();
+        setupInventoryComponent();
         PlayableComponent pc = new PlayableComponent(this);
         setupFireballSkill();
         setupFrostBoltSkill();
@@ -153,5 +155,10 @@ public class Hero extends Entity {
                 new Skill(
                         new MagicArrowSkill(SkillTools::getCursorPositionAsPoint, this),
                         magicArrowCooldown);
+    }
+
+    private void setupInventoryComponent(){
+        iC = new InventoryComponent(this, 5);
+
     }
 }
