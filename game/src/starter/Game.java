@@ -22,6 +22,7 @@ import ecs.systems.*;
 import graphic.DungeonCamera;
 import graphic.Painter;
 import graphic.hud.GameOverScreen;
+import graphic.hud.HeroUI;
 import graphic.hud.PauseMenu;
 import java.io.IOException;
 import java.util.*;
@@ -75,6 +76,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
     public static ILevel currentLevel;
     private static PauseMenu<Actor> pauseMenu;
     private static GameOverScreen<Actor> gameOverScreen;
+    private static HeroUI<Actor> heroUI;
     private static Entity hero;
     private static Entity[] monsters;
     private Logger gameLogger;
@@ -104,6 +106,8 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         levelAPI.update();
         controller.forEach(AbstractController::update);
         camera.update();
+
+        heroUI.updateUI();
     }
 
     /** Called once at the beginning of the game. */
@@ -120,12 +124,17 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         controller.add(systems);
         pauseMenu = new PauseMenu<>();
         controller.add(pauseMenu);
-        gameOverScreen = new GameOverScreen<>(this);
-        controller.add(gameOverScreen);
+
         hero = new Hero();
+        heroUI = new HeroUI<>((Hero) hero);
+        controller.add(heroUI);
+
         levelAPI = new LevelAPI(batch, painter, new WallGenerator(new RandomWalkGenerator()), this);
         levelAPI.loadLevel(LEVELSIZE);
         createSystems();
+
+        gameOverScreen = new GameOverScreen<>(this);
+        controller.add(gameOverScreen);
     }
 
     /**
@@ -134,6 +143,9 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
      */
     public void doRestart() {
         hero = new Hero();
+
+        heroUI.assignComponents((Hero) hero);
+
         gameOverScreen.hideScreen();
         levelAPI.loadLevel(LEVELSIZE);
     }

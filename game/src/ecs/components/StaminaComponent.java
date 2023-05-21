@@ -21,6 +21,11 @@ public class StaminaComponent extends Component {
         this.currentStamina = maxStamina;
     }
 
+    @Override
+    public String toString() {
+        return currentStamina + "/" + maxStamina;
+    }
+
     // -------------------- GETTER AND SETTER -------------------- //
 
     /**
