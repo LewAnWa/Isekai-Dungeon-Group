@@ -1,12 +1,10 @@
 package graphic.hud;
 
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import controller.ScreenController;
 import ecs.components.HealthComponent;
@@ -101,11 +99,14 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
         if (visible) listItems();
     }
 
+    // Used to list the items in the hero's inventory. This needs the inventoryComp to be not NULL !!
     private void listItems() {
         if (inventoryComp == null) {
             logger.log(new LogRecord(Level.WARNING, "NO INVENTORY COMPONENT FOUND!"));
             return;
         }
+
+        // TODO: IMPLEMENT AFTER FEATURE OF ITEMS HAS BEEN ADDED!
 
         List<ItemData> items = inventoryComp.getItems();
 
@@ -117,6 +118,7 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
         }
     }
 
+    // Builds the inventory's icons and texts
     private void buildInventory() {
         inventory = new ScreenImage("hud/inventory.png", new Point(10,10));
         inventory.scaleBy(-1.1f);
