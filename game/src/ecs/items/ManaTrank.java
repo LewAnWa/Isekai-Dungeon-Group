@@ -1,23 +1,29 @@
 package ecs.items;
 
-import dslToGame.AnimationBuilder;
 import ecs.components.InventoryComponent;
 import ecs.components.ManaComponent;
 import ecs.entities.Entity;
 import ecs.entities.Hero;
+import graphic.Animation;
 import starter.Game;
+
+import java.util.List;
 
 public class ManaTrank extends ItemData implements IOnCollect, IOnUse {
 
+    private static final List<String> manaTrankTexture = List.of("items/ManaTrank/ManaTrank.png");
+
     public ManaTrank() {
-        super(ItemType.Tasche,
-            AnimationBuilder.buildAnimation("items/ManaTrank"),
-            AnimationBuilder.buildAnimation("items/ManaTrank"),
-            "Tasche",
-            "Eine Tasche, die Ihr Inventar um 4 Plätze der gleichen Itemart erweitert."
+        super(ItemType.Trank,
+            new Animation(manaTrankTexture, 1),
+            new Animation(manaTrankTexture,1),
+            "Manatrank",
+            "Ein blaues, dickflüssiges Elixir."
         );
 
         WorldItemBuilder.buildWorldItem(this);
+        this.setOnCollect(this);
+        this.setOnUse(this);
     }
 
     @Override

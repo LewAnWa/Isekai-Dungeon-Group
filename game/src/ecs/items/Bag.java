@@ -1,9 +1,9 @@
 package ecs.items;
 
-import dslToGame.AnimationBuilder;
 import ecs.components.InventoryComponent;
 import ecs.entities.Entity;
 import ecs.entities.Hero;
+import graphic.Animation;
 import starter.Game;
 
 import java.util.ArrayList;
@@ -14,18 +14,20 @@ public class Bag extends ItemData implements IOnCollect {
     private List<ItemData> inventory;
     private ItemType inhaltsArt;
     private final int maxSize = 4;
+    private static final List<String> bagTexture = List.of("items/Tasche/Tasche.png");
 
     public Bag() {
         super(
             ItemType.Tasche,
-            AnimationBuilder.buildAnimation("animation"),
-            AnimationBuilder.buildAnimation("animation"),
+            new Animation(bagTexture, 1),
+            new Animation(bagTexture,1),
             "Tasche",
             "Eine Tasche, die Ihr Inventar um 4 Plätze der gleichen Itemart erweitert."
         );
 
         WorldItemBuilder.buildWorldItem(this);
         inventory = new ArrayList<>(4);
+        this.setOnCollect(this);
 
     }
 
@@ -54,5 +56,26 @@ public class Bag extends ItemData implements IOnCollect {
         if(itemData.getItemType() == inhaltsArt){
             inventory.add(itemData);
         }
+    }
+
+    public boolean removeItem(ItemData itemData) {
+
+        return inventory.remove(itemData);
+    }
+
+    public int filledSlots() {
+        return inventory.size();
+    }
+
+    public int emptySlots() {
+        return maxSize - inventory.size();
+    }
+
+    public int getMaxSize() {
+        return maxSize;
+    }
+
+    public List<ItemData> getItems() {
+        return new ArrayList<>(inventory);
     }
 }

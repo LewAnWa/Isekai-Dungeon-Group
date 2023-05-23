@@ -10,7 +10,7 @@ public class ItemDataGenerator {
 
     private List<ItemData> templates =
             List.of(
-                    new ItemData(
+                    /*new ItemData(
                             ItemType.Basic,
                             new Animation(missingTexture, 1),
                             new Animation(missingTexture, 1),
@@ -27,7 +27,13 @@ public class ItemDataGenerator {
                             new Animation(missingTexture, 1),
                             new Animation(missingTexture, 1),
                             "Namensschild",
-                            "Ein Namensschild wo der Name nicht mehr lesbar ist.."));
+                            "Ein Namensschild wo der Name nicht mehr lesbar ist.."),*/
+                    //new ManaTrank(),
+                    //new Apfel()//,
+                    //new Bag(),
+                    new Schuh()
+            );
+
     private Random rand = new Random();
 
     /**

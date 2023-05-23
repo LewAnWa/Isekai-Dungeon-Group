@@ -6,10 +6,16 @@ import ecs.components.xp.XPComponent;
 import ecs.damage.Damage;
 import ecs.damage.DamageType;
 import ecs.entities.Entity;
+import ecs.items.ItemData;
+import ecs.items.ItemDataGenerator;
 import graphic.Animation;
 import level.elements.ILevel;
 import starter.Game;
 import tools.Point;
+
+import java.util.List;
+import java.util.Random;
+import java.util.stream.IntStream;
 
 /**
  * The Monster is an entity to encounter and fight against in the dungeon. There are several
@@ -76,7 +82,14 @@ public abstract class Monster extends Entity {
         healthComponent.setDieAnimation(deathAnim);
         healthComponent.setGetHitAnimation(deathAnim);
         healthComponent.setOnDeath(
-                entity -> new AnimationComponent(entity, deathAnim)); // does nothing
+            new IOnDeathFunction() {
+                @Override
+                public void onDeath(Entity entity) {
+                    dropLoot(entity);
+                }
+            }
+        );
+                //entity -> new AnimationComponent(entity, deathAnim)); // does nothing
     }
 
     protected void setupVelocityComponent() {
@@ -110,5 +123,36 @@ public abstract class Monster extends Entity {
                                     });
                 },
                 (you, other, direction) -> System.out.println("Monster left hit box"));
+    }
+
+    public void dropLoot(Entity entity){
+        Random random = new Random();
+        ItemDataGenerator itemDataGenerator = new ItemDataGenerator();
+
+        List<ItemData> itemData =
+            IntStream.range(0, random.nextInt(1, 7))
+                .mapToObj(i -> itemDataGenerator.generateItemData())
+                .toList();
+
+        double count = itemData.size();
+
+        PositionComponent psC = (PositionComponent) entity.getComponent(PositionComponent.class).get();
+
+        IntStream.range(0, itemData.size())
+            .forEach(
+                index ->
+                    itemData.get(index)
+                        .triggerDrop(
+                            entity,
+                            calculateDropPosition(psC, index / count)));
+        entity.getComponent(AnimationComponent.class)
+            .map(AnimationComponent.class::cast)
+            .ifPresent(x -> x.setCurrentAnimation(x.getIdleRight()));
+    }
+
+    private static Point calculateDropPosition(PositionComponent positionComponent, double radian) {
+        return new Point(
+            (float) Math.cos(radian * Math.PI) + positionComponent.getPosition().x,
+            (float) Math.sin(radian * Math.PI) + positionComponent.getPosition().y);
     }
 }
