@@ -133,13 +133,12 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         controller.add(heroUI);
         inventoryUI = new InventoryUI<>((Hero) hero);
         controller.add(inventoryUI);
+        gameOverScreen = new GameOverScreen<>(this);
+        controller.add(gameOverScreen);
 
         levelAPI = new LevelAPI(batch, painter, new WallGenerator(new RandomWalkGenerator()), this);
         levelAPI.loadLevel(LEVELSIZE);
         createSystems();
-
-        gameOverScreen = new GameOverScreen<>(this);
-        controller.add(gameOverScreen);
     }
 
     /**
@@ -149,9 +148,18 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
     public void doRestart() {
         hero = new Hero();
 
-        heroUI.assignComponents((Hero) hero);
+        controller.remove(heroUI);
+        heroUI = new HeroUI<>((Hero) hero);
+        controller.add(heroUI);
+        controller.remove(inventoryUI);
+        inventoryUI = new InventoryUI<>((Hero) hero);
+        controller.add(inventoryUI);
 
         gameOverScreen.hideScreen();
+        controller.remove(gameOverScreen);
+        gameOverScreen = new GameOverScreen<>(this);
+        controller.add(gameOverScreen);
+
         levelAPI.loadLevel(LEVELSIZE);
     }
 

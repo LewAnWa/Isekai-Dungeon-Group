@@ -2,10 +2,8 @@ package graphic.hud;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import controller.ScreenController;
 import ecs.components.HealthComponent;
 import ecs.components.InventoryComponent;
@@ -13,6 +11,7 @@ import ecs.components.ManaComponent;
 import ecs.components.StaminaComponent;
 import ecs.components.xp.XPComponent;
 import ecs.entities.Hero;
+import ecs.items.Bag;
 import ecs.items.ItemData;
 import tools.Point;
 
@@ -33,6 +32,8 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
     private InventoryComponent inventoryComp;
     private ScreenImage inventory, skill1, skill2, skill3, skill4;
     private boolean visible = false;
+    private boolean listUpdated = false;
+    private static List<ItemData> items;
 
     private static Point skillSlot1 = new Point(237, 295);
     private static Point skillSlot2 = new Point(302, 295);
@@ -44,7 +45,6 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
         assignComponents(hero);
         buildInventory();
         buildSkillOverview();
-        updateUI();
         hideScreen();
     }
 
@@ -79,6 +79,7 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
     public void hideScreen() {
         this.forEach((Actor s) -> s.setVisible(false));
         visible = false;
+        listUpdated = false;
     }
 
     /** Makes the screen visible */
@@ -96,7 +97,7 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
         staminaDisplay.setText("STAMINA: " + staminaComp);
         xpDisplay.setText(String.valueOf(xpComp));
 
-        if (visible) listItems();
+        if (visible && !listUpdated) listItems();
     }
 
     // Used to list the items in the hero's inventory. This needs the inventoryComp to be not NULL !!
@@ -106,15 +107,57 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
             return;
         }
 
-        // TODO: IMPLEMENT AFTER FEATURE OF ITEMS HAS BEEN ADDED!
+        items = inventoryComp.getItems();
+        int depth = 0;
 
-        List<ItemData> items = inventoryComp.getItems();
+        // FIXME: THis does not work
+        for (int i = 0; i < items.size(); i++) {
+            ScreenImage slot = new ScreenImage(
+                items.get(i).getInventoryTexture().getNextAnimationTexturePath(),
+                new Point(25 + (i*60), 210));
+
+            slot.scaleBy(1.5f);
+
+            ScreenButton button = new ScreenButton(items.get(i).getItemName(),
+                new Point(25 + (i * 60), 210),
+                new TextButtonListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        System.out.println("I WORK");
+                    }
+                });
+
+            // add((T) slot);
+            add((T) button);
+
+            if (items.get(i) instanceof Bag) {
+                depth++;
+                listBag((Bag) items.get(i), depth);
+            }
+        }
+
+        listUpdated = true;
+    }
+
+    private void listBag(Bag bag, int depth) {
+        List<ItemData> items = bag.getItems();
 
         for (int i = 0; i < items.size(); i++) {
-            ImageButton item = new ImageButton((Drawable) items.get(i).getInventoryTexture());
-            item.addAction((Action) items.get(i).getOnUse());
-            item.setPosition(100 + (i * 20), 200);
-            add((T) item);
+            ScreenImage slot = new ScreenImage(
+                items.get(i).getInventoryTexture().getNextAnimationTexturePath(),
+                new Point(25 + (i*60), 210 - (depth*50)));
+
+            slot.scaleBy(1.5f);
+            // add((T) slot);
+
+            ScreenButton button = new ScreenButton(items.get(i).getItemName(),
+                new Point(25 + (i * 60), 210),
+                new TextButtonListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        System.out.println("I WORK");
+                    }
+                });
         }
     }
 
