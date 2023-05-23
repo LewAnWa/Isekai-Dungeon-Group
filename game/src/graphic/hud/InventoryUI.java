@@ -111,6 +111,17 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
         int depth = 0;
 
         // FIXME: THis does not work
+
+        /*
+        NOTE:
+
+        I tried it with actionListener and buttons (as you see implemented now), but it just does not register
+        the user clicking the button. THis framework makes me puke. You can undo the commentated lines (139, 172)
+        and out comment the following lines that follow with add((T) button). It looks like it is supped to, but as said,
+        the buttons do not work and I cannot use ScreenButton, because WTF IS A SKIN?!
+         */
+
+
         for (int i = 0; i < items.size(); i++) {
             ScreenImage slot = new ScreenImage(
                 items.get(i).getInventoryTexture().getNextAnimationTexturePath(),
@@ -148,7 +159,6 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
                 new Point(25 + (i*60), 210 - (depth*50)));
 
             slot.scaleBy(1.5f);
-            // add((T) slot);
 
             ScreenButton button = new ScreenButton(items.get(i).getItemName(),
                 new Point(25 + (i * 60), 210),
@@ -158,6 +168,9 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
                         System.out.println("I WORK");
                     }
                 });
+
+            // add((T) slot);
+            add((T) button);
         }
     }
 
