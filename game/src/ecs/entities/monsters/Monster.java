@@ -6,6 +6,8 @@ import ecs.components.xp.XPComponent;
 import ecs.damage.Damage;
 import ecs.damage.DamageType;
 import ecs.entities.Entity;
+import ecs.items.ItemData;
+import ecs.items.ItemDataGenerator;
 import graphic.Animation;
 import level.elements.ILevel;
 import starter.Game;
@@ -19,6 +21,7 @@ public abstract class Monster extends Entity {
 
     private final float xSpeed;
     private final float ySpeed;
+    private final ILevel currentLevel;
 
     protected String pathToIdleLeft;
     protected String pathToIdleRight;
@@ -27,6 +30,7 @@ public abstract class Monster extends Entity {
     protected String pathToDeathAnim = "deathAnimation/";
 
     private Damage damage;
+
 
     /**
      * Default constructor for the monster.
@@ -40,6 +44,7 @@ public abstract class Monster extends Entity {
         super();
 
         xSpeed = ySpeed = movementSpeed;
+        this.currentLevel = currentLevel;
 
         setUpPositionComponent(playerPos, currentLevel);
         setupXPComponent(lootAmount);
@@ -76,7 +81,14 @@ public abstract class Monster extends Entity {
         healthComponent.setDieAnimation(deathAnim);
         healthComponent.setGetHitAnimation(deathAnim);
         healthComponent.setOnDeath(
-                entity -> new AnimationComponent(entity, deathAnim)); // does nothing
+            new IOnDeathFunction() {
+                @Override
+                public void onDeath(Entity entity) {
+                    dropLoot(entity);
+                }
+            }
+        );
+                //entity -> new AnimationComponent(entity, deathAnim)); // does nothing
     }
 
     protected void setupVelocityComponent() {
@@ -111,4 +123,13 @@ public abstract class Monster extends Entity {
                 },
                 (you, other, direction) -> System.out.println("Monster left hit box"));
     }
+
+    public void dropLoot(Entity entity){
+        ItemData droppedItem = new ItemDataGenerator().generateItemData();
+
+        PositionComponent psC = (PositionComponent) entity.getComponent(PositionComponent.class).get();
+
+        droppedItem.triggerDrop(entity, psC.getPosition());
+    }
+
 }

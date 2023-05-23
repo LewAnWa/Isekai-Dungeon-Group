@@ -3,5 +3,10 @@ package ecs.items;
 public enum ItemType {
     Basic,
     Active,
-    Passive
+    Passive,
+    Ausruestung,
+    Trank,
+    Nahrung,
+    Tasche
+
 }
