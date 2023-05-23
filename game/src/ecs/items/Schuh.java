@@ -30,16 +30,28 @@ public class Schuh extends ItemData implements IOnCollect, IOnDrop {
     @Override
     public void onCollect(Entity WorldItemEntity, Entity whoCollides) {
         if (whoCollides instanceof Hero hero) {
-            Game.removeEntity(WorldItemEntity);
             hero.getComponent(InventoryComponent.class)
                 .ifPresent(iC -> {
-                    ((InventoryComponent) iC).addItem(this);
-                });
+                    InventoryComponent inventoryComp = (InventoryComponent) iC;
 
-            hero.getComponent(VelocityComponent.class)
-                .ifPresent(vC ->{
-                    ((VelocityComponent) vC).setYVelocity(((VelocityComponent) vC).getYVelocity() + 0.05f);
-                    ((VelocityComponent) vC).setXVelocity(((VelocityComponent) vC).getXVelocity() + 0.05f);
+                    List<Bag> bagList;
+                    if (inventoryComp.checkForBag()){
+                        bagList = inventoryComp.getBags();
+                        for (Bag bag: bagList) {
+                            if(bag.isEmpty() || (bag.getInhaltsArt() == this.getItemType() && bag.emptySlots() > 0)){
+                                bag.addItem(this);
+                                addMovementSpeed(whoCollides);
+                                Game.removeEntity(WorldItemEntity);
+                                return;
+                            }
+                        }
+                    }
+
+                    if(inventoryComp.emptySlots() > 0) {
+                        inventoryComp.addItem(this);
+                        addMovementSpeed(whoCollides);
+                        Game.removeEntity(WorldItemEntity);
+                    }
                 });
         }
     }
@@ -61,6 +73,14 @@ public class Schuh extends ItemData implements IOnCollect, IOnDrop {
             .ifPresent(vC ->{
                 ((VelocityComponent) vC).setYVelocity(((VelocityComponent) vC).getYVelocity() - 0.05f);
                 ((VelocityComponent) vC).setXVelocity(((VelocityComponent) vC).getXVelocity() - 0.05f);
+            });
+    }
+
+    private static void addMovementSpeed(Entity hero){
+        hero.getComponent(VelocityComponent.class)
+            .ifPresent(vC ->{
+                ((VelocityComponent) vC).setYVelocity(((VelocityComponent) vC).getYVelocity() + 0.05f);
+                ((VelocityComponent) vC).setXVelocity(((VelocityComponent) vC).getXVelocity() + 0.05f);
             });
     }
 }

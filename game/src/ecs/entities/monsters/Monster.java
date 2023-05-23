@@ -13,10 +13,6 @@ import level.elements.ILevel;
 import starter.Game;
 import tools.Point;
 
-import java.util.List;
-import java.util.Random;
-import java.util.stream.IntStream;
-
 /**
  * The Monster is an entity to encounter and fight against in the dungeon. There are several
  * different monster in the game.
@@ -25,6 +21,7 @@ public abstract class Monster extends Entity {
 
     private final float xSpeed;
     private final float ySpeed;
+    private final ILevel currentLevel;
 
     protected String pathToIdleLeft;
     protected String pathToIdleRight;
@@ -33,6 +30,7 @@ public abstract class Monster extends Entity {
     protected String pathToDeathAnim = "deathAnimation/";
 
     private Damage damage;
+
 
     /**
      * Default constructor for the monster.
@@ -46,6 +44,7 @@ public abstract class Monster extends Entity {
         super();
 
         xSpeed = ySpeed = movementSpeed;
+        this.currentLevel = currentLevel;
 
         setUpPositionComponent(playerPos, currentLevel);
         setupXPComponent(lootAmount);
@@ -126,33 +125,11 @@ public abstract class Monster extends Entity {
     }
 
     public void dropLoot(Entity entity){
-        Random random = new Random();
-        ItemDataGenerator itemDataGenerator = new ItemDataGenerator();
-
-        List<ItemData> itemData =
-            IntStream.range(0, random.nextInt(1, 7))
-                .mapToObj(i -> itemDataGenerator.generateItemData())
-                .toList();
-
-        double count = itemData.size();
+        ItemData droppedItem = new ItemDataGenerator().generateItemData();
 
         PositionComponent psC = (PositionComponent) entity.getComponent(PositionComponent.class).get();
 
-        IntStream.range(0, itemData.size())
-            .forEach(
-                index ->
-                    itemData.get(index)
-                        .triggerDrop(
-                            entity,
-                            calculateDropPosition(psC, index / count)));
-        entity.getComponent(AnimationComponent.class)
-            .map(AnimationComponent.class::cast)
-            .ifPresent(x -> x.setCurrentAnimation(x.getIdleRight()));
+        droppedItem.triggerDrop(entity, psC.getPosition());
     }
 
-    private static Point calculateDropPosition(PositionComponent positionComponent, double radian) {
-        return new Point(
-            (float) Math.cos(radian * Math.PI) + positionComponent.getPosition().x,
-            (float) Math.sin(radian * Math.PI) + positionComponent.getPosition().y);
-    }
 }

@@ -20,7 +20,7 @@ public class Apfel extends ItemData implements IOnCollect, IOnUse {
             new Animation(apfelTexture, 1),
             new Animation(apfelTexture, 1),
             "Apfel",
-            "Eine wahrhaft leckeres Obst."
+            "Ein wahrhaft leckeres Obst."
         );
 
         WorldItemBuilder.buildWorldItem(this);
@@ -34,9 +34,25 @@ public class Apfel extends ItemData implements IOnCollect, IOnUse {
         if (whoCollides instanceof Hero hero) {
             hero.getComponent(InventoryComponent.class)
                 .ifPresent(iC -> {
-                    ((InventoryComponent) iC).addItem(this);
+                    InventoryComponent inventoryComp = (InventoryComponent) iC;
+
+                    List<Bag> bagList;
+                    if (inventoryComp.checkForBag()){
+                        bagList = inventoryComp.getBags();
+                        for (Bag bag: bagList) {
+                            if(bag.isEmpty() || (bag.getInhaltsArt() == this.getItemType() && bag.emptySlots() > 0)){
+                                bag.addItem(this);
+                                Game.removeEntity(WorldItemEntity);
+                                return;
+                            }
+                        }
+                    }
+
+                    if(inventoryComp.emptySlots() > 0) {
+                        inventoryComp.addItem(this);
+                        Game.removeEntity(WorldItemEntity);
+                    }
                 });
-            Game.removeEntity(WorldItemEntity);
         }
     }
 

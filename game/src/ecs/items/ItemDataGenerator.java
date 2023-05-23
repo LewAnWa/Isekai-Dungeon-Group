@@ -28,9 +28,9 @@ public class ItemDataGenerator {
                             new Animation(missingTexture, 1),
                             "Namensschild",
                             "Ein Namensschild wo der Name nicht mehr lesbar ist.."),*/
-                    //new ManaTrank(),
-                    //new Apfel()//,
-                    //new Bag(),
+                    new ManaTrank(),
+                    new Apfel(),
+                    new Bag(),
                     new Schuh()
             );
 

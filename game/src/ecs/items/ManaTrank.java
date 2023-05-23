@@ -29,10 +29,26 @@ public class ManaTrank extends ItemData implements IOnCollect, IOnUse {
     @Override
     public void onCollect(Entity WorldItemEntity, Entity whoCollides) {
         if (whoCollides instanceof Hero hero) {
-            Game.removeEntity(WorldItemEntity);
             hero.getComponent(InventoryComponent.class)
                 .ifPresent(iC -> {
-                    ((InventoryComponent) iC).addItem(this);
+                    InventoryComponent inventoryComp = (InventoryComponent) iC;
+
+                    List<Bag> bagList;
+                    if (inventoryComp.checkForBag()){
+                        bagList = inventoryComp.getBags();
+                        for (Bag bag: bagList) {
+                            if(bag.isEmpty() || (bag.getInhaltsArt() == this.getItemType() && bag.emptySlots() > 0)){
+                                bag.addItem(this);
+                                Game.removeEntity(WorldItemEntity);
+                                return;
+                            }
+                        }
+                    }
+
+                    if(inventoryComp.emptySlots() > 0) {
+                        inventoryComp.addItem(this);
+                        Game.removeEntity(WorldItemEntity);
+                    }
                 });
         }
     }

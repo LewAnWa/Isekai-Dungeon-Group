@@ -34,15 +34,23 @@ public class Bag extends ItemData implements IOnCollect {
     @Override
     public void onCollect(Entity WorldItemEntity, Entity whoCollides) {
         if (whoCollides instanceof Hero hero) {
-            Game.removeEntity(WorldItemEntity);
             hero.getComponent(InventoryComponent.class)
                 .ifPresent(iC -> {
-                    ((InventoryComponent) iC).addItem(this);
+                    InventoryComponent inventoryComp = (InventoryComponent) iC;
+
+                    if(inventoryComp.getBags().size() < 3){
+                        inventoryComp.addItem(this);
+                        Game.removeEntity(WorldItemEntity);
+                    }
                 });
         }
     }
 
     public void addItem(ItemData itemData){
+        if(itemData.getItemType() == ItemType.Tasche){ //Taschen können keine Taschen Tragen
+            return;
+        }
+
         if (inventory.size()>= maxSize){
             return;
         }
@@ -77,5 +85,13 @@ public class Bag extends ItemData implements IOnCollect {
 
     public List<ItemData> getItems() {
         return new ArrayList<>(inventory);
+    }
+
+    public ItemType getInhaltsArt(){
+        return inhaltsArt;
+    }
+
+    public boolean isEmpty(){
+        return emptySlots() == maxSize;
     }
 }
