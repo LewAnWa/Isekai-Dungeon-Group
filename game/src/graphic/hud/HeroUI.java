@@ -3,7 +3,6 @@ package graphic.hud;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import controller.ScreenController;
 import ecs.components.HealthComponent;
 import ecs.components.ManaComponent;
@@ -30,6 +29,10 @@ public class HeroUI<T extends Actor> extends ScreenController<T> {
     private final Color fontColor = Color.ORANGE;
     private ScreenImage skill1, skill2, skill3, skill4;
 
+    /**
+     * Builds the HeroUI.
+     * @param hero Needs the hero to later assign his components to be displayed.
+     */
     public HeroUI(Hero hero) {
         super(new SpriteBatch());
         assignComponents(hero);
@@ -38,6 +41,10 @@ public class HeroUI<T extends Actor> extends ScreenController<T> {
         showScreen();
     }
 
+    /**
+     * Assigns the needed components from the hero to the local components to be worked with.
+     * @param hero The Hero whose stats should be displayed on the UI.
+     */
     public void assignComponents(Hero hero) {
         hero.getComponent(HealthComponent.class).ifPresent(component -> {
             logger.log(new LogRecord(Level.WARNING, "HealthComponent detected!"));
@@ -57,11 +64,16 @@ public class HeroUI<T extends Actor> extends ScreenController<T> {
         });
     }
 
+    /**
+     * Updates the UIs information like the hero's healthPoints and more.
+     */
     public void updateUI() {
         healthDisplay.setText("HEALTH: " + healthComp);
         manaDisplay.setText("MANA: " + manaComp);
         staminaDisplay.setText("STAMINA: " + staminaComp);
 
+        // check for each skill if the coolDown still applies. If yes, show the skill, else make it invisible.
+        // TODO: For some reason the skillSet is not in order as the skills where added. Find out why! (Skills in random order)
         if (((Skill) skillComp.getSkillSet().toArray()[3]).isOnCoolDown()) {
             skill1.setVisible(false);
         }
@@ -98,6 +110,7 @@ public class HeroUI<T extends Actor> extends ScreenController<T> {
         this.forEach((Actor s) -> s.setVisible(true));
     }
 
+    // Builds the icons of the four main Skills.
     private void buildSkillOverview() {
         skill1 = new ScreenImage("skills/fireball/down/fireBall_Down1.png", new Point(0, 5));
         skill1.scaleBy(1.1f);
@@ -116,6 +129,7 @@ public class HeroUI<T extends Actor> extends ScreenController<T> {
         add((T) skill4);
     }
 
+    // Builds the info texts to display health, mana and stamina.
     private void buildInfoText() {
         healthDisplay = new ScreenText(
             "HEALTH:",
