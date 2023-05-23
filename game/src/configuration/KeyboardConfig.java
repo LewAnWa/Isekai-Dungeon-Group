@@ -36,4 +36,9 @@ public class KeyboardConfig {
             new ConfigKey<>(new String[] {"skill", "fifth"}, new ConfigIntValue(Input.Keys.B));
     public static final ConfigKey<Integer> SIXTH_SKILL =
             new ConfigKey<>(new String[] {"skill", "sixth"}, new ConfigIntValue(Input.Keys.C));
+
+    public static final ConfigKey<Integer> MENU_LEFT =
+        new ConfigKey<>(new String[] {"skill", "sixth"}, new ConfigIntValue(Input.Keys.N));
+    public static final ConfigKey<Integer> MENU_RIGHT =
+        new ConfigKey<>(new String[] {"skill", "sixth"}, new ConfigIntValue(Input.Keys.M));
 }

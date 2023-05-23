@@ -1,9 +1,11 @@
 package graphic.hud;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import configuration.KeyboardConfig;
 import controller.ScreenController;
 import ecs.components.HealthComponent;
 import ecs.components.InventoryComponent;
@@ -15,6 +17,7 @@ import ecs.items.Bag;
 import ecs.items.ItemData;
 import tools.Point;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -33,7 +36,9 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
     private ScreenImage inventory, skill1, skill2, skill3, skill4;
     private boolean visible = false;
     private boolean listUpdated = false;
-    private static List<ItemData> items;
+    private List<Node> itemsList = new ArrayList<>();
+    private int pointer = 0;
+    private ScreenImage screenPointer;
 
     private static Point skillSlot1 = new Point(237, 295);
     private static Point skillSlot2 = new Point(302, 295);
@@ -45,6 +50,11 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
         assignComponents(hero);
         buildInventory();
         buildSkillOverview();
+
+        screenPointer = new ScreenImage("hud/selected.png", new Point(0,0));
+        screenPointer.scaleBy(1.5f);
+        add((T) screenPointer);
+
         hideScreen();
     }
 
@@ -80,6 +90,8 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
         this.forEach((Actor s) -> s.setVisible(false));
         visible = false;
         listUpdated = false;
+        itemsList = new ArrayList<>();
+        pointer = 0;
     }
 
     /** Makes the screen visible */
@@ -98,6 +110,19 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
         xpDisplay.setText(String.valueOf(xpComp));
 
         if (visible && !listUpdated) listItems();
+
+        if (visible && !itemsList.isEmpty()) {
+            screenPointer.setPosition(
+                itemsList.get(pointer).screenPosition.x,
+                itemsList.get(pointer).screenPosition.y);
+
+            if (Gdx.input.isKeyJustPressed(Input.Keys.N)) {
+                if (pointer > 0) pointer--;
+            }
+            else if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
+                if (pointer < itemsList.size()-1) pointer++;
+            }
+        }
     }
 
     // Used to list the items in the hero's inventory. This needs the inventoryComp to be not NULL !!
@@ -107,39 +132,20 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
             return;
         }
 
-        items = inventoryComp.getItems();
+        List<ItemData> items = inventoryComp.getItems();
         int depth = 0;
-
-        // FIXME: THis does not work
-
-        /*
-        NOTE:
-
-        I tried it with actionListener and buttons (as you see implemented now), but it just does not register
-        the user clicking the button. THis framework makes me puke. You can undo the commentated lines (139, 172)
-        and out comment the following lines that follow with add((T) button). It looks like it is supped to, but as said,
-        the buttons do not work and I cannot use ScreenButton, because WTF IS A SKIN?!
-         */
-
+        Point positionOnScreen;
 
         for (int i = 0; i < items.size(); i++) {
+            positionOnScreen = new Point(25 + (i*60), 210);
             ScreenImage slot = new ScreenImage(
                 items.get(i).getInventoryTexture().getNextAnimationTexturePath(),
-                new Point(25 + (i*60), 210));
+                positionOnScreen);
 
             slot.scaleBy(1.5f);
 
-            ScreenButton button = new ScreenButton(items.get(i).getItemName(),
-                new Point(25 + (i * 60), 210),
-                new TextButtonListener() {
-                    @Override
-                    public void clicked(InputEvent event, float x, float y) {
-                        System.out.println("I WORK");
-                    }
-                });
-
-            // add((T) slot);
-            add((T) button);
+            add((T) slot);
+            itemsList.add(new Node(positionOnScreen, items.get(i)));
 
             if (items.get(i) instanceof Bag) {
                 depth++;
@@ -152,25 +158,18 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
 
     private void listBag(Bag bag, int depth) {
         List<ItemData> items = bag.getItems();
+        Point positionOnScreen;
 
         for (int i = 0; i < items.size(); i++) {
+            positionOnScreen = new Point(25 + (i*60), 210 - (depth*50));
             ScreenImage slot = new ScreenImage(
                 items.get(i).getInventoryTexture().getNextAnimationTexturePath(),
-                new Point(25 + (i*60), 210 - (depth*50)));
+                positionOnScreen);
 
             slot.scaleBy(1.5f);
 
-            ScreenButton button = new ScreenButton(items.get(i).getItemName(),
-                new Point(25 + (i * 60), 210),
-                new TextButtonListener() {
-                    @Override
-                    public void clicked(InputEvent event, float x, float y) {
-                        System.out.println("I WORK");
-                    }
-                });
-
-            // add((T) slot);
-            add((T) button);
+            add((T) slot);
+            itemsList.add(new Node(positionOnScreen, items.get(i)));
         }
     }
 
@@ -226,5 +225,16 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
         skill4 = new ScreenImage("skills/dash/dash.png", skillSlot4);
         skill4.scaleBy(1.45f);
         add((T) skill4);
+    }
+
+    private class Node {
+
+        private Point screenPosition;
+        private ItemData item;
+
+        private Node(Point screenPosition, ItemData item) {
+            this.screenPosition = screenPosition;
+            this.item = item;
+        }
     }
 }
