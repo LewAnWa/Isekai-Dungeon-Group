@@ -63,23 +63,6 @@ public class PlayerSystem extends ECS_System {
                             });
         }
 
-        if (Gdx.input.isKeyPressed(KeyboardConfig.HERO_INFO.get()))
-            Game.getHero()
-                    .flatMap(hero -> hero.getComponent(XPComponent.class))
-                    .ifPresent(
-                            component -> {
-                                XPComponent comp = (XPComponent) component;
-
-                                System.out.println(
-                                        "HERO : LVL "
-                                                + comp.getCurrentLevel()
-                                                + "("
-                                                + comp.getCurrentXP()
-                                                + "/"
-                                                + (comp.getXPToNextLevel() + comp.getCurrentXP())
-                                                + ")");
-                            });
-
         if (Gdx.input.isKeyPressed(KeyboardConfig.HERO_KILL.get()))
             Game.getHero()
                     .flatMap(hero -> hero.getComponent(HealthComponent.class))

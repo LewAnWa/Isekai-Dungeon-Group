@@ -123,4 +123,9 @@ public class XPComponent extends Component {
         // level 0 in Formula is level 1 in game.
         return Math.round(FORMULA_SLOPE * Math.pow(currentLevel, 2) + LEVEL_1_XP) - currentXP;
     }
+
+    @Override
+    public String toString() {
+        return "LVL: " + currentLevel + " [" + currentXP + "/" + (getXPToNextLevel() + currentXP) + "]";
+    }
 }
