@@ -126,6 +126,12 @@ public class XPComponent extends Component {
 
     @Override
     public String toString() {
-        return "LVL: " + currentLevel + " [" + currentXP + "/" + (getXPToNextLevel() + currentXP) + "]";
+        return "LVL: "
+                + currentLevel
+                + " ["
+                + currentXP
+                + "/"
+                + (getXPToNextLevel() + currentXP)
+                + "]";
     }
 }

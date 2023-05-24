@@ -213,8 +213,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
             if (paused) {
                 inventoryUI.showScreen();
                 pauseMenu.hideMenu();
-            }
-            else {
+            } else {
                 inventoryUI.hideScreen();
                 pauseMenu.hideMenu();
             }

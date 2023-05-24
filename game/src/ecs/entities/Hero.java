@@ -37,7 +37,6 @@ public class Hero extends Entity {
     private Skill fifthSkill;
     private Skill sixthSkill;
 
-
     /** Entity with Components */
     public Hero() {
         super();
@@ -157,8 +156,7 @@ public class Hero extends Entity {
                         magicArrowCooldown);
     }
 
-    private void setupInventoryComponent(){
+    private void setupInventoryComponent() {
         new InventoryComponent(this, 9);
-
     }
 }

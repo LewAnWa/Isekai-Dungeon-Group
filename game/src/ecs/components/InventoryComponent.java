@@ -94,9 +94,9 @@ public class InventoryComponent extends Component {
     /**
      * @return true if a bag is inside the inventory
      */
-    public boolean checkForBag(){
-        for (ItemData item : inventory){
-            if (item instanceof Bag){
+    public boolean checkForBag() {
+        for (ItemData item : inventory) {
+            if (item instanceof Bag) {
                 return true;
             }
         }
@@ -106,10 +106,10 @@ public class InventoryComponent extends Component {
     /**
      * @return a list of all bags in the inventory
      */
-    public List<Bag> getBags(){
-        List<Bag> bagList= new ArrayList<>();
-        for (ItemData item: inventory) {
-            if(item instanceof Bag){
+    public List<Bag> getBags() {
+        List<Bag> bagList = new ArrayList<>();
+        for (ItemData item : inventory) {
+            if (item instanceof Bag) {
                 bagList.add((Bag) item);
             }
         }

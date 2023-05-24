@@ -8,5 +8,4 @@ public enum ItemType {
     Trank,
     Nahrung,
     Tasche
-
 }

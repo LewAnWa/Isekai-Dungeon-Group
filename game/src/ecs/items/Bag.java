@@ -4,14 +4,11 @@ import ecs.components.InventoryComponent;
 import ecs.entities.Entity;
 import ecs.entities.Hero;
 import graphic.Animation;
-import starter.Game;
-
 import java.util.ArrayList;
 import java.util.List;
+import starter.Game;
 
-/**
- * A Bag is an item, in which you can place more items of the same item type
- */
+/** A Bag is an item, in which you can place more items of the same item type */
 public class Bag extends ItemData implements IOnCollect {
 
     private List<ItemData> inventory;
@@ -19,64 +16,63 @@ public class Bag extends ItemData implements IOnCollect {
     private final int maxSize = 5;
     private static final List<String> bagTexture = List.of("items/Tasche/Tasche.png");
 
-    /**
-     * The constructor for the bag
-     */
+    /** The constructor for the bag */
     public Bag() {
         super(
-            ItemType.Tasche,
-            new Animation(bagTexture, 1),
-            new Animation(bagTexture,1),
-            "Tasche",
-            "Eine Tasche, die Ihr Inventar um 4 Plätze der gleichen Itemart erweitert."
-        );
+                ItemType.Tasche,
+                new Animation(bagTexture, 1),
+                new Animation(bagTexture, 1),
+                "Tasche",
+                "Eine Tasche, die Ihr Inventar um 4 Plätze der gleichen Itemart erweitert.");
 
         inventory = new ArrayList<>(4);
         this.setOnCollect(this);
-
     }
 
     @Override
     public void onCollect(Entity WorldItemEntity, Entity whoCollides) {
         if (whoCollides instanceof Hero hero) {
             hero.getComponent(InventoryComponent.class)
-                .ifPresent(iC -> {
-                    InventoryComponent inventoryComp = (InventoryComponent) iC;
+                    .ifPresent(
+                            iC -> {
+                                InventoryComponent inventoryComp = (InventoryComponent) iC;
 
-                    if(inventoryComp.getBags().size() < 3){
-                        inventoryComp.addItem(this);
-                        Game.removeEntity(WorldItemEntity);
-                    }
-                });
+                                if (inventoryComp.getBags().size() < 3) {
+                                    inventoryComp.addItem(this);
+                                    Game.removeEntity(WorldItemEntity);
+                                }
+                            });
         }
     }
 
     /**
      * Adds an item to the bag
+     *
      * @param itemData the item that will be added to the bag
      */
-    public void addItem(ItemData itemData){
-        if(itemData.getItemType() == ItemType.Tasche){ //Taschen können keine Taschen Tragen
+    public void addItem(ItemData itemData) {
+        if (itemData.getItemType() == ItemType.Tasche) { // Taschen können keine Taschen Tragen
             return;
         }
 
-        if (inventory.size()>= maxSize){
+        if (inventory.size() >= maxSize) {
             return;
         }
 
-        if (inventory.isEmpty()){
+        if (inventory.isEmpty()) {
             inventory.add(itemData);
             inhaltsArt = itemData.getItemType();
             return;
         }
 
-        if(itemData.getItemType() == inhaltsArt){
+        if (itemData.getItemType() == inhaltsArt) {
             inventory.add(itemData);
         }
     }
 
     /**
      * removes an item from the bag
+     *
      * @param itemData the item that will be removed
      * @return true if item could be successfully removed
      */
@@ -115,14 +111,14 @@ public class Bag extends ItemData implements IOnCollect {
     /**
      * @return the type of item that can be stowed inside the bag
      */
-    public ItemType getInhaltsArt(){
+    public ItemType getInhaltsArt() {
         return inhaltsArt;
     }
 
     /**
      * @return true if the bag is empty
      */
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return emptySlots() == maxSize;
     }
 }

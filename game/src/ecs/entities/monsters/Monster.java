@@ -31,7 +31,6 @@ public abstract class Monster extends Entity {
 
     private Damage damage;
 
-
     /**
      * Default constructor for the monster.
      *
@@ -81,14 +80,13 @@ public abstract class Monster extends Entity {
         healthComponent.setDieAnimation(deathAnim);
         healthComponent.setGetHitAnimation(deathAnim);
         healthComponent.setOnDeath(
-            new IOnDeathFunction() {
-                @Override
-                public void onDeath(Entity entity) {
-                    dropLoot(entity);
-                }
-            }
-        );
-                //entity -> new AnimationComponent(entity, deathAnim)); // does nothing
+                new IOnDeathFunction() {
+                    @Override
+                    public void onDeath(Entity entity) {
+                        dropLoot(entity);
+                    }
+                });
+        // entity -> new AnimationComponent(entity, deathAnim)); // does nothing
     }
 
     protected void setupVelocityComponent() {
@@ -126,14 +124,15 @@ public abstract class Monster extends Entity {
 
     /**
      * Uses the ItemDataGenerator to drop an item on the Entitys location
+     *
      * @param entity ideally the entity that has died
      */
-    public void dropLoot(Entity entity){
+    public void dropLoot(Entity entity) {
         ItemData droppedItem = new ItemDataGenerator().generateItemData();
 
-        PositionComponent psC = (PositionComponent) entity.getComponent(PositionComponent.class).get();
+        PositionComponent psC =
+                (PositionComponent) entity.getComponent(PositionComponent.class).get();
 
         droppedItem.triggerDrop(entity, psC.getPosition());
     }
-
 }
