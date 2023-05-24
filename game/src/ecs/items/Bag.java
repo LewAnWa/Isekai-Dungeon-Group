@@ -16,6 +16,9 @@ public class Bag extends ItemData implements IOnCollect {
     private final int maxSize = 4;
     private static final List<String> bagTexture = List.of("items/Tasche/Tasche.png");
 
+    /**
+     * the constructor for the bag
+     */
     public Bag() {
         super(
             ItemType.Tasche,
@@ -46,6 +49,10 @@ public class Bag extends ItemData implements IOnCollect {
         }
     }
 
+    /**
+     * Adds an item to the bag
+     * @param itemData the item that will be added to the bag
+     */
     public void addItem(ItemData itemData){
         if(itemData.getItemType() == ItemType.Tasche){ //Taschen können keine Taschen Tragen
             return;
@@ -66,31 +73,54 @@ public class Bag extends ItemData implements IOnCollect {
         }
     }
 
+    /**
+     * removes an item from the bag
+     * @param itemData the item that will be removed
+     * @return true if item could be successfully removed
+     */
     public boolean removeItem(ItemData itemData) {
 
         return inventory.remove(itemData);
     }
 
+    /**
+     * @return the number of slots filled inside the bag
+     */
     public int filledSlots() {
         return inventory.size();
     }
 
+    /**
+     * @return the number of empty slots left inside the bag
+     */
     public int emptySlots() {
         return maxSize - inventory.size();
     }
 
+    /**
+     * @return the maximum size of the bag
+     */
     public int getMaxSize() {
         return maxSize;
     }
 
+    /**
+     * @return a list of all items inside the bag
+     */
     public List<ItemData> getItems() {
         return new ArrayList<>(inventory);
     }
 
+    /**
+     * @return the type of item that can be stowed inside the bag
+     */
     public ItemType getInhaltsArt(){
         return inhaltsArt;
     }
 
+    /**
+     * @return true if the bag is empty
+     */
     public boolean isEmpty(){
         return emptySlots() == maxSize;
     }
