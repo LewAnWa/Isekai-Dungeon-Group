@@ -124,6 +124,10 @@ public abstract class Monster extends Entity {
                 (you, other, direction) -> System.out.println("Monster left hit box"));
     }
 
+    /**
+     * Uses the ItemDataGenerator to drop an item on the Entitys location
+     * @param entity ideally the entity that has died
+     */
     public void dropLoot(Entity entity){
         ItemData droppedItem = new ItemDataGenerator().generateItemData();
 

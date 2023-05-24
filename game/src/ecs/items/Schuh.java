@@ -13,6 +13,9 @@ public class Schuh extends ItemData implements IOnCollect, IOnDrop {
 
     private static final List<String> schuhTexture = List.of("items/Schuh/Schuh.png");
 
+    /**
+     * the constructor for the Schuh
+     */
     public Schuh() {
         super(ItemType.Ausruestung,
             new Animation(schuhTexture, 1),
@@ -76,6 +79,10 @@ public class Schuh extends ItemData implements IOnCollect, IOnDrop {
             });
     }
 
+    /**
+     * Adds movement speed to an entity
+     * @param hero the entity who receives the additional movement speed
+     */
     private static void addMovementSpeed(Entity hero){
         hero.getComponent(VelocityComponent.class)
             .ifPresent(vC ->{

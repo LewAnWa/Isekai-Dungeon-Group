@@ -13,6 +13,9 @@ public class ManaTrank extends ItemData implements IOnCollect, IOnUse {
 
     private static final List<String> manaTrankTexture = List.of("items/ManaTrank/ManaTrank.png");
 
+    /**
+     * the constructor for the ManaTrank
+     */
     public ManaTrank() {
         super(ItemType.Trank,
             new Animation(manaTrankTexture, 1),

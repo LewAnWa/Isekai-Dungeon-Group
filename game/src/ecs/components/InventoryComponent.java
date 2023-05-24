@@ -91,6 +91,9 @@ public class InventoryComponent extends Component {
         return new ArrayList<>(inventory);
     }
 
+    /**
+     * @return true if a bag is inside the inventory
+     */
     public boolean checkForBag(){
         for (ItemData item : inventory){
             if (item instanceof Bag){
@@ -100,6 +103,9 @@ public class InventoryComponent extends Component {
         return false;
     }
 
+    /**
+     * @return a list of all bags in the inventory
+     */
     public List<Bag> getBags(){
         List<Bag> bagList= new ArrayList<>();
         for (ItemData item: inventory) {

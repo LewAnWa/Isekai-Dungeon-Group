@@ -15,6 +15,9 @@ public class Apfel extends ItemData implements IOnCollect, IOnUse {
 
     private static final List<String> apfelTexture = List.of("items/Apfel/Apfel.png");
 
+    /**
+     * The constructor for the Apfel
+     */
     public Apfel() {
         super(ItemType.Nahrung,
             new Animation(apfelTexture, 1),
