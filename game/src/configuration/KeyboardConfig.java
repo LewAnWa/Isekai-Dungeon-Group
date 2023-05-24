@@ -28,17 +28,10 @@ public class KeyboardConfig {
             new ConfigKey<>(new String[] {"skill", "fourth"}, new ConfigIntValue(Input.Keys.F));
     public static final ConfigKey<Integer> XPADDER_SKILL =
             new ConfigKey<>(new String[] {"cheat", "XPADDER"}, new ConfigIntValue(Input.Keys.H));
-    public static final ConfigKey<Integer> HERO_INFO =
-            new ConfigKey<>(new String[] {"info", "print"}, new ConfigIntValue(Input.Keys.I));
     public static final ConfigKey<Integer> HERO_KILL =
             new ConfigKey<>(new String[] {"kill", "hero"}, new ConfigIntValue(Input.Keys.K));
     public static final ConfigKey<Integer> FIFTH_SKILL =
             new ConfigKey<>(new String[] {"skill", "fifth"}, new ConfigIntValue(Input.Keys.B));
     public static final ConfigKey<Integer> SIXTH_SKILL =
             new ConfigKey<>(new String[] {"skill", "sixth"}, new ConfigIntValue(Input.Keys.C));
-
-    public static final ConfigKey<Integer> MENU_LEFT =
-        new ConfigKey<>(new String[] {"skill", "sixth"}, new ConfigIntValue(Input.Keys.N));
-    public static final ConfigKey<Integer> MENU_RIGHT =
-        new ConfigKey<>(new String[] {"skill", "sixth"}, new ConfigIntValue(Input.Keys.M));
 }

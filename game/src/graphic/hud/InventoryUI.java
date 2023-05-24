@@ -7,10 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import configuration.KeyboardConfig;
 import controller.ScreenController;
-import ecs.components.HealthComponent;
-import ecs.components.InventoryComponent;
-import ecs.components.ManaComponent;
-import ecs.components.StaminaComponent;
+import ecs.components.*;
 import ecs.components.xp.XPComponent;
 import ecs.entities.Hero;
 import ecs.items.Bag;
@@ -33,6 +30,7 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
     private StaminaComponent staminaComp;
     private XPComponent xpComp;
     private InventoryComponent inventoryComp;
+    private PositionComponent posComp;
     private ScreenImage inventory, skill1, skill2, skill3, skill4;
     private boolean visible = false;
     private boolean listUpdated = false;
@@ -83,6 +81,10 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
             logger.log(new LogRecord(Level.INFO, "InventoryComponent detected!"));
             inventoryComp = (InventoryComponent) component;
         });
+        hero.getComponent(PositionComponent.class).ifPresent(component -> {
+            logger.log(new LogRecord(Level.INFO, "PositionComponent detected!"));
+            posComp = (PositionComponent) component;
+        });
     }
 
     /** Makes the screen invisible */
@@ -116,11 +118,24 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
                 itemsList.get(pointer).screenPosition.x,
                 itemsList.get(pointer).screenPosition.y);
 
-            if (Gdx.input.isKeyJustPressed(Input.Keys.N)) {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
                 if (pointer > 0) pointer--;
             }
-            else if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
+            else if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
                 if (pointer < itemsList.size()-1) pointer++;
+            }
+            else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+                itemsList.get(pointer).item.triggerUse(inventoryComp.getEntity());
+                inventoryComp.removeItem(itemsList.get(pointer).item);
+                remove((T) itemsList.get(pointer).image);
+                pointer = 0;
+                listItems();
+            }
+            else if (Gdx.input.isKeyJustPressed(Input.Keys.DEL)) {
+                inventoryComp.removeItem(itemsList.get(pointer).item);
+                remove((T) itemsList.get(pointer).image);
+                pointer = 0;
+                listItems();
             }
         }
     }
@@ -131,7 +146,7 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
             logger.log(new LogRecord(Level.WARNING, "NO INVENTORY COMPONENT FOUND!"));
             return;
         }
-
+        itemsList = new ArrayList<>();
         List<ItemData> items = inventoryComp.getItems();
         int depth = 0;
         Point positionOnScreen;
@@ -145,7 +160,7 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
             slot.scaleBy(1.5f);
 
             add((T) slot);
-            itemsList.add(new Node(positionOnScreen, items.get(i)));
+            itemsList.add(new Node(positionOnScreen, items.get(i), slot));
 
             if (items.get(i) instanceof Bag) {
                 depth++;
@@ -169,7 +184,7 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
             slot.scaleBy(1.5f);
 
             add((T) slot);
-            itemsList.add(new Node(positionOnScreen, items.get(i)));
+            itemsList.add(new Node(positionOnScreen, items.get(i), slot));
         }
     }
 
@@ -231,10 +246,12 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
 
         private Point screenPosition;
         private ItemData item;
+        private ScreenImage image;
 
-        private Node(Point screenPosition, ItemData item) {
+        private Node(Point screenPosition, ItemData item, ScreenImage image) {
             this.screenPosition = screenPosition;
             this.item = item;
+            this.image = image;
         }
     }
 }
