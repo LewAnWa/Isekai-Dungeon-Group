@@ -14,6 +14,7 @@ import java.util.TimerTask;
 public class Apfel extends ItemData implements IOnCollect, IOnUse {
 
     private static final List<String> apfelTexture = List.of("items/Apfel/Apfel.png");
+    private int regCounter = 0;
 
     public Apfel() {
         super(ItemType.Nahrung,
@@ -58,25 +59,43 @@ public class Apfel extends ItemData implements IOnCollect, IOnUse {
 
     @Override
     public void onUse(Entity e, ItemData item) {
-        int counter = 0;
+        regenerateHealth(e, 1);
+    }
+
+    /**
+     * this function adds a certain amount of health once
+     * @param entity whos health will be increased
+     * @param healthAmount that will be added
+     */
+    public void addSomeHealth(Entity entity, int healthAmount){
+        entity.getComponent(HealthComponent.class)
+            .ifPresent(
+                hC -> {
+                    ((HealthComponent) hC)
+                        .setCurrentHealthpoints(((HealthComponent) hC)
+                            .getCurrentHealthpoints() + healthAmount);
+                }
+            );
+        regCounter++;
+    }
+
+    /**
+     * regenerates health for a certain amount of time
+     * @param entity whos health will be regenerated
+     * @param healthPerSecond the amount of health that will be added every second (or declared time)
+     */
+    public void regenerateHealth(Entity entity, int healthPerSecond){
         Timer timer = new Timer();
 
-        while (counter <= 10) {
-            timer.schedule(
-                new TimerTask() {
-                    @Override
-                    public void run() {
-                        e.getComponent(HealthComponent.class)
-                            .ifPresent(
-                                hC -> {
-                                    ((HealthComponent) hC)
-                                        .setCurrentHealthpoints(((HealthComponent) hC)
-                                            .getCurrentHealthpoints() + 1);
-                                }
-                            );
-                    }
-                }, 0);
-            counter++;
-        }
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                addSomeHealth(entity, healthPerSecond);
+                if(regCounter == 10){
+                    timer.cancel();
+                    regCounter = 0;
+                }
+            }
+        }, 1000, 1000); //period --> time between function calls
     }
 }
