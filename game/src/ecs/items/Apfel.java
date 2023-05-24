@@ -59,10 +59,9 @@ public class Apfel extends ItemData implements IOnCollect, IOnUse {
     @Override
     public void onUse(Entity e, ItemData item) {
         int counter = 0;
+        Timer timer = new Timer();
 
-        while (counter < 10) {
-            Timer timer = new Timer();
-
+        while (counter <= 10) {
             timer.schedule(
                 new TimerTask() {
                     @Override
@@ -75,12 +74,9 @@ public class Apfel extends ItemData implements IOnCollect, IOnUse {
                                             .getCurrentHealthpoints() + 1);
                                 }
                             );
-                        timer.cancel();
                     }
-                }, 80);
-
+                }, 0);
             counter++;
-
         }
     }
 }
