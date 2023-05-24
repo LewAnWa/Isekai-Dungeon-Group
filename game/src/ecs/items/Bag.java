@@ -67,7 +67,6 @@ public class Bag extends ItemData implements IOnCollect {
     }
 
     public boolean removeItem(ItemData itemData) {
-
         return inventory.remove(itemData);
     }
 

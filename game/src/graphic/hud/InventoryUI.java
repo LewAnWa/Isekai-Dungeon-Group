@@ -12,6 +12,9 @@ import ecs.components.xp.XPComponent;
 import ecs.entities.Hero;
 import ecs.items.Bag;
 import ecs.items.ItemData;
+import ecs.items.Schuh;
+import level.elements.ILevel;
+import starter.Game;
 import tools.Point;
 
 import java.util.ArrayList;
@@ -49,7 +52,7 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
         buildInventory();
         buildSkillOverview();
 
-        screenPointer = new ScreenImage("hud/selected.png", new Point(0,0));
+        screenPointer = new ScreenImage("hud/selected.png", new Point(-100,-100));
         screenPointer.scaleBy(1.5f);
         add((T) screenPointer);
 
@@ -125,19 +128,97 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
                 if (pointer < itemsList.size()-1) pointer++;
             }
             else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-                itemsList.get(pointer).item.triggerUse(inventoryComp.getEntity());
-                inventoryComp.removeItem(itemsList.get(pointer).item);
-                remove((T) itemsList.get(pointer).image);
-                pointer = 0;
-                listItems();
+                if (itemsList.get(pointer).item instanceof Bag || itemsList.get(pointer).item instanceof Schuh) {
+                    // do nothing with bag and shoes
+                }
+                else {
+
+                    if (itemsList.get(pointer).bag != null ) { // item that should be used from bag
+                        Bag bagInQuestion = inventoryComp.getBags().get( // get all bags
+                            inventoryComp.getBags().indexOf( // get index of the bag in question
+                                itemsList.get(pointer).bag // the bag in question
+                            )
+                        );
+
+                        bagInQuestion.getItems().get( // get the item
+                            bagInQuestion.getItems().indexOf(itemsList.get(pointer).item) // get index of said item
+                        ).triggerUse(inventoryComp.getEntity()); // use item
+
+                        bagInQuestion.removeItem(itemsList.get(pointer).item); // remove item
+                    }
+                    else { // item that should be used from inventory
+                        itemsList.get(pointer).item.triggerUse(inventoryComp.getEntity());
+                        inventoryComp.removeItem(itemsList.get(pointer).item);
+                    }
+
+                    remove((T) itemsList.get(pointer).image);
+                    pointer = 0;
+                    redraw();
+                }
             }
             else if (Gdx.input.isKeyJustPressed(Input.Keys.DEL)) {
-                inventoryComp.removeItem(itemsList.get(pointer).item);
+
+                if (itemsList.get(pointer).bag != null) { // item that should be removed from bag
+                    inventoryComp.getBags().get( // get all bags
+                        inventoryComp.getBags().indexOf( // get index of the bag in question
+                            itemsList.get(pointer).bag // the bag in question
+                        )
+                    ).removeItem(itemsList.get(pointer).item); // remove the item in bag
+                    itemsList.get(pointer).item.triggerDrop(inventoryComp.getEntity(), calculateDropPosition(posComp, 0));
+                }
+                else { // item that should be removed from inventory
+                    if (itemsList.get(pointer).item instanceof Bag && ((Bag) itemsList.get(pointer).item).isEmpty()) {
+                        inventoryComp.removeItem(itemsList.get(pointer).item);
+                        itemsList.get(pointer).item.triggerDrop(inventoryComp.getEntity(), calculateDropPosition(posComp, 0));
+                    }
+                    else if (itemsList.get(pointer).item instanceof Bag){
+                        // do nothing
+                    }
+                    else {
+                        inventoryComp.removeItem(itemsList.get(pointer).item);
+                        itemsList.get(pointer).item.triggerDrop(inventoryComp.getEntity(), calculateDropPosition(posComp, 0));
+                    }
+                }
+
                 remove((T) itemsList.get(pointer).image);
                 pointer = 0;
-                listItems();
+                redraw();
             }
         }
+        else {
+            screenPointer.setPosition(-100, -100);
+        }
+    }
+
+    /**
+     * small Helper to determine the Position of the dropped item simple circle drop
+     *
+     * @param positionComponent The PositionComponent of the Chest
+     * @param radian of the current Item
+     * @return a Point in a unit Vector around the Chest
+     */
+    private static Point calculateDropPosition(PositionComponent positionComponent, double radian) {
+        Point dropPoint;
+
+        do {
+            dropPoint = new Point(
+                (float) Math.cos(radian * Math.PI) + positionComponent.getPosition().x,
+                (float) Math.sin(radian * Math.PI) + positionComponent.getPosition().y);
+
+            radian += 0.01;
+        } while (!Game.currentLevel.getTileAt(dropPoint.toCoordinate()).isAccessible());
+
+        return dropPoint;
+    }
+
+    private void redraw() {
+        this.forEach((Actor s) -> s.remove());
+        buildInventory();
+        buildSkillOverview();
+        screenPointer = new ScreenImage("hud/selected.png", new Point(-100,-100));
+        screenPointer.scaleBy(1.5f);
+        add((T) screenPointer);
+        listItems();
     }
 
     // Used to list the items in the hero's inventory. This needs the inventoryComp to be not NULL !!
@@ -184,7 +265,7 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
             slot.scaleBy(1.5f);
 
             add((T) slot);
-            itemsList.add(new Node(positionOnScreen, items.get(i), slot));
+            itemsList.add(new Node(positionOnScreen, items.get(i), bag, slot));
         }
     }
 
@@ -247,11 +328,19 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
         private Point screenPosition;
         private ItemData item;
         private ScreenImage image;
+        private ItemData bag = null;
 
         private Node(Point screenPosition, ItemData item, ScreenImage image) {
             this.screenPosition = screenPosition;
             this.item = item;
             this.image = image;
+        }
+
+        private Node(Point screenPosition, ItemData item, ItemData bag, ScreenImage image) {
+            this.screenPosition = screenPosition;
+            this.item = item;
+            this.image = image;
+            this.bag = bag;
         }
     }
 }
