@@ -5,7 +5,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import configuration.KeyboardConfig;
 import controller.ScreenController;
 import ecs.components.*;
 import ecs.components.xp.XPComponent;
@@ -13,7 +12,6 @@ import ecs.entities.Hero;
 import ecs.items.Bag;
 import ecs.items.ItemData;
 import ecs.items.Schuh;
-import level.elements.ILevel;
 import starter.Game;
 import tools.Point;
 
@@ -168,13 +166,14 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
                 }
                 else { // item that should be removed from inventory
                     if (itemsList.get(pointer).item instanceof Bag && ((Bag) itemsList.get(pointer).item).isEmpty()) {
+                        // removes the bag only if it is empty
                         inventoryComp.removeItem(itemsList.get(pointer).item);
                         itemsList.get(pointer).item.triggerDrop(inventoryComp.getEntity(), calculateDropPosition(posComp, 0));
                     }
                     else if (itemsList.get(pointer).item instanceof Bag){
                         // do nothing
                     }
-                    else {
+                    else { // remove the item out of the inventory
                         inventoryComp.removeItem(itemsList.get(pointer).item);
                         itemsList.get(pointer).item.triggerDrop(inventoryComp.getEntity(), calculateDropPosition(posComp, 0));
                     }
@@ -211,6 +210,7 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
         return dropPoint;
     }
 
+    // Used to redraw the whole InventoryUI
     private void redraw() {
         this.forEach((Actor s) -> s.remove());
         buildInventory();
@@ -252,6 +252,7 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
         listUpdated = true;
     }
 
+    // Lists all items of a given bag on the screen.
     private void listBag(Bag bag, int depth) {
         List<ItemData> items = bag.getItems();
         Point positionOnScreen;
@@ -323,6 +324,14 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
         add((T) skill4);
     }
 
+    /*
+    A local Node used for the itemLists.
+    It contains the following information:
+    - the item
+    - the items ScreenImage
+    - the position of the ScreenImage in the Inventory
+    - the item's bag, if it is in one.
+     */
     private class Node {
 
         private Point screenPosition;
