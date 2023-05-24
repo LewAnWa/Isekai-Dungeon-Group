@@ -63,10 +63,5 @@ public class ManaTrank extends ItemData implements IOnCollect, IOnUse {
             .ifPresent(mC -> {
                 ((ManaComponent) mC).setCurrentManaPoints(((ManaComponent) mC).getCurrentManaPoints() + 10);
             });
-
-        e.getComponent(InventoryComponent.class)
-            .ifPresent(iC -> {
-                ((InventoryComponent) iC).removeItem(item);
-            });
     }
 }

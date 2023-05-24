@@ -74,25 +74,25 @@ public class HeroUI<T extends Actor> extends ScreenController<T> {
 
         // check for each skill if the coolDown still applies. If yes, show the skill, else make it invisible.
         // TODO: For some reason the skillSet is not in order as the skills where added. Find out why! (Skills in random order)
-        if (((Skill) skillComp.getSkillSet().toArray()[3]).isOnCoolDown()) {
+        if (((Skill) skillComp.getSkillSet().toArray()[5]).isOnCoolDown()) { // 5 = Fireball
             skill1.setVisible(false);
         }
         else {
             skill1.setVisible(true);
         }
-        if (((Skill) skillComp.getSkillSet().toArray()[4]).isOnCoolDown()) {
+        if (((Skill) skillComp.getSkillSet().toArray()[1]).isOnCoolDown()) { // 1 = FrostBolt
             skill2.setVisible(false);
         }
         else {
             skill2.setVisible(true);
         }
-        if (((Skill) skillComp.getSkillSet().toArray()[2]).isOnCoolDown()) {
+        if (((Skill) skillComp.getSkillSet().toArray()[0]).isOnCoolDown()) { // 0 = Sword
             skill3.setVisible(false);
         }
         else {
             skill3.setVisible(true);
         }
-        if (((Skill) skillComp.getSkillSet().toArray()[1]).isOnCoolDown()) {
+        if (((Skill) skillComp.getSkillSet().toArray()[3]).isOnCoolDown()) { // 3 = Dash
             skill4.setVisible(false);
         }
         else {

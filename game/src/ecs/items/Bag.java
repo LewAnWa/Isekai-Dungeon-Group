@@ -13,7 +13,7 @@ public class Bag extends ItemData implements IOnCollect {
 
     private List<ItemData> inventory;
     private ItemType inhaltsArt;
-    private final int maxSize = 4;
+    private final int maxSize = 5;
     private static final List<String> bagTexture = List.of("items/Tasche/Tasche.png");
 
     /**
@@ -79,7 +79,6 @@ public class Bag extends ItemData implements IOnCollect {
      * @return true if item could be successfully removed
      */
     public boolean removeItem(ItemData itemData) {
-
         return inventory.remove(itemData);
     }
 

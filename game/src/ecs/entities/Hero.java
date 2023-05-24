@@ -158,7 +158,7 @@ public class Hero extends Entity {
     }
 
     private void setupInventoryComponent(){
-        new InventoryComponent(this, 5);
+        new InventoryComponent(this, 9);
 
     }
 }
