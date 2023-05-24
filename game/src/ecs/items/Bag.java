@@ -9,6 +9,9 @@ import starter.Game;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A Bag is an item, in which you can place more items of the same item type
+ */
 public class Bag extends ItemData implements IOnCollect {
 
     private List<ItemData> inventory;
@@ -17,7 +20,7 @@ public class Bag extends ItemData implements IOnCollect {
     private static final List<String> bagTexture = List.of("items/Tasche/Tasche.png");
 
     /**
-     * the constructor for the bag
+     * The constructor for the bag
      */
     public Bag() {
         super(
@@ -28,7 +31,6 @@ public class Bag extends ItemData implements IOnCollect {
             "Eine Tasche, die Ihr Inventar um 4 Plätze der gleichen Itemart erweitert."
         );
 
-        WorldItemBuilder.buildWorldItem(this);
         inventory = new ArrayList<>(4);
         this.setOnCollect(this);
 

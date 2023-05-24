@@ -9,12 +9,15 @@ import tools.Point;
 
 import java.util.List;
 
+/**
+ * The Schuh is an item which increases the heros movement speed while wearing
+ */
 public class Schuh extends ItemData implements IOnCollect, IOnDrop {
 
     private static final List<String> schuhTexture = List.of("items/Schuh/Schuh.png");
 
     /**
-     * the constructor for the Schuh
+     * The constructor for the Schuh
      */
     public Schuh() {
         super(ItemType.Ausruestung,
@@ -24,7 +27,6 @@ public class Schuh extends ItemData implements IOnCollect, IOnDrop {
             "Alte und aufgetragene Wanderstiefel."
         );
 
-        WorldItemBuilder.buildWorldItem(this);
         this.setOnCollect(this);
         this.setOnDrop(this);
 

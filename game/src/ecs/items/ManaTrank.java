@@ -9,6 +9,9 @@ import starter.Game;
 
 import java.util.List;
 
+/**
+ * The ManaTrank is an item which will instantly restore a certain amount of mana after use
+ */
 public class ManaTrank extends ItemData implements IOnCollect, IOnUse {
 
     private static final List<String> manaTrankTexture = List.of("items/ManaTrank/ManaTrank.png");
@@ -24,7 +27,6 @@ public class ManaTrank extends ItemData implements IOnCollect, IOnUse {
             "Ein blaues, dickflüssiges Elixir."
         );
 
-        WorldItemBuilder.buildWorldItem(this);
         this.setOnCollect(this);
         this.setOnUse(this);
     }

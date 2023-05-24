@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * The Apfel is an item, which generates health after consuming
+ */
 public class Apfel extends ItemData implements IOnCollect, IOnUse {
 
     private static final List<String> apfelTexture = List.of("items/Apfel/Apfel.png");
@@ -27,7 +30,6 @@ public class Apfel extends ItemData implements IOnCollect, IOnUse {
             "Ein wahrhaft leckeres Obst."
         );
 
-        WorldItemBuilder.buildWorldItem(this);
         this.setOnCollect(this);
         this.setOnUse(this);
     }
@@ -70,7 +72,7 @@ public class Apfel extends ItemData implements IOnCollect, IOnUse {
      * @param entity whos health will be increased
      * @param healthAmount that will be added
      */
-    public void addSomeHealth(Entity entity, int healthAmount){
+    protected void addSomeHealth(Entity entity, int healthAmount){
         entity.getComponent(HealthComponent.class)
             .ifPresent(
                 hC -> {
@@ -87,7 +89,7 @@ public class Apfel extends ItemData implements IOnCollect, IOnUse {
      * @param entity whos health will be regenerated
      * @param healthPerSecond the amount of health that will be added every second (or declared time)
      */
-    public void regenerateHealth(Entity entity, int healthPerSecond){
+    protected void regenerateHealth(Entity entity, int healthPerSecond){
         Timer timer = new Timer();
 
         timer.schedule(new TimerTask() {
