@@ -46,6 +46,7 @@ public class Hero extends Entity {
         setupHitboxComponent();
         setupXPComponent();
         setupHealthComponent();
+        setupInventoryComponent();
         PlayableComponent pc = new PlayableComponent(this);
         setupFireballSkill();
         setupFrostBoltSkill();
@@ -153,5 +154,9 @@ public class Hero extends Entity {
                 new Skill(
                         new MagicArrowSkill(SkillTools::getCursorPositionAsPoint, this),
                         magicArrowCooldown);
+    }
+
+    private void setupInventoryComponent() {
+        new InventoryComponent(this, 9);
     }
 }

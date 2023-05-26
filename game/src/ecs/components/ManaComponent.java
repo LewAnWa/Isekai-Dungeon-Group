@@ -21,6 +21,11 @@ public class ManaComponent extends Component {
         this.currentManaPoints = maximalManaPoints;
     }
 
+    @Override
+    public String toString() {
+        return currentManaPoints + "/" + maximalManaPoints;
+    }
+
     // -------------------- GETTER AND SETTER -------------------- //
 
     /**
@@ -36,7 +41,7 @@ public class ManaComponent extends Component {
      * @param currentManaPoints new amount of current mana-points
      */
     public void setCurrentManaPoints(int currentManaPoints) {
-        this.currentManaPoints = currentManaPoints;
+        this.currentManaPoints = Math.min(currentManaPoints, maximalManaPoints);
     }
 
     /**

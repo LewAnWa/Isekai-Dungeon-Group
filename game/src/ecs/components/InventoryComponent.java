@@ -1,6 +1,7 @@
 package ecs.components;
 
 import ecs.entities.Entity;
+import ecs.items.Bag;
 import ecs.items.ItemData;
 import java.util.ArrayList;
 import java.util.List;
@@ -88,5 +89,30 @@ public class InventoryComponent extends Component {
      */
     public List<ItemData> getItems() {
         return new ArrayList<>(inventory);
+    }
+
+    /**
+     * @return true if a bag is inside the inventory
+     */
+    public boolean checkForBag() {
+        for (ItemData item : inventory) {
+            if (item instanceof Bag) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @return a list of all bags in the inventory
+     */
+    public List<Bag> getBags() {
+        List<Bag> bagList = new ArrayList<>();
+        for (ItemData item : inventory) {
+            if (item instanceof Bag) {
+                bagList.add((Bag) item);
+            }
+        }
+        return bagList;
     }
 }

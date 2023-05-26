@@ -192,4 +192,9 @@ public class HealthComponent extends Component {
     public Optional<Entity> getLastDamageCause() {
         return Optional.ofNullable(this.lastCause);
     }
+
+    @Override
+    public String toString() {
+        return currentHealthpoints + "/" + maximalHealthpoints;
+    }
 }

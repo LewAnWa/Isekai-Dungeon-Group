@@ -22,6 +22,8 @@ import ecs.systems.*;
 import graphic.DungeonCamera;
 import graphic.Painter;
 import graphic.hud.GameOverScreen;
+import graphic.hud.HeroUI;
+import graphic.hud.InventoryUI;
 import graphic.hud.PauseMenu;
 import java.io.IOException;
 import java.util.*;
@@ -75,6 +77,8 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
     public static ILevel currentLevel;
     private static PauseMenu<Actor> pauseMenu;
     private static GameOverScreen<Actor> gameOverScreen;
+    private static HeroUI<Actor> heroUI;
+    private static InventoryUI<Actor> inventoryUI;
     private static Entity hero;
     private static Entity[] monsters;
     private Logger gameLogger;
@@ -104,6 +108,9 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         levelAPI.update();
         controller.forEach(AbstractController::update);
         camera.update();
+
+        heroUI.updateUI();
+        inventoryUI.updateUI();
     }
 
     /** Called once at the beginning of the game. */
@@ -120,9 +127,15 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         controller.add(systems);
         pauseMenu = new PauseMenu<>();
         controller.add(pauseMenu);
+
+        hero = new Hero();
+        heroUI = new HeroUI<>((Hero) hero);
+        controller.add(heroUI);
+        inventoryUI = new InventoryUI<>((Hero) hero);
+        controller.add(inventoryUI);
         gameOverScreen = new GameOverScreen<>(this);
         controller.add(gameOverScreen);
-        hero = new Hero();
+
         levelAPI = new LevelAPI(batch, painter, new WallGenerator(new RandomWalkGenerator()), this);
         levelAPI.loadLevel(LEVELSIZE);
         createSystems();
@@ -134,7 +147,19 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
      */
     public void doRestart() {
         hero = new Hero();
+
+        controller.remove(heroUI);
+        heroUI = new HeroUI<>((Hero) hero);
+        controller.add(heroUI);
+        controller.remove(inventoryUI);
+        inventoryUI = new InventoryUI<>((Hero) hero);
+        controller.add(inventoryUI);
+
         gameOverScreen.hideScreen();
+        controller.remove(gameOverScreen);
+        gameOverScreen = new GameOverScreen<>(this);
+        controller.add(gameOverScreen);
+
         levelAPI.loadLevel(LEVELSIZE);
     }
 
@@ -176,6 +201,23 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         manageEntitiesSets();
         getHero().ifPresent(this::loadNextLevelIfEntityIsOnEndTile);
         if (Gdx.input.isKeyJustPressed(Input.Keys.P)) togglePause();
+        if (Gdx.input.isKeyJustPressed(KeyboardConfig.INVENTORY_OPEN.get())) toggleInventory();
+    }
+
+    private void toggleInventory() {
+        paused = !paused;
+        if (systems != null) {
+            systems.forEach(ECS_System::toggleRun);
+        }
+        if (inventoryUI != null) {
+            if (paused) {
+                inventoryUI.showScreen();
+                pauseMenu.hideMenu();
+            } else {
+                inventoryUI.hideScreen();
+                pauseMenu.hideMenu();
+            }
+        }
     }
 
     @Override
@@ -247,7 +289,10 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         }
         if (pauseMenu != null) {
             if (paused) pauseMenu.showMenu();
-            else pauseMenu.hideMenu();
+            else {
+                pauseMenu.hideMenu();
+                inventoryUI.hideScreen();
+            }
         }
     }
 
