@@ -43,7 +43,7 @@ public class Rogue extends Hero {
         firstSkill = new Skill(
             new SchwertstichSkill(SkillTools::getCursorPositionAsPoint, this),
             1,
-            SchwertstichSkill.pathToTextures);
+            SchwertstichSkill.pathToTextureUI);
 
         playableComponent.setSkillSlot1(firstSkill);
         skillComponent.addSkill(firstSkill);

@@ -76,8 +76,8 @@ public class HeroUI<T extends Actor> extends ScreenController<T> {
     /** Updates the UIs information like the hero's healthPoints and more. */
     public void updateUI() {
         healthDisplay.setText("HEALTH: " + healthComp);
-        manaDisplay.setText("MANA: " + manaComp);
         staminaDisplay.setText("STAMINA: " + staminaComp);
+        if (manaComp != null) manaDisplay.setText("MANA: " + manaComp);
 
         // check for each skill if the coolDown still applies. If yes, show the skill, else make it
         // invisible.
@@ -116,17 +116,24 @@ public class HeroUI<T extends Actor> extends ScreenController<T> {
 
     // Builds the icons of the four main Skills.
     private void buildSkillOverview() {
-        skill1 = new ScreenImage("skills/fireball/down/fireBall_Down1.png", new Point(0, 5));
+        skill1 = new ScreenImage(
+            ((Skill) skillComp.getSkillSet().toArray()[0]).getPathToTextureUI(),
+            new Point(0, 5));
         skill1.scaleBy(1.1f);
         add((T) skill1);
 
-        skill2 = new ScreenImage("skills/frostbolt/down/frostBolt_Down1.png", new Point(40, 5));
+        skill2 = new ScreenImage(
+            ((Skill) skillComp.getSkillSet().toArray()[1]).getPathToTextureUI(),
+            new Point(40, 5));
         skill2.scaleBy(1.1f);
         add((T) skill2);
 
-        skill3 = new ScreenImage("skills/schwertstich/right/schwert_Right4.png", new Point(80, 0));
+        /*
+        skill3 = new ScreenImage(((Skill) skillComp.getSkillSet().toArray()[2]).getPathToTextures(), new Point(80, 0));
         skill3.scaleBy(1.1f);
         add((T) skill3);
+
+         */
     }
 
     // Builds the info texts to display health, mana and stamina.
@@ -141,18 +148,6 @@ public class HeroUI<T extends Actor> extends ScreenController<T> {
                                 .build());
         add((T) healthDisplay);
 
-        manaDisplay =
-                new ScreenText(
-                        "MANA:",
-                        new Point(
-                                (float) Constants.WINDOW_WIDTH / 2 - 50,
-                                Constants.WINDOW_HEIGHT - 20),
-                        2,
-                        new LabelStyleBuilder(FontBuilder.DEFAULT_FONT)
-                                .setFontcolor(fontColor)
-                                .build());
-        add((T) manaDisplay);
-
         staminaDisplay =
                 new ScreenText(
                         "STAMINA:",
@@ -162,5 +157,19 @@ public class HeroUI<T extends Actor> extends ScreenController<T> {
                                 .setFontcolor(fontColor)
                                 .build());
         add((T) staminaDisplay);
+
+        if (manaComp != null) {
+            manaDisplay =
+                new ScreenText(
+                    "MANA:",
+                    new Point(
+                        (float) Constants.WINDOW_WIDTH / 2 - 50,
+                        Constants.WINDOW_HEIGHT - 20),
+                    2,
+                    new LabelStyleBuilder(FontBuilder.DEFAULT_FONT)
+                        .setFontcolor(fontColor)
+                        .build());
+            add((T) manaDisplay);
+        }
     }
 }

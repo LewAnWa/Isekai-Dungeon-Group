@@ -42,7 +42,7 @@ public class Knight extends Hero {
         firstSkill = new Skill(
             new SchwertstichSkill(SkillTools::getCursorPositionAsPoint, this),
             0.5f,
-            SchwertstichSkill.pathToTextures);
+            SchwertstichSkill.pathToTextureUI);
 
         playableComponent.setSkillSlot1(firstSkill);
         skillComponent.addSkill(firstSkill);

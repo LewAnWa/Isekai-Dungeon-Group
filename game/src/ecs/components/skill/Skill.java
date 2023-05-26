@@ -8,18 +8,18 @@ public class Skill {
     private final ISkillFunction skillFunction;
     private final int coolDownInFrames;
     private int currentCoolDownInFrames;
-    private final String pathToTextures;
+    private final String pathToTextureUI;
 
     /**
      * @param skillFunction Function of this skill.
      * @param coolDownInSeconds how long it takes for the skill to be used again.
-     * @param pathToTextures the path to the textures of the skill.
+     * @param pathToTextureUI the path to the textures of the skill.
      */
-    public Skill(ISkillFunction skillFunction, float coolDownInSeconds, String pathToTextures) {
+    public Skill(ISkillFunction skillFunction, float coolDownInSeconds, String pathToTextureUI) {
         this.skillFunction = skillFunction;
         this.coolDownInFrames = (int) (coolDownInSeconds * Constants.FRAME_RATE);
         this.currentCoolDownInFrames = 0;
-        this.pathToTextures = pathToTextures;
+        this.pathToTextureUI = pathToTextureUI;
     }
 
     /**
@@ -51,7 +51,7 @@ public class Skill {
         currentCoolDownInFrames = Math.max(0, --currentCoolDownInFrames);
     }
 
-    public String getPathToTextures() {
-        return pathToTextures;
+    public String getPathToTextureUI() {
+        return pathToTextureUI;
     }
 }

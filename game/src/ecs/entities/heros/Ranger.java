@@ -2,7 +2,6 @@ package ecs.entities.heros;
 
 import dslToGame.AnimationBuilder;
 import ecs.components.AnimationComponent;
-import ecs.components.HealthComponent;
 import ecs.components.VelocityComponent;
 import ecs.components.skill.*;
 import graphic.Animation;
@@ -41,7 +40,7 @@ public class Ranger extends Hero {
         firstSkill = new Skill(
             new MagicArrowSkill(SkillTools::getCursorPositionAsPoint, this),
             1,
-            MagicArrowSkill.pathToTextures);
+            MagicArrowSkill.pathToTextureUI);
 
         playableComponent.setSkillSlot1(firstSkill);
         skillComponent.addSkill(firstSkill);
@@ -50,7 +49,7 @@ public class Ranger extends Hero {
         secondSkill = new Skill(
             new BumerangSkill(SkillTools::getCursorPositionAsPoint, this),
             2,
-            BumerangSkill.pathToTextures);
+            BumerangSkill.pathToTextureUI);
 
         playableComponent.setSkillSlot2(secondSkill);
         skillComponent.addSkill(secondSkill);

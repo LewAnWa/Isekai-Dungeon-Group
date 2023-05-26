@@ -46,7 +46,7 @@ public class Mage extends Hero {
         firstSkill = new Skill(
             new FireballSkill(SkillTools::getCursorPositionAsPoint, this),
             4,
-            FireballSkill.pathToTextures);
+            FireballSkill.pathToTextureUI);
 
         playableComponent.setSkillSlot1(firstSkill);
         skillComponent.addSkill(firstSkill);
@@ -55,7 +55,7 @@ public class Mage extends Hero {
         secondSkill = new Skill(
             new FrostBoltSkill(SkillTools::getCursorPositionAsPoint),
             4,
-            FireballSkill.pathToTextures);
+            FireballSkill.pathToTextureUI);
 
         playableComponent.setSkillSlot2(secondSkill);
         skillComponent.addSkill(secondSkill);

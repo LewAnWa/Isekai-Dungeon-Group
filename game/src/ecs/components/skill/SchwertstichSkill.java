@@ -7,7 +7,7 @@ import tools.Point;
 
 public class SchwertstichSkill extends DamageProjectileSkill {
 
-    public static final String pathToTextures = "skills/schwertstich/";
+    public static final String pathToTextureUI = "skills/schwertstich/right/schwert_Right4.png";
 
     /**
      * The constructor for the schwertstich
@@ -17,7 +17,7 @@ public class SchwertstichSkill extends DamageProjectileSkill {
      */
     public SchwertstichSkill(ITargetSelection targetSelection, Entity user) {
         super(
-                pathToTextures,
+            "skills/schwertstich/",
                 0.5f,
                 new Damage(15, DamageType.PHYSICAL, user),
                 new Point(11, 11),

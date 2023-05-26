@@ -4,7 +4,7 @@ import tools.Point;
 
 public class FrostBoltSkill extends ImpairingProjectileSkill {
 
-    public static final String pathToTextures = "skills/frostbolt/";
+    public static final String pathToTextureUI = "skills/frostbolt/down/frostBolt_Down4.png";
 
     /**
      * This Skill is an ImpairingProjectileSkill It is a skill that can be shot at an enemy entity
@@ -14,7 +14,7 @@ public class FrostBoltSkill extends ImpairingProjectileSkill {
      */
     public FrostBoltSkill(ITargetSelection targetSelection) {
         super(
-            pathToTextures,
+            "skills/frostbolt/",
             0.5f,
             0.04f,
             new Point(10, 10),
