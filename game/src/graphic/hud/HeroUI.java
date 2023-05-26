@@ -9,7 +9,7 @@ import ecs.components.ManaComponent;
 import ecs.components.StaminaComponent;
 import ecs.components.skill.Skill;
 import ecs.components.skill.SkillComponent;
-import ecs.entities.Hero;
+import ecs.entities.heros.Hero;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
@@ -26,7 +26,7 @@ public class HeroUI<T extends Actor> extends ScreenController<T> {
     private StaminaComponent staminaComp;
     private SkillComponent skillComp;
     private final Color fontColor = Color.ORANGE;
-    private ScreenImage skill1, skill2, skill3, skill4;
+    private ScreenImage skill1, skill2, skill3;
 
     /**
      * Builds the HeroUI.
@@ -83,26 +83,25 @@ public class HeroUI<T extends Actor> extends ScreenController<T> {
         // invisible.
         // TODO: For some reason the skillSet is not in order as the skills where added. Find out
         // why! (Skills in random order)
-        if (((Skill) skillComp.getSkillSet().toArray()[5]).isOnCoolDown()) { // 5 = Fireball
+        if (((Skill) skillComp.getSkillSet().toArray()[0]).isOnCoolDown()) { // first skill
             skill1.setVisible(false);
         } else {
             skill1.setVisible(true);
         }
-        if (((Skill) skillComp.getSkillSet().toArray()[1]).isOnCoolDown()) { // 1 = FrostBolt
+        if (((Skill) skillComp.getSkillSet().toArray()[1]).isOnCoolDown()) { // second skill
             skill2.setVisible(false);
         } else {
             skill2.setVisible(true);
         }
-        if (((Skill) skillComp.getSkillSet().toArray()[0]).isOnCoolDown()) { // 0 = Sword
+        /*
+        if (((Skill) skillComp.getSkillSet().toArray()[2]).isOnCoolDown()) { // third skill
             skill3.setVisible(false);
         } else {
             skill3.setVisible(true);
         }
-        if (((Skill) skillComp.getSkillSet().toArray()[3]).isOnCoolDown()) { // 3 = Dash
-            skill4.setVisible(false);
-        } else {
-            skill4.setVisible(true);
-        }
+
+         */
+
     }
 
     /** Makes the screen invisible */
@@ -128,10 +127,6 @@ public class HeroUI<T extends Actor> extends ScreenController<T> {
         skill3 = new ScreenImage("skills/schwertstich/right/schwert_Right4.png", new Point(80, 0));
         skill3.scaleBy(1.1f);
         add((T) skill3);
-
-        skill4 = new ScreenImage("skills/dash/dash.png", new Point(140, 0));
-        skill4.scaleBy(1.05f);
-        add((T) skill4);
     }
 
     // Builds the info texts to display health, mana and stamina.

@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import controller.ScreenController;
 import ecs.components.*;
 import ecs.components.xp.XPComponent;
-import ecs.entities.Hero;
+import ecs.entities.heros.Hero;
 import ecs.items.Bag;
 import ecs.items.ItemData;
 import ecs.items.Schuh;

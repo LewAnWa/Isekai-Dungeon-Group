@@ -19,19 +19,13 @@ public class KeyboardConfig {
     public static final ConfigKey<Integer> INTERACT_WORLD =
             new ConfigKey<>(new String[] {"interact", "world"}, new ConfigIntValue(Input.Keys.E));
     public static final ConfigKey<Integer> FIRST_SKILL =
-            new ConfigKey<>(new String[] {"skill", "first"}, new ConfigIntValue(Input.Keys.Q));
+            new ConfigKey<>(new String[] {"skill", "first"}, new ConfigIntValue(Input.Keys.NUM_1));
     public static final ConfigKey<Integer> SECOND_SKILL =
-            new ConfigKey<>(new String[] {"skill", "second"}, new ConfigIntValue(Input.Keys.R));
+            new ConfigKey<>(new String[] {"skill", "second"}, new ConfigIntValue(Input.Keys.NUM_2));
     public static final ConfigKey<Integer> THIRD_SKILL =
             new ConfigKey<>(new String[] {"skill", "third"}, new ConfigIntValue(Input.Keys.SPACE));
-    public static final ConfigKey<Integer> FOURTH_SKILL =
-            new ConfigKey<>(new String[] {"skill", "fourth"}, new ConfigIntValue(Input.Keys.F));
     public static final ConfigKey<Integer> XPADDER_SKILL =
             new ConfigKey<>(new String[] {"cheat", "XPADDER"}, new ConfigIntValue(Input.Keys.H));
     public static final ConfigKey<Integer> HERO_KILL =
             new ConfigKey<>(new String[] {"kill", "hero"}, new ConfigIntValue(Input.Keys.K));
-    public static final ConfigKey<Integer> FIFTH_SKILL =
-            new ConfigKey<>(new String[] {"skill", "fifth"}, new ConfigIntValue(Input.Keys.B));
-    public static final ConfigKey<Integer> SIXTH_SKILL =
-            new ConfigKey<>(new String[] {"skill", "sixth"}, new ConfigIntValue(Input.Keys.C));
 }

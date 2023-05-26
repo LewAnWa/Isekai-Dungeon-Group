@@ -2,7 +2,7 @@ package ecs.items;
 
 import ecs.components.*;
 import ecs.entities.Entity;
-import ecs.entities.Hero;
+import ecs.entities.heros.Hero;
 import graphic.Animation;
 import java.util.List;
 import starter.Game;

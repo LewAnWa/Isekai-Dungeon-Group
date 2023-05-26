@@ -16,7 +16,7 @@ import ecs.components.MissingComponentException;
 import ecs.components.PositionComponent;
 import ecs.components.xp.XPComponent;
 import ecs.entities.Entity;
-import ecs.entities.Hero;
+import ecs.entities.heros.*;
 import ecs.entities.monsters.MonsterFactory;
 import ecs.systems.*;
 import graphic.DungeonCamera;
@@ -128,7 +128,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         pauseMenu = new PauseMenu<>();
         controller.add(pauseMenu);
 
-        hero = new Hero();
+        hero = new Knight();
         heroUI = new HeroUI<>((Hero) hero);
         controller.add(heroUI);
         inventoryUI = new InventoryUI<>((Hero) hero);
@@ -146,7 +146,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
      * loading a new level.
      */
     public void doRestart() {
-        hero = new Hero();
+        hero = new Knight();
 
         controller.remove(heroUI);
         heroUI = new HeroUI<>((Hero) hero);
