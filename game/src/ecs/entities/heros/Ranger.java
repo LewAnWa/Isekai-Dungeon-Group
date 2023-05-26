@@ -16,14 +16,10 @@ public class Ranger extends Hero {
     private final String pathToHit = "knight/hit/";
 
     public Ranger() {
-        super(100, 60);
+        super(100, 60, "knight/hit/");
         setupAnimationComponent();
         setupVelocityComponent();
         setupSkills();
-
-        getComponent(HealthComponent.class).ifPresent(component -> {
-            ((HealthComponent) component).setDieAnimation(AnimationBuilder.buildAnimation(pathToHit));
-        });
     }
 
     private void setupAnimationComponent() {

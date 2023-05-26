@@ -19,14 +19,10 @@ public class Rogue extends Hero {
     private final String pathToHit = "knight/hit/";
 
     public Rogue() {
-        super(100, 80);
+        super(100, 80, "knight/hit/");
         setupAnimationComponent();
         setupVelocityComponent();
         setupSkills();
-
-        getComponent(HealthComponent.class).ifPresent(component -> {
-            ((HealthComponent) component).setDieAnimation(AnimationBuilder.buildAnimation(pathToHit));
-        });
     }
 
     private void setupAnimationComponent() {

@@ -26,12 +26,12 @@ public abstract class Hero extends Entity {
     protected boolean isVisible = false;
 
     /** Entity with Components */
-    public Hero(int healthPoints, int staminaPoints) {
+    public Hero(int healthPoints, int staminaPoints, String pathToHit) {
         super();
         setupPositionComponent();
         setupHitboxComponent();
         setupXPComponent();
-        setupHealthComponent(healthPoints);
+        setupHealthComponent(healthPoints, pathToHit);
         setupStaminaComponent(staminaPoints);
         setupInventoryComponent();
         setupSkillComponent();
@@ -54,10 +54,11 @@ public abstract class Hero extends Entity {
         xpcomponent.setCurrentLevel(1);
     }
 
-    private void setupHealthComponent(int healthPoints) {
+    private void setupHealthComponent(int healthPoints, String pathToHit) {
         HealthComponent comp = new HealthComponent(this);
         comp.setMaximalHealthpoints(healthPoints);
         comp.setCurrentHealthpoints(comp.getMaximalHealthpoints());
+        comp.setGetHitAnimation(AnimationBuilder.buildAnimation(pathToHit));
         comp.setDieAnimation(AnimationBuilder.buildAnimation("deathAnimation/"));
     }
 

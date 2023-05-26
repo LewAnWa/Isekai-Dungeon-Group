@@ -16,17 +16,12 @@ public class Knight extends Hero {
     private final String pathToIdleLeft = "knight/idleLeft";
     private final String pathToRunLeft = "knight/runLeft";
     private final String pathToRunRight = "knight/runRight";
-    private final String pathToHit = "knight/hit/";
 
     public Knight() {
-        super(130, 40);
+        super(130, 40, "knight/hit/");
         setupAnimationComponent();
         setupVelocityComponent();
         setupSkills();
-
-        getComponent(HealthComponent.class).ifPresent(component -> {
-            ((HealthComponent) component).setDieAnimation(AnimationBuilder.buildAnimation(pathToHit));
-        });
     }
 
     private void setupAnimationComponent() {
@@ -55,7 +50,7 @@ public class Knight extends Hero {
         // Dash
         thirdSkill = new Skill(new DashSkill(), 1);
 
-        playableComponent.setSkillSlot2(thirdSkill);
+        playableComponent.setSkillSlot3(thirdSkill);
         skillComponent.addSkill(thirdSkill);
     }
 }

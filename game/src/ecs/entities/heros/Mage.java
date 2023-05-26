@@ -17,15 +17,11 @@ public class Mage extends Hero {
     private final String pathToHit = "knight/hit/";
 
     public Mage() {
-        super(80, 15);
+        super(80, 15, "knight/hit/");
         setupAnimationComponent();
         setupManaComponent();
         setupVelocityComponent();
         setupSkills();
-
-        getComponent(HealthComponent.class).ifPresent(component -> {
-            ((HealthComponent) component).setDieAnimation(AnimationBuilder.buildAnimation(pathToHit));
-        });
     }
 
     private void setupAnimationComponent() {
