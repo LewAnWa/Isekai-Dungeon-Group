@@ -2,7 +2,6 @@ package ecs.entities.heros;
 
 import dslToGame.AnimationBuilder;
 import ecs.components.AnimationComponent;
-import ecs.components.HealthComponent;
 import ecs.components.VelocityComponent;
 import ecs.components.skill.DashSkill;
 import ecs.components.skill.SchwertstichSkill;
@@ -42,13 +41,17 @@ public class Knight extends Hero {
         // Sword
         firstSkill = new Skill(
             new SchwertstichSkill(SkillTools::getCursorPositionAsPoint, this),
-            0.5f);
+            0.5f,
+            SchwertstichSkill.pathToTextures);
 
         playableComponent.setSkillSlot1(firstSkill);
         skillComponent.addSkill(firstSkill);
 
         // Dash
-        thirdSkill = new Skill(new DashSkill(), 1);
+        thirdSkill = new Skill(
+            new DashSkill(),
+            1,
+            DashSkill.pathToTextures);
 
         playableComponent.setSkillSlot3(thirdSkill);
         skillComponent.addSkill(thirdSkill);

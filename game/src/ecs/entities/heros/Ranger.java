@@ -40,7 +40,8 @@ public class Ranger extends Hero {
         // magic Arrow
         firstSkill = new Skill(
             new MagicArrowSkill(SkillTools::getCursorPositionAsPoint, this),
-            1);
+            1,
+            MagicArrowSkill.pathToTextures);
 
         playableComponent.setSkillSlot1(firstSkill);
         skillComponent.addSkill(firstSkill);
@@ -48,13 +49,17 @@ public class Ranger extends Hero {
         // boomerang
         secondSkill = new Skill(
             new BumerangSkill(SkillTools::getCursorPositionAsPoint, this),
-            2);
+            2,
+            BumerangSkill.pathToTextures);
 
         playableComponent.setSkillSlot2(secondSkill);
         skillComponent.addSkill(secondSkill);
 
         // Dash
-        thirdSkill = new Skill(new DashSkill(), 1);
+        thirdSkill = new Skill(
+            new DashSkill(),
+            1,
+            DashSkill.pathToTextures);
 
         playableComponent.setSkillSlot3(thirdSkill);
         skillComponent.addSkill(thirdSkill);

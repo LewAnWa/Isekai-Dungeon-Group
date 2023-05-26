@@ -7,6 +7,8 @@ import tools.Point;
 
 public class MagicArrowSkill extends DamageProjectileSkill {
 
+    public static final String pathToTextures = "skills/arrow/";
+
     /**
      * The constructor for the Bumerang
      *
@@ -15,7 +17,7 @@ public class MagicArrowSkill extends DamageProjectileSkill {
      */
     public MagicArrowSkill(ITargetSelection targetSelection, Entity user) {
         super(
-                "skills/arrow/",
+            pathToTextures,
                 0.5f,
                 new Damage(15, DamageType.MAGIC, user),
                 new Point(10, 10),

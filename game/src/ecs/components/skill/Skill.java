@@ -5,17 +5,21 @@ import tools.Constants;
 
 public class Skill {
 
-    private ISkillFunction skillFunction;
-    private int coolDownInFrames;
+    private final ISkillFunction skillFunction;
+    private final int coolDownInFrames;
     private int currentCoolDownInFrames;
+    private final String pathToTextures;
 
     /**
-     * @param skillFunction Function of this skill
+     * @param skillFunction Function of this skill.
+     * @param coolDownInSeconds how long it takes for the skill to be used again.
+     * @param pathToTextures the path to the textures of the skill.
      */
-    public Skill(ISkillFunction skillFunction, float coolDownInSeconds) {
+    public Skill(ISkillFunction skillFunction, float coolDownInSeconds, String pathToTextures) {
         this.skillFunction = skillFunction;
         this.coolDownInFrames = (int) (coolDownInSeconds * Constants.FRAME_RATE);
         this.currentCoolDownInFrames = 0;
+        this.pathToTextures = pathToTextures;
     }
 
     /**
@@ -27,8 +31,6 @@ public class Skill {
         if (!isOnCoolDown()) {
             skillFunction.execute(entity);
             activateCoolDown();
-        } else {
-            System.out.println(currentCoolDownInFrames);
         }
     }
 
@@ -47,5 +49,9 @@ public class Skill {
     /** reduces the current cool down by frame */
     public void reduceCoolDown() {
         currentCoolDownInFrames = Math.max(0, --currentCoolDownInFrames);
+    }
+
+    public String getPathToTextures() {
+        return pathToTextures;
     }
 }

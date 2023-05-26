@@ -12,6 +12,8 @@ import tools.Point;
 
 public class BumerangSkill extends DamageProjectileSkill {
 
+    public static final String pathToTextures = "skills/boomerrang/";
+
     /**
      * The constructor for the Bumerang
      *
@@ -20,7 +22,7 @@ public class BumerangSkill extends DamageProjectileSkill {
      */
     public BumerangSkill(ITargetSelection targetSelection, Entity user) {
         super(
-                "skills/boomerrang/",
+                pathToTextures,
                 0.5f,
                 new Damage(13, DamageType.PHYSICAL, user),
                 new Point(10, 10),

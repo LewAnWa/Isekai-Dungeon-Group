@@ -7,6 +7,8 @@ import tools.Point;
 
 public class FireballSkill extends DamageProjectileSkill {
 
+    public static final String pathToTextures = "skills/fireball/";
+
     /**
      * The constructor for the fireball.
      *
@@ -15,7 +17,7 @@ public class FireballSkill extends DamageProjectileSkill {
      */
     public FireballSkill(ITargetSelection targetSelection, Entity user) {
         super(
-                "skills/fireball/",
+                pathToTextures,
                 0.5f,
                 new Damage(18, DamageType.FIRE, user),
                 new Point(10, 10),

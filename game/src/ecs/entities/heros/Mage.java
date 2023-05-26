@@ -2,7 +2,6 @@ package ecs.entities.heros;
 
 import dslToGame.AnimationBuilder;
 import ecs.components.AnimationComponent;
-import ecs.components.HealthComponent;
 import ecs.components.ManaComponent;
 import ecs.components.VelocityComponent;
 import ecs.components.skill.*;
@@ -46,7 +45,8 @@ public class Mage extends Hero {
         // Fireball
         firstSkill = new Skill(
             new FireballSkill(SkillTools::getCursorPositionAsPoint, this),
-            4);
+            4,
+            FireballSkill.pathToTextures);
 
         playableComponent.setSkillSlot1(firstSkill);
         skillComponent.addSkill(firstSkill);
@@ -54,7 +54,8 @@ public class Mage extends Hero {
         // Frostbolt
         secondSkill = new Skill(
             new FrostBoltSkill(SkillTools::getCursorPositionAsPoint),
-            4);
+            4,
+            FireballSkill.pathToTextures);
 
         playableComponent.setSkillSlot2(secondSkill);
         skillComponent.addSkill(secondSkill);
