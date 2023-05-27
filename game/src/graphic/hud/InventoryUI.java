@@ -325,13 +325,16 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
         inventory.scaleBy(-1.1f);
         add((T) inventory);
 
-        ScreenImage hero =
-                new ScreenImage(
-                    "character/hero/knight/idleRight/knight_m_idle_anim_f0.png", new Point(50, 320));
+        ScreenImage hero = new ScreenImage(
+            ((Hero) inventoryComp.getEntity()).getPathToUITexture(),
+            new Point(50, 320));
         hero.scaleBy(4f);
         add((T) hero);
 
-        ScreenText classType = new ScreenText("Knight:", new Point(180, 440), 1f);
+        ScreenText classType = new ScreenText(
+            inventoryComp.getEntity().toString() + ":",
+            new Point(180, 440),
+            1f);
         classType.setColor(Color.BLACK);
         add((T) classType);
 

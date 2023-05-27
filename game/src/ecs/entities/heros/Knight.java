@@ -11,17 +11,19 @@ import graphic.Animation;
 
 public class Knight extends Hero {
 
-    private static final String pathToIdleRight = "hero/knight/idleRight";
-    private static final String pathToIdleLeft = "hero/knight/idleLeft";
-    private static final String pathToRunLeft = "hero/knight/runLeft";
-    private static final String pathToRunRight = "hero/knight/runRight";
-    private static final String pathToHit = "hero/knight/hit/";
+    private static final String pathToIdleRight = "character/hero/knight/idleRight";
+    private static final String pathToIdleLeft = "character/hero/knight/idleLeft";
+    private static final String pathToRunLeft = "character/hero/knight/runLeft";
+    private static final String pathToRunRight = "character/hero/knight/runRight";
+    private static final String pathToHit = "character/hero/knight/hit";
 
     public Knight() {
         super(130, 40, pathToHit);
         setupAnimationComponent();
         setupVelocityComponent();
         setupSkills();
+
+        pathToUITexture = pathToIdleRight + "/knight_m_idle_anim_f0.png";
     }
 
     private void setupAnimationComponent() {
@@ -56,5 +58,10 @@ public class Knight extends Hero {
 
         playableComponent.setSkillSlot3(thirdSkill);
         skillComponent.addSkill(thirdSkill);
+    }
+
+    @Override
+    public String toString() {
+        return "Knight";
     }
 }

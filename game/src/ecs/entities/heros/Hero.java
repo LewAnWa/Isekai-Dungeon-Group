@@ -22,6 +22,7 @@ public abstract class Hero extends Entity {
     protected Skill firstSkill;
     protected Skill secondSkill;
     protected Skill thirdSkill;
+    protected String pathToUITexture;
 
     protected boolean isVisible = false;
 
@@ -76,5 +77,10 @@ public abstract class Hero extends Entity {
 
     private void setupPlayableComponent() {
         playableComponent = new PlayableComponent(this);
+    }
+
+    // -------------------- Getter -------------------- //
+    public String getPathToUITexture() {
+        return pathToUITexture;
     }
 }

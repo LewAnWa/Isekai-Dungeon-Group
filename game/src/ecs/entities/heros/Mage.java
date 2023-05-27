@@ -9,11 +9,11 @@ import graphic.Animation;
 
 public class Mage extends Hero {
 
-    private static final String pathToIdleRight = "hero/mage/idleRight";
-    private static final String pathToIdleLeft = "hero/mage/idleLeft";
-    private static final String pathToRunLeft = "hero/mage/runLeft";
-    private static final String pathToRunRight = "hero/mage/runRight";
-    private static final String pathToHit = "hero/mage/hit";
+    private static final String pathToIdleRight = "character/hero/mage/idleRight";
+    private static final String pathToIdleLeft = "character/hero/mage/idleLeft";
+    private static final String pathToRunLeft = "character/hero/mage/runLeft";
+    private static final String pathToRunRight = "character/hero/mage/runRight";
+    private static final String pathToHit = "character/hero/mage/hit";
 
     public Mage() {
         super(80, 15, pathToHit);
@@ -21,6 +21,8 @@ public class Mage extends Hero {
         setupManaComponent();
         setupVelocityComponent();
         setupSkills();
+
+        pathToUITexture = pathToIdleRight + "/wizzard_m_idle_anim_f0.png";
     }
 
     private void setupAnimationComponent() {
@@ -62,5 +64,10 @@ public class Mage extends Hero {
 
         // Teleport
         // TODO: IMPLEMENT
+    }
+
+    @Override
+    public String toString() {
+        return "Mage";
     }
 }

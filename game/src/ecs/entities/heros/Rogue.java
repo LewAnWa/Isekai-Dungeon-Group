@@ -11,17 +11,19 @@ import graphic.Animation;
 
 public class Rogue extends Hero {
 
-    private static final String pathToIdleRight = "hero/rogue/idleRight";
-    private static final String pathToIdleLeft = "hero/rogue/idleLeft";
-    private static final String pathToRunLeft = "hero/rogue/runLeft";
-    private static final String pathToRunRight = "hero/rogue/runRight";
-    private static final String pathToHit = "hero/rogue/hit";
+    private static final String pathToIdleRight = "character/hero/rogue/idleRight";
+    private static final String pathToIdleLeft = "character/ero/rogue/idleLeft";
+    private static final String pathToRunLeft = "character/hero/rogue/runLeft";
+    private static final String pathToRunRight = "character/hero/rogue/runRight";
+    private static final String pathToHit = "character/hero/rogue/hit";
 
     public Rogue() {
         super(100, 80, pathToHit);
         setupAnimationComponent();
         setupVelocityComponent();
         setupSkills();
+
+        pathToUITexture = pathToIdleRight + "/lizard_m_idle_anim_f0.png";
     }
 
     private void setupAnimationComponent() {
@@ -59,5 +61,10 @@ public class Rogue extends Hero {
 
         playableComponent.setSkillSlot3(thirdSkill);
         skillComponent.addSkill(thirdSkill);
+    }
+
+    @Override
+    public String toString() {
+        return "Rogue";
     }
 }

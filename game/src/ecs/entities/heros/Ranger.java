@@ -8,17 +8,19 @@ import graphic.Animation;
 
 public class Ranger extends Hero {
 
-    private static final String pathToIdleRight = "hero/ranger/idleRight";
-    private static final String pathToIdleLeft = "hero/ranger/idleLeft";
-    private static final String pathToRunLeft = "hero/ranger/runLeft";
-    private static final String pathToRunRight = "hero/ranger/runRight";
-    private static final String pathToHit = "hero/ranger/hit";
+    private static final String pathToIdleRight = "character/hero/ranger/idleRight";
+    private static final String pathToIdleLeft = "character/hero/ranger/idleLeft";
+    private static final String pathToRunLeft = "character/hero/ranger/runLeft";
+    private static final String pathToRunRight = "character/hero/ranger/runRight";
+    private static final String pathToHit = "character/hero/ranger/hit";
 
     public Ranger() {
         super(100, 60, pathToHit);
         setupAnimationComponent();
         setupVelocityComponent();
         setupSkills();
+
+        pathToUITexture = pathToIdleRight + "/elf_f_idle_anim_f0.png";
     }
 
     private void setupAnimationComponent() {
@@ -62,5 +64,10 @@ public class Ranger extends Hero {
 
         playableComponent.setSkillSlot3(thirdSkill);
         skillComponent.addSkill(thirdSkill);
+    }
+
+    @Override
+    public String toString() {
+        return "Ranger";
     }
 }
