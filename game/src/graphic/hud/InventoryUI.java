@@ -7,12 +7,15 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import controller.ScreenController;
 import ecs.components.*;
+import ecs.components.skill.Skill;
+import ecs.components.skill.SkillComponent;
 import ecs.components.xp.XPComponent;
 import ecs.entities.heros.Hero;
 import ecs.items.Bag;
 import ecs.items.ItemData;
 import ecs.items.Schuh;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -31,17 +34,17 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
     private XPComponent xpComp;
     private InventoryComponent inventoryComp;
     private PositionComponent posComp;
-    private ScreenImage inventory, skill1, skill2, skill3, skill4;
+    private SkillComponent skillComp;
+    private ScreenImage inventory, skill1, skill2, skill3;
     private boolean visible = false;
     private boolean listUpdated = false;
     private List<Node> itemsList = new ArrayList<>();
     private int pointer = 0;
     private ScreenImage screenPointer;
 
-    private static Point skillSlot1 = new Point(237, 295);
-    private static Point skillSlot2 = new Point(302, 295);
-    private static Point skillSlot3 = new Point(365, 285);
-    private static Point skillSlot4 = new Point(432, 288);
+    private static Point skillSlot1 = new Point(236, 290);
+    private static Point skillSlot2 = new Point(302, 290);
+    private static Point skillSlot3 = new Point(370, 290);
 
     public InventoryUI(Hero hero) {
         super(new SpriteBatch());
@@ -98,6 +101,13 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
                             logger.log(new LogRecord(Level.INFO, "PositionComponent detected!"));
                             posComp = (PositionComponent) component;
                         });
+        hero.getComponent(SkillComponent.class)
+                .ifPresent(
+                        component -> {
+                            logger.log(new LogRecord(Level.INFO, "SkillComponent detected!"));
+                            skillComp = (SkillComponent) component;
+                        }
+                );
     }
 
     /** Makes the screen invisible */
@@ -118,8 +128,8 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
     /** Updates the UIs information like the hero's healthPoints and more. */
     public void updateUI() {
         healthDisplay.setText("HEALTH: " + healthComp);
-        manaDisplay.setText("MANA: " + manaComp);
         staminaDisplay.setText("STAMINA: " + staminaComp);
+        if (manaComp != null) manaDisplay.setText("MANA: " + manaComp);
         xpDisplay.setText(String.valueOf(xpComp));
 
         if (visible && !listUpdated) listItems();
@@ -333,13 +343,15 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
         healthDisplay.setColor(Color.BLACK);
         add((T) healthDisplay);
 
-        manaDisplay = new ScreenText("HEALTH", new Point(180, 380), 1f);
-        manaDisplay.setColor(Color.BLACK);
-        add((T) manaDisplay);
-
-        staminaDisplay = new ScreenText("HEALTH", new Point(180, 360), 1f);
+        staminaDisplay = new ScreenText("STAMINA", new Point(180, 380), 1f);
         staminaDisplay.setColor(Color.BLACK);
         add((T) staminaDisplay);
+
+        if (manaComp != null) {
+            manaDisplay = new ScreenText("MANA", new Point(180, 360), 1f);
+            manaDisplay.setColor(Color.BLACK);
+            add((T) manaDisplay);
+        }
 
         ScreenText skillText = new ScreenText("Skills:", new Point(180, 320), 1f);
         skillText.setColor(Color.BLACK);
@@ -348,21 +360,25 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
 
     // Builds the icons of the four main Skills.
     private void buildSkillOverview() {
-        skill1 = new ScreenImage("skills/fireball/down/fireBall_Down1.png", skillSlot1);
-        skill1.scaleBy(1.45f);
+        skill1 = new ScreenImage(
+            ((Skill) skillComp.getSkillSet().toArray()[0]).getPathToTextureUI(),
+            skillSlot1);
+        skill1.scaleBy(1.35f);
         add((T) skill1);
 
-        skill2 = new ScreenImage("skills/frostbolt/down/frostBolt_Down1.png", skillSlot2);
-        skill2.scaleBy(1.45f);
+        skill2 = new ScreenImage(
+            ((Skill) skillComp.getSkillSet().toArray()[1]).getPathToTextureUI(),
+            skillSlot2);
+        skill2.scaleBy(1.35f);
         add((T) skill2);
 
-        skill3 = new ScreenImage("skills/schwertstich/right/schwert_Right4.png", skillSlot3);
-        skill3.scaleBy(1.45f);
-        add((T) skill3);
-
-        skill4 = new ScreenImage("skills/dash/dash.png", skillSlot4);
-        skill4.scaleBy(1.45f);
-        add((T) skill4);
+        if (Arrays.stream(skillComp.getSkillSet().toArray()).count() == 3) {
+            skill3 = new ScreenImage(
+                ((Skill) skillComp.getSkillSet().toArray()[2]).getPathToTextureUI(),
+                skillSlot3);
+            skill3.scaleBy(1.35f);
+            add((T) skill3);
+        }
     }
 
     /*

@@ -45,7 +45,7 @@ public class Ranger extends Hero {
         playableComponent.setSkillSlot1(firstSkill);
         skillComponent.addSkill(firstSkill);
 
-        // boomerang
+        // Boomerang
         secondSkill = new Skill(
             new BumerangSkill(SkillTools::getCursorPositionAsPoint, this),
             2,

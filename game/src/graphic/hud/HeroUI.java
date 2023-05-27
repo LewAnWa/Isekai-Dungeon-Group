@@ -10,6 +10,8 @@ import ecs.components.StaminaComponent;
 import ecs.components.skill.Skill;
 import ecs.components.skill.SkillComponent;
 import ecs.entities.heros.Hero;
+
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
@@ -81,8 +83,6 @@ public class HeroUI<T extends Actor> extends ScreenController<T> {
 
         // check for each skill if the coolDown still applies. If yes, show the skill, else make it
         // invisible.
-        // TODO: For some reason the skillSet is not in order as the skills where added. Find out
-        // why! (Skills in random order)
         if (((Skill) skillComp.getSkillSet().toArray()[0]).isOnCoolDown()) { // first skill
             skill1.setVisible(false);
         } else {
@@ -93,15 +93,14 @@ public class HeroUI<T extends Actor> extends ScreenController<T> {
         } else {
             skill2.setVisible(true);
         }
-        /*
-        if (((Skill) skillComp.getSkillSet().toArray()[2]).isOnCoolDown()) { // third skill
-            skill3.setVisible(false);
-        } else {
-            skill3.setVisible(true);
+
+        if (Arrays.stream(skillComp.getSkillSet().toArray()).count() == 3) {
+            if (((Skill) skillComp.getSkillSet().toArray()[2]).isOnCoolDown()) { // third skill
+                skill3.setVisible(false);
+            } else {
+                skill3.setVisible(true);
+            }
         }
-
-         */
-
     }
 
     /** Makes the screen invisible */
@@ -119,21 +118,22 @@ public class HeroUI<T extends Actor> extends ScreenController<T> {
         skill1 = new ScreenImage(
             ((Skill) skillComp.getSkillSet().toArray()[0]).getPathToTextureUI(),
             new Point(0, 5));
-        skill1.scaleBy(1.1f);
+        skill1.scaleBy(1.05f);
         add((T) skill1);
 
         skill2 = new ScreenImage(
             ((Skill) skillComp.getSkillSet().toArray()[1]).getPathToTextureUI(),
-            new Point(40, 5));
-        skill2.scaleBy(1.1f);
+            new Point(50, 5));
+        skill2.scaleBy(1.05f);
         add((T) skill2);
 
-        /*
-        skill3 = new ScreenImage(((Skill) skillComp.getSkillSet().toArray()[2]).getPathToTextures(), new Point(80, 0));
-        skill3.scaleBy(1.1f);
-        add((T) skill3);
-
-         */
+        if (Arrays.stream(skillComp.getSkillSet().toArray()).count() == 3) {
+            skill3 = new ScreenImage(
+                ((Skill) skillComp.getSkillSet().toArray()[2]).getPathToTextureUI(),
+                new Point(100, 5));
+            skill3.scaleBy(1.05f);
+            add((T) skill3);
+        }
     }
 
     // Builds the info texts to display health, mana and stamina.
