@@ -11,14 +11,14 @@ import graphic.Animation;
 
 public class Rogue extends Hero {
 
-    private final String pathToIdleRight = "knight/idleRight";
-    private final String pathToIdleLeft = "knight/idleLeft";
-    private final String pathToRunLeft = "knight/runLeft";
-    private final String pathToRunRight = "knight/runRight";
-    private final String pathToHit = "knight/hit/";
+    private static final String pathToIdleRight = "hero/rogue/idleRight";
+    private static final String pathToIdleLeft = "hero/rogue/idleLeft";
+    private static final String pathToRunLeft = "hero/rogue/runLeft";
+    private static final String pathToRunRight = "hero/rogue/runRight";
+    private static final String pathToHit = "hero/rogue/hit";
 
     public Rogue() {
-        super(100, 80, "knight/hit/");
+        super(100, 80, pathToHit);
         setupAnimationComponent();
         setupVelocityComponent();
         setupSkills();

@@ -9,14 +9,14 @@ import graphic.Animation;
 
 public class Mage extends Hero {
 
-    private final String pathToIdleRight = "knight/idleRight";
-    private final String pathToIdleLeft = "knight/idleLeft";
-    private final String pathToRunLeft = "knight/runLeft";
-    private final String pathToRunRight = "knight/runRight";
-    private final String pathToHit = "knight/hit/";
+    private static final String pathToIdleRight = "hero/mage/idleRight";
+    private static final String pathToIdleLeft = "hero/mage/idleLeft";
+    private static final String pathToRunLeft = "hero/mage/runLeft";
+    private static final String pathToRunRight = "hero/mage/runRight";
+    private static final String pathToHit = "hero/mage/hit";
 
     public Mage() {
-        super(80, 15, "knight/hit/");
+        super(80, 15, pathToHit);
         setupAnimationComponent();
         setupManaComponent();
         setupVelocityComponent();

@@ -11,13 +11,14 @@ import graphic.Animation;
 
 public class Knight extends Hero {
 
-    private final String pathToIdleRight = "knight/idleRight";
-    private final String pathToIdleLeft = "knight/idleLeft";
-    private final String pathToRunLeft = "knight/runLeft";
-    private final String pathToRunRight = "knight/runRight";
+    private static final String pathToIdleRight = "hero/knight/idleRight";
+    private static final String pathToIdleLeft = "hero/knight/idleLeft";
+    private static final String pathToRunLeft = "hero/knight/runLeft";
+    private static final String pathToRunRight = "hero/knight/runRight";
+    private static final String pathToHit = "hero/knight/hit/";
 
     public Knight() {
-        super(130, 40, "knight/hit/");
+        super(130, 40, pathToHit);
         setupAnimationComponent();
         setupVelocityComponent();
         setupSkills();

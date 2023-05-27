@@ -8,14 +8,14 @@ import graphic.Animation;
 
 public class Ranger extends Hero {
 
-    private final String pathToIdleRight = "knight/idleRight";
-    private final String pathToIdleLeft = "knight/idleLeft";
-    private final String pathToRunLeft = "knight/runLeft";
-    private final String pathToRunRight = "knight/runRight";
-    private final String pathToHit = "knight/hit/";
+    private static final String pathToIdleRight = "hero/ranger/idleRight";
+    private static final String pathToIdleLeft = "hero/ranger/idleLeft";
+    private static final String pathToRunLeft = "hero/ranger/runLeft";
+    private static final String pathToRunRight = "hero/ranger/runRight";
+    private static final String pathToHit = "hero/ranger/hit";
 
     public Ranger() {
-        super(100, 60, "knight/hit/");
+        super(100, 60, pathToHit);
         setupAnimationComponent();
         setupVelocityComponent();
         setupSkills();

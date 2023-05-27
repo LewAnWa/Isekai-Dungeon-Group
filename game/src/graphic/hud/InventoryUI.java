@@ -327,7 +327,7 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
 
         ScreenImage hero =
                 new ScreenImage(
-                        "character/knight/idleRight/knight_m_idle_anim_f0.png", new Point(50, 320));
+                    "character/hero/knight/idleRight/knight_m_idle_anim_f0.png", new Point(50, 320));
         hero.scaleBy(4f);
         add((T) hero);
 
