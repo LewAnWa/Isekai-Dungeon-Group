@@ -12,7 +12,7 @@ import graphic.Animation;
 public class Rogue extends Hero {
 
     private static final String pathToIdleRight = "character/hero/rogue/idleRight";
-    private static final String pathToIdleLeft = "character/ero/rogue/idleLeft";
+    private static final String pathToIdleLeft = "character/hero/rogue/idleLeft";
     private static final String pathToRunLeft = "character/hero/rogue/runLeft";
     private static final String pathToRunRight = "character/hero/rogue/runRight";
     private static final String pathToHit = "character/hero/rogue/hit";

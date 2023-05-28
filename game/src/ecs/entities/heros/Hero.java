@@ -22,7 +22,7 @@ public abstract class Hero extends Entity {
     protected Skill firstSkill;
     protected Skill secondSkill;
     protected Skill thirdSkill;
-    protected String pathToUITexture;
+    protected static String pathToUITexture;
 
     protected boolean isVisible = false;
 
@@ -80,7 +80,7 @@ public abstract class Hero extends Entity {
     }
 
     // -------------------- Getter -------------------- //
-    public String getPathToUITexture() {
+    public static String getPathToUITexture() {
         return pathToUITexture;
     }
 }
