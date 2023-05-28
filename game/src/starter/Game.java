@@ -21,10 +21,8 @@ import ecs.entities.monsters.MonsterFactory;
 import ecs.systems.*;
 import graphic.DungeonCamera;
 import graphic.Painter;
-import graphic.hud.GameOverScreen;
-import graphic.hud.HeroUI;
-import graphic.hud.InventoryUI;
-import graphic.hud.PauseMenu;
+import graphic.hud.*;
+
 import java.io.IOException;
 import java.util.*;
 import java.util.logging.Logger;
@@ -62,6 +60,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
     protected IGenerator generator;
 
     private boolean doSetup = true;
+    private static boolean characterSet = false;
     private static boolean paused = false;
 
     /** All entities that are currently active in the dungeon */
@@ -76,6 +75,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
 
     public static ILevel currentLevel;
     private static PauseMenu<Actor> pauseMenu;
+    private static MainMenuUI<Actor> mainMenuUI;
     private static GameOverScreen<Actor> gameOverScreen;
     private static HeroUI<Actor> heroUI;
     private static InventoryUI<Actor> inventoryUI;
@@ -101,44 +101,55 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
      */
     @Override
     public void render(float delta) {
-        if (doSetup) setup();
-        batch.setProjectionMatrix(camera.combined);
-        frame();
-        clearScreen();
-        levelAPI.update();
-        controller.forEach(AbstractController::update);
-        camera.update();
+        if (!characterSet) setup();
+        else {
+            batch.setProjectionMatrix(camera.combined);
+            frame();
+            clearScreen();
+            levelAPI.update();
+            controller.forEach(AbstractController::update);
+            camera.update();
 
-        heroUI.updateUI();
-        inventoryUI.updateUI();
+            heroUI.updateUI();
+            inventoryUI.updateUI();
+        }
     }
 
     /** Called once at the beginning of the game. */
     protected void setup() {
-        doSetup = false;
-        controller = new ArrayList<>();
-        setupCameras();
-        painter = new Painter(batch, camera);
-        generator = new RandomWalkGenerator();
-        levelAPI = new LevelAPI(batch, painter, generator, this);
-        initBaseLogger();
-        gameLogger = Logger.getLogger(this.getClass().getName());
-        systems = new SystemController();
-        controller.add(systems);
-        pauseMenu = new PauseMenu<>();
-        controller.add(pauseMenu);
+        if (doSetup) { // build up the game
+            doSetup = false;
+            controller = new ArrayList<>();
+            setupCameras();
+            painter = new Painter(batch, camera);
+            generator = new RandomWalkGenerator();
+            levelAPI = new LevelAPI(batch, painter, generator, this);
+            initBaseLogger();
+            gameLogger = Logger.getLogger(this.getClass().getName());
+            systems = new SystemController();
+            controller.add(systems);
+            pauseMenu = new PauseMenu<>();
+            controller.add(pauseMenu);
+            mainMenuUI = new MainMenuUI<>();
+            controller.add(mainMenuUI);
+        }
+        mainMenuUI.update();
+        mainMenuUI.updateUI();
+        if (characterSet) { // only do this if character is set
+            controller.remove(mainMenuUI);
+            mainMenuUI = null;
 
-        hero = new Knight();
-        heroUI = new HeroUI<>((Hero) hero);
-        controller.add(heroUI);
-        inventoryUI = new InventoryUI<>((Hero) hero);
-        controller.add(inventoryUI);
-        gameOverScreen = new GameOverScreen<>(this);
-        controller.add(gameOverScreen);
+            heroUI = new HeroUI<>((Hero) hero);
+            controller.add(heroUI);
+            inventoryUI = new InventoryUI<>((Hero) hero);
+            controller.add(inventoryUI);
+            gameOverScreen = new GameOverScreen<>(this);
+            controller.add(gameOverScreen);
 
-        levelAPI = new LevelAPI(batch, painter, new WallGenerator(new RandomWalkGenerator()), this);
-        levelAPI.loadLevel(LEVELSIZE);
-        createSystems();
+            levelAPI = new LevelAPI(batch, painter, new WallGenerator(new RandomWalkGenerator()), this);
+            levelAPI.loadLevel(LEVELSIZE);
+            createSystems();
+        }
     }
 
     /**
@@ -169,9 +180,6 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
                 new Entity
                         [currentLevel.getFloorTiles().size()
                                 / 20]; // amount of monsters = amount of floor tiles / 20
-
-        // TODO: Find out how to get the position of the hero via the getComponent()-Method
-        // Point heroPosition = hero.getComponent(PositionComponent.class).
 
         hero.getComponent(XPComponent.class)
                 .ifPresent(
@@ -354,6 +362,10 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
      */
     public static void setHero(Entity hero) {
         Game.hero = hero;
+    }
+
+    public static void setCharacterSet() {
+        characterSet = true;
     }
 
     public void setSpriteBatch(SpriteBatch batch) {
