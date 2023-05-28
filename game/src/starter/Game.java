@@ -80,6 +80,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
     private static HeroUI<Actor> heroUI;
     private static InventoryUI<Actor> inventoryUI;
     private static Entity hero;
+    private static int heroType;
     private static Entity[] monsters;
     private Logger gameLogger;
 
@@ -158,7 +159,12 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
      * loading a new level.
      */
     public void doRestart() {
-        hero = new Knight();
+        switch (heroType) {
+            default -> hero = new Knight();
+            case 1 -> hero = new Mage();
+            case 2 -> hero = new Ranger();
+            case 3 -> hero = new Rogue();
+        }
 
         controller.remove(heroUI);
         heroUI = new HeroUI<>((Hero) hero);
@@ -363,6 +369,15 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
      */
     public static void setHero(Entity hero) {
         Game.hero = hero;
+    }
+
+    /**
+     * Sets the heroType, which will determine as what characterClass the player will respawn,
+     * when restarting the game from the gameOverScreen.
+     * @param heroType 0 = Knight, 1 = Mage, 2 = Ranger, 3 = Rogue
+     */
+    public static void setHeroType(int heroType) {
+        Game.heroType = heroType;
     }
 
     public static void makeCharacterSet() {

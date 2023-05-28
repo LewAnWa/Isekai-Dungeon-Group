@@ -29,10 +29,22 @@ public class MainMenuUI<T extends Actor> extends ScreenController<T> {
 
     public void updateUI() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) && !logo.isVisible()) {
-            if (characters.get(0).character.isVisible()) Game.setHero(new Knight());
-            else if (characters.get(1).character.isVisible()) Game.setHero(new Mage());
-            else if (characters.get(2).character.isVisible()) Game.setHero(new Ranger());
-            else if (characters.get(3).character.isVisible()) Game.setHero(new Rogue());
+            if (characters.get(0).character.isVisible()) {
+                Game.setHero(new Knight());
+                Game.setHeroType(0);
+            }
+            else if (characters.get(1).character.isVisible()) {
+                Game.setHero(new Mage());
+                Game.setHeroType(1);
+            }
+            else if (characters.get(2).character.isVisible()) {
+                Game.setHero(new Ranger());
+                Game.setHeroType(2);
+            }
+            else if (characters.get(3).character.isVisible()) {
+                Game.setHero(new Rogue());
+                Game.setHeroType(3);
+            }
             Game.makeCharacterSet();
         }
 
