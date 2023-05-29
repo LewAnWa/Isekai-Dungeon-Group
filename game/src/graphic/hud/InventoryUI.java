@@ -140,9 +140,11 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
                     itemsList.get(pointer).screenPosition.y);
 
             if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
-                if (pointer > 0) pointer--;
+                pointer--;
+                if (pointer < 0) pointer = itemsList.size() - 1;
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
-                if (pointer < itemsList.size() - 1) pointer++;
+                pointer++;
+                if (pointer >= itemsList.size()) pointer = 0;
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
                 if (itemsList.get(pointer).item instanceof Bag
                         || itemsList.get(pointer).item instanceof Schuh) {
