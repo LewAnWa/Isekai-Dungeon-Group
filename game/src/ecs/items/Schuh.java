@@ -12,6 +12,7 @@ import tools.Point;
 public class Schuh extends ItemData implements IOnCollect, IOnDrop {
 
     private static final List<String> schuhTexture = List.of("items/Schuh/Schuh.png");
+    private static final float velocityModifier = 0.005f;
 
     /** The constructor for the Schuh */
     public Schuh() {
@@ -76,9 +77,9 @@ public class Schuh extends ItemData implements IOnCollect, IOnDrop {
                 .ifPresent(
                         vC -> {
                             ((VelocityComponent) vC)
-                                    .setYVelocity(((VelocityComponent) vC).getYVelocity() - 0.05f);
+                                    .setYVelocity(((VelocityComponent) vC).getYVelocity() - velocityModifier);
                             ((VelocityComponent) vC)
-                                    .setXVelocity(((VelocityComponent) vC).getXVelocity() - 0.05f);
+                                    .setXVelocity(((VelocityComponent) vC).getXVelocity() - velocityModifier);
                         });
     }
 
@@ -92,9 +93,9 @@ public class Schuh extends ItemData implements IOnCollect, IOnDrop {
                 .ifPresent(
                         vC -> {
                             ((VelocityComponent) vC)
-                                    .setYVelocity(((VelocityComponent) vC).getYVelocity() + 0.01f);
+                                    .setYVelocity(((VelocityComponent) vC).getYVelocity() + velocityModifier);
                             ((VelocityComponent) vC)
-                                    .setXVelocity(((VelocityComponent) vC).getXVelocity() + 0.01f);
+                                    .setXVelocity(((VelocityComponent) vC).getXVelocity() + velocityModifier);
                         });
     }
 }
