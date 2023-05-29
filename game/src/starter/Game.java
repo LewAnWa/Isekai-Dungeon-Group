@@ -105,6 +105,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         if (!characterSet) setup();
         else {
             batch.setProjectionMatrix(camera.combined);
+            if (heroType == 3 && !hero.isVisible() && !paused) ((Rogue) hero).applyInvisibilityCost();
             frame();
             clearScreen();
             levelAPI.update();

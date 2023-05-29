@@ -42,7 +42,16 @@ public class DrawSystem extends ECS_System {
         if (!configs.containsKey(currentAnimationTexture)) {
             configs.put(currentAnimationTexture, new PainterConfig(currentAnimationTexture));
         }
-        painter.draw(
+        if (!dsd.e.isVisible()) { // draw the sprite slightly invisible
+            painter.draw(
+                dsd.pc().getPosition(),
+                currentAnimationTexture,
+                configs.get(currentAnimationTexture),
+                0.4f
+            );
+            return;
+        }
+        painter.draw( // draw the sprite fully visible
                 dsd.pc.getPosition(),
                 currentAnimationTexture,
                 configs.get(currentAnimationTexture));
