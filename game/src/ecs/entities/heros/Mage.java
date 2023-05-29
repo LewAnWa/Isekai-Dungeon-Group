@@ -63,7 +63,13 @@ public class Mage extends Hero {
         skillComponent.addSkill(secondSkill);
 
         // Teleport
-        // TODO: IMPLEMENT
+        thirdSkill = new Skill(
+            new TeleportSkill(5),
+            5,
+            TeleportSkill.pathToTextureUI);
+
+        playableComponent.setSkillSlot3(thirdSkill);
+        skillComponent.addSkill(thirdSkill);
     }
 
     @Override
