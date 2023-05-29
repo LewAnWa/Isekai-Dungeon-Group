@@ -3,10 +3,7 @@ package ecs.entities.heros;
 import dslToGame.AnimationBuilder;
 import ecs.components.AnimationComponent;
 import ecs.components.VelocityComponent;
-import ecs.components.skill.DashSkill;
-import ecs.components.skill.SchwertstichSkill;
-import ecs.components.skill.Skill;
-import ecs.components.skill.SkillTools;
+import ecs.components.skill.*;
 import graphic.Animation;
 
 public class Rogue extends Hero {
@@ -51,7 +48,13 @@ public class Rogue extends Hero {
         skillComponent.addSkill(firstSkill);
 
         // Invisibility
-        // TODO: IMPLEMENT
+        secondSkill = new Skill(
+            new InvisibilitySkill(1),
+            7,
+            InvisibilitySkill.pathToTextureUI);
+
+        playableComponent.setSkillSlot2(secondSkill);
+        skillComponent.addSkill(secondSkill);
 
         // Dash
         thirdSkill = new Skill(

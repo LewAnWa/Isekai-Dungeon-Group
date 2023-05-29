@@ -2,13 +2,11 @@ package ecs.entities.heros;
 
 import dslToGame.AnimationBuilder;
 import ecs.components.*;
-import ecs.components.AnimationComponent;
 import ecs.components.PositionComponent;
-import ecs.components.VelocityComponent;
 import ecs.components.skill.*;
 import ecs.components.xp.XPComponent;
 import ecs.entities.Entity;
-import graphic.Animation;
+import ecs.entities.monsters.Monster;
 
 /**
  * The Hero is the player character. It's an entity in the ECS.
@@ -23,8 +21,6 @@ public abstract class Hero extends Entity {
     protected Skill secondSkill;
     protected Skill thirdSkill;
     protected static String pathToUITexture;
-
-    protected boolean isVisible = false;
 
     /** Entity with Components */
     public Hero(int healthPoints, int staminaPoints, String pathToHit) {
@@ -46,7 +42,11 @@ public abstract class Hero extends Entity {
     private void setupHitboxComponent() {
         new HitboxComponent(
             this,
-            (you, other, direction) -> System.out.print(""),
+            (you, other, direction) -> {
+                if (other instanceof Monster) {
+                    you.setVisible(true);
+                }
+            },
             (you, other, direction) -> System.out.print(""));
     }
 

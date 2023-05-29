@@ -16,6 +16,7 @@ public class Entity {
     public final int id = nextId++;
     private HashMap<Class, Component> components;
     private final Logger entityLogger;
+    protected boolean isVisible = true;
 
     private boolean isBoomerang = false;
     private Entity user;
@@ -73,5 +74,13 @@ public class Entity {
      */
     public Optional<Component> getComponent(Class klass) {
         return Optional.ofNullable(components.get(klass));
+    }
+
+    public boolean isVisible() {
+        return isVisible;
+    }
+
+    public void setVisible(boolean visible) {
+        isVisible = visible;
     }
 }
