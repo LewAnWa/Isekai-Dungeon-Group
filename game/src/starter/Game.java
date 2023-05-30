@@ -14,6 +14,7 @@ import controller.AbstractController;
 import controller.SystemController;
 import ecs.components.MissingComponentException;
 import ecs.components.PositionComponent;
+import ecs.components.skill.InvisibilitySkill;
 import ecs.components.xp.XPComponent;
 import ecs.entities.Entity;
 import ecs.entities.heros.*;
@@ -105,7 +106,6 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         if (!characterSet) setup();
         else {
             batch.setProjectionMatrix(camera.combined);
-            if (heroType == 3 && !hero.isVisible() && !paused) ((Rogue) hero).applyInvisibilityCost();
             frame();
             clearScreen();
             levelAPI.update();
@@ -216,6 +216,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         setCameraFocus();
         manageEntitiesSets();
         getHero().ifPresent(this::loadNextLevelIfEntityIsOnEndTile);
+        if (heroType == 3 ) InvisibilitySkill.applyInvisibilityCost(hero);
         if (Gdx.input.isKeyJustPressed(Input.Keys.P)) togglePause();
         if (Gdx.input.isKeyJustPressed(KeyboardConfig.INVENTORY_OPEN.get())) toggleInventory();
     }

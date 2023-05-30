@@ -6,6 +6,12 @@ import ecs.components.VelocityComponent;
 import ecs.components.skill.*;
 import graphic.Animation;
 
+/**
+ * The Ranger is a playable character which has the following skills:
+ * - magic Arrow
+ * - Boomerang
+ * - Dash
+ */
 public class Ranger extends Hero {
 
     private static final String pathToIdleRight = "character/hero/ranger/idleRight";

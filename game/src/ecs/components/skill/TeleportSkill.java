@@ -6,6 +6,9 @@ import ecs.entities.Entity;
 import starter.Game;
 import tools.Point;
 
+/**
+ * The TeleportSkill allows an entity to teleport to a walkable tile on the map.
+ */
 public class TeleportSkill implements ISkillFunction {
 
     public static final String pathToTextureUI = "skills/teleport/teleportIcon.png";

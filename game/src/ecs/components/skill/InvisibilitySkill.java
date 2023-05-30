@@ -1,16 +1,44 @@
 package ecs.components.skill;
 
-import ecs.components.AnimationComponent;
 import ecs.components.StaminaComponent;
 import ecs.entities.Entity;
 
+/**
+ * The InvisibilitySkill allows an entity to toggle between becoming visible and invisible.
+ */
 public class InvisibilitySkill implements ISkillFunction {
 
     public static final String pathToTextureUI = "skills/invisibility/invisibilityIcon.png";
-    private final int staminaCost;
+    private static int staminaCost;
+    private static int counter = 0;
 
     public InvisibilitySkill(int staminaCost) {
-        this.staminaCost = staminaCost;
+        InvisibilitySkill.staminaCost = staminaCost;
+    }
+
+    /**
+     * Applies the stamina costs of being invisible to an entity.
+     * It does that only if the entity is invisible, else it will do nothing.
+     * <p>
+     * NOTE: THIS METHOD SHOULD BE CALLED BY THE GAME IN THE FRAME METHOD!!!
+     * @param entity The entity that turned invisible and should be charged for that.
+     */
+    public static void applyInvisibilityCost(Entity entity) {
+        if (entity.isVisible()) return;
+
+        counter++;
+
+        if (counter >= 30) {
+            entity.getComponent(StaminaComponent.class).ifPresent(component -> {
+                StaminaComponent staminaComp = (StaminaComponent) component;
+
+                staminaComp.setCurrentStamina(staminaComp.getCurrentStamina() - staminaCost);
+
+                if (staminaComp.getCurrentStamina() <= 0) entity.setVisible(true);
+            });
+
+            counter = 0;
+        }
     }
 
     @Override
@@ -24,11 +52,6 @@ public class InvisibilitySkill implements ISkillFunction {
 
                 if (staminaComp.getCurrentStamina() - staminaCost >= 0) {
                     entity.setVisible(false);
-
-                    entity.getComponent(AnimationComponent.class).ifPresent(animComp -> {
-                        // TODO: INDICATE TO THE PLAYER THAT HE IS INVISIBLE!
-                    });
-
                     staminaComp.setCurrentStamina(staminaComp.getCurrentStamina() - staminaCost);
                 }
             });

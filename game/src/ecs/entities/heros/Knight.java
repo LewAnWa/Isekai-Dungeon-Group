@@ -9,6 +9,11 @@ import ecs.components.skill.Skill;
 import ecs.components.skill.SkillTools;
 import graphic.Animation;
 
+/**
+ * The Knight is a playable character which has the following skills:
+ * - Sword stab
+ * - Dash
+ */
 public class Knight extends Hero {
 
     private static final String pathToIdleRight = "character/hero/knight/idleRight";

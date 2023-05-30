@@ -13,8 +13,24 @@ import tools.Point;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+/**
+ * The MainMenuUI handles everything that is shown at the start.
+ * It confines the player to the bounds set, thus eliminating the
+ * possibility of errors or false inputs by the player.
+ * <p>
+ * This class can be later modified to house logic like loading game states
+ * or even having a settings menu for sounds and music.
+ *
+ * @param <T> An element that can be drawn on the screen.
+ * @author Kirill Kuhn
+ * @version 1.0
+ */
 public class MainMenuUI<T extends Actor> extends ScreenController<T> {
+
+    private final Logger logger = Logger.getLogger("MainMenuUI");
 
     private ScreenImage logo, characterCard;
     private ScreenText welcomeText, characterDescription;
@@ -22,13 +38,25 @@ public class MainMenuUI<T extends Actor> extends ScreenController<T> {
     private int pointer = 0;
     private final Point characterIconPosition = new Point(70, 40);
 
+    /**
+     * Creates a main menu. NOTE: ACTORS CAN ONLY BE HIDDEN BY DELETING THE INSTANCE!
+     */
     public MainMenuUI() {
         super(new SpriteBatch());
         setupMainMenu();
     }
 
+    /**
+     * Listens for keystrokes and updates the UI accordingly.
+     * Should the title screen be invisible, it then will then initialize
+     * the character screen.
+     * <p>
+     * It also handles the logic for changing the character icon and description
+     * relative to what the user has selected now. After selection, it gives the
+     * Game class the selected character.
+     */
     public void updateUI() {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) && !logo.isVisible()) {
+        if (!logo.isVisible() && Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) { // final decision in character screen
             if (characters.get(0).character.isVisible()) {
                 Game.setHero(new Knight());
                 Game.setHeroType(0);
@@ -48,20 +76,20 @@ public class MainMenuUI<T extends Actor> extends ScreenController<T> {
             Game.makeCharacterSet();
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+        if (logo.isVisible() && Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) { // change to character screen if title screen exited
             logo.setVisible(false);
             welcomeText.setVisible(false);
             setupCharScreen();
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) && !logo.isVisible()) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) && !logo.isVisible()) { // iterate down in the character screen
             characters.get(pointer).character.setVisible(false);
             pointer++;
             if (pointer >= characters.size()) pointer = 0;
             characters.get(pointer).character.setVisible(true);
             characterDescription.setText(characters.get(pointer).characterDescription);
         }
-        else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT) && !logo.isVisible()) {
+        else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT) && !logo.isVisible()) { // iterate up in the character screen
             characters.get(pointer).character.setVisible(false);
             pointer--;
             if (pointer < 0) pointer = characters.size() - 1;
@@ -70,18 +98,23 @@ public class MainMenuUI<T extends Actor> extends ScreenController<T> {
         }
     }
 
+    /*
+    Sets up the mainMenu containing the title screen.
+     */
     private void setupMainMenu() {
         ScreenImage background = new ScreenImage(
             "hud/main_background.png",
             new Point(0, 0));
         background.scaleBy(-1.2f);
         add((T) background);
+        logger.log(Level.FINE, "Background loaded.");
 
         logo = new ScreenImage(
             "logo/game_logo.png",
             new Point((float) Constants.WINDOW_WIDTH / 8, Constants.WINDOW_HEIGHT - 140));
         logo.scaleBy(-1.5f);
         add((T) logo);
+        logger.log(Level.FINE, "Logo loaded.");
 
         welcomeText = new ScreenText(
             "Press [Enter] to start",
@@ -91,8 +124,12 @@ public class MainMenuUI<T extends Actor> extends ScreenController<T> {
         welcomeText.setColor(Color.WHITE);
         welcomeText.setFontScale(1.5f);
         add((T) welcomeText);
+        logger.log(Level.FINE, "Welcome-ScreenText initialized.");
     }
 
+    /*
+    Sets up the character screen.
+     */
     private void setupCharScreen() {
         ScreenText screenText = new ScreenText(
             "Choose a character:",
@@ -101,12 +138,14 @@ public class MainMenuUI<T extends Actor> extends ScreenController<T> {
         screenText.setColor(Color.WHITE);
         screenText.setFontScale(1.5f);
         add((T) screenText);
+        logger.log(Level.FINE, "ChooseChar-ScreenText initialized.");
 
         characterCard = new ScreenImage(
             "hud/characterCard.png",
             new Point(0, 0));
         characterCard.scaleBy(-1.2f);
         add((T) characterCard);
+        logger.log(Level.FINE, "CharacterCard loaded.");
 
         characters.add(new Node( // Knight
             new ScreenImage(
@@ -124,6 +163,7 @@ public class MainMenuUI<T extends Actor> extends ScreenController<T> {
                 """
         ));
         add((T) characters.get(0).character);
+        logger.log(Level.FINE, "Added Knight as character option.");
 
         characters.add(new Node( // Mage
             new ScreenImage(
@@ -143,6 +183,7 @@ public class MainMenuUI<T extends Actor> extends ScreenController<T> {
                 """
         ));
         add((T) characters.get(1).character);
+        logger.log(Level.FINE, "Added Mage as character option.");
 
         characters.add(new Node( // Ranger
             new ScreenImage(
@@ -161,6 +202,7 @@ public class MainMenuUI<T extends Actor> extends ScreenController<T> {
                 """
         ));
         add((T) characters.get(2).character);
+        logger.log(Level.FINE, "Added Ranger as character option.");
 
         characters.add(new Node( // Rogue
             new ScreenImage(
@@ -179,6 +221,7 @@ public class MainMenuUI<T extends Actor> extends ScreenController<T> {
                 """
         ));
         add((T) characters.get(3).character);
+        logger.log(Level.FINE, "Added Rogue as character option.");
 
         characterDescription = new ScreenText(
             characters.get(pointer).characterDescription,
@@ -188,10 +231,15 @@ public class MainMenuUI<T extends Actor> extends ScreenController<T> {
         characterDescription.setColor(Color.BLACK);
         characterDescription.setFontScale(1.5f);
         add((T) characterDescription);
+        logger.log(Level.FINE, "Character Description ScreenText initialized.");
 
         characters.get(pointer).character.setVisible(true);
     }
 
+    /*
+    A private Node containing information of each character that can be picked from.
+    It is used in the character screen.
+     */
     private static class Node {
         private final ScreenImage character;
         private final String characterDescription;

@@ -7,6 +7,14 @@ import ecs.components.VelocityComponent;
 import ecs.components.skill.*;
 import graphic.Animation;
 
+/**
+ * The Mage is a playable character which has the following skills:
+ * - Fireball
+ * - Frostbolt
+ * - Teleport
+ * <p>
+ * This character class is the only one to own a ManaComponent.
+ */
 public class Mage extends Hero {
 
     private static final String pathToIdleRight = "character/hero/mage/idleRight";
