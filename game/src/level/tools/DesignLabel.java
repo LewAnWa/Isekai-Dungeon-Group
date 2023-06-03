@@ -9,6 +9,7 @@ import java.util.Random;
  * @author Andre Matutat
  */
 public enum DesignLabel {
+    LUSH,
     DEFAULT;
 
     private static final List<DesignLabel> VALUES = List.of(values());
