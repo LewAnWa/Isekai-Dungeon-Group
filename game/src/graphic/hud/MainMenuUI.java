@@ -27,7 +27,7 @@ import java.util.logging.Logger;
  *
  * @param <T> An element that can be drawn on the screen.
  * @author Kirill Kuhn
- * @version 2.0
+ * @version 1.2
  */
 public class MainMenuUI<T extends Actor> extends ScreenController<T> {
 
@@ -71,16 +71,16 @@ public class MainMenuUI<T extends Actor> extends ScreenController<T> {
         if (!logo.isVisible() && Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) { // final decision in character screen
             if (characters.get(0).character.isVisible()) {
                 Game.setHero(new Knight());
-                Game.setHeroType(0);
+                Game.setHeroType(CharacterType.KNIGHT);
             } else if (characters.get(1).character.isVisible()) {
                 Game.setHero(new Mage());
-                Game.setHeroType(1);
+                Game.setHeroType(CharacterType.MAGE);
             } else if (characters.get(2).character.isVisible()) {
                 Game.setHero(new Ranger());
-                Game.setHeroType(2);
+                Game.setHeroType(CharacterType.RANGER);
             } else if (characters.get(3).character.isVisible()) {
                 Game.setHero(new Rogue());
-                Game.setHeroType(3);
+                Game.setHeroType(CharacterType.ROGUE);
             }
             Game.makeCharacterSet();
             Game.setMaxMonster(maxMonster);

@@ -82,7 +82,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
     private static HeroUI<Actor> heroUI;
     private static InventoryUI<Actor> inventoryUI;
     private static Entity hero;
-    private static int heroType;
+    private static CharacterType heroType;
     private static Entity[] monsters;
     private Logger gameLogger;
 
@@ -163,9 +163,9 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
     public void doRestart() {
         switch (heroType) {
             default -> hero = new Knight();
-            case 1 -> hero = new Mage();
-            case 2 -> hero = new Ranger();
-            case 3 -> hero = new Rogue();
+            case MAGE -> hero = new Mage();
+            case RANGER -> hero = new Ranger();
+            case ROGUE -> hero = new Rogue();
         }
 
         controller.remove(heroUI);
@@ -214,7 +214,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         setCameraFocus();
         manageEntitiesSets();
         getHero().ifPresent(this::loadNextLevelIfEntityIsOnEndTile);
-        if (heroType == 3 ) InvisibilitySkill.applyInvisibilityCost(hero);
+        if (heroType == CharacterType.ROGUE ) InvisibilitySkill.applyInvisibilityCost(hero);
         if (Gdx.input.isKeyJustPressed(Input.Keys.P)) togglePause();
         if (Gdx.input.isKeyJustPressed(KeyboardConfig.INVENTORY_OPEN.get())) toggleInventory();
     }
@@ -374,10 +374,10 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
     /**
      * Sets the heroType, which will determine as what characterClass the player will respawn,
      * when restarting the game from the gameOverScreen.
-     * @param heroType 0 = Knight, 1 = Mage, 2 = Ranger, 3 = Rogue
+     * @param characterType The type of character the player chose to play as.
      */
-    public static void setHeroType(int heroType) {
-        Game.heroType = heroType;
+    public static void setHeroType(CharacterType characterType) {
+        Game.heroType = characterType;
     }
 
     public static void makeCharacterSet() {
