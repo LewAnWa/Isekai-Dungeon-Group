@@ -25,7 +25,7 @@ public class BumerangSkill extends DamageProjectileSkill {
             "skills/boomerrang/",
                 0.5f,
                 new Damage(13, DamageType.PHYSICAL, user),
-                new Point(10, 10),
+                new Point(1, 1),
                 targetSelection,
                 5f);
     }

@@ -20,7 +20,7 @@ public class FireballSkill extends DamageProjectileSkill {
             "skills/fireball/",
                 0.5f,
                 new Damage(18, DamageType.FIRE, user),
-                new Point(10, 10),
+                new Point(1, 1),
                 targetSelection,
                 5f);
     }

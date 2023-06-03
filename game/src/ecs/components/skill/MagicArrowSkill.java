@@ -20,7 +20,7 @@ public class MagicArrowSkill extends DamageProjectileSkill {
             "skills/arrow/",
                 0.5f,
                 new Damage(15, DamageType.MAGIC, user),
-                new Point(10, 10),
+                new Point(1, 1),
                 targetSelection,
                 1000f);
     }
