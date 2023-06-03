@@ -169,7 +169,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
 
     /** Generates an array of Monsters */
     protected void generateMonsters() {
-        int monsterAmount = Math.min(currentLevel.getFloorTiles().size() / 20, 15);
+        int monsterAmount = Math.min(currentLevel.getFloorTiles().size() / 20, 10);
         monsters = new Entity[monsterAmount];
 
         hero.getComponent(XPComponent.class)
