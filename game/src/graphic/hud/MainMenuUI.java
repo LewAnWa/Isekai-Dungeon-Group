@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import controller.ScreenController;
 import ecs.entities.heros.*;
+import level.tools.LevelSize;
 import starter.Game;
 import tools.Constants;
 import tools.Point;
@@ -26,17 +27,22 @@ import java.util.logging.Logger;
  *
  * @param <T> An element that can be drawn on the screen.
  * @author Kirill Kuhn
- * @version 1.0
+ * @version 2.0
  */
 public class MainMenuUI<T extends Actor> extends ScreenController<T> {
 
     private final Logger logger = Logger.getLogger("MainMenuUI");
 
-    private ScreenImage logo, characterCard;
-    private ScreenText welcomeText, characterDescription;
-    private List<Node> characters = new ArrayList<>();
+    private ScreenImage logo, characterCard, menuArrow;
+    private ScreenText newGame, settings, characterDescription, info, chooseCharacter;
+    private final List<CharacterNode> characters = new ArrayList<>();
     private int pointer = 0;
     private final Point characterIconPosition = new Point(70, 40);
+    private final Point menuOption1 = new Point(235,140);
+    private final Point menuOption2 = new Point(190,90);
+    private LevelSize levelSize = LevelSize.SMALL;
+    private int maxMonster = 10;
+    private float fadeCounter = 0;
 
     /**
      * Creates a main menu. NOTE: ACTORS CAN ONLY BE HIDDEN BY DELETING THE INSTANCE!
@@ -44,6 +50,7 @@ public class MainMenuUI<T extends Actor> extends ScreenController<T> {
     public MainMenuUI() {
         super(new SpriteBatch());
         setupMainMenu();
+        setupCharScreen();
     }
 
     /**
@@ -56,46 +63,104 @@ public class MainMenuUI<T extends Actor> extends ScreenController<T> {
      * Game class the selected character.
      */
     public void updateUI() {
+        if (fadeCounter > 0) {
+            fadeCounter -= 0.005f;
+            info.setColor(255,255,255,fadeCounter);
+        }
+
         if (!logo.isVisible() && Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) { // final decision in character screen
             if (characters.get(0).character.isVisible()) {
                 Game.setHero(new Knight());
                 Game.setHeroType(0);
-            }
-            else if (characters.get(1).character.isVisible()) {
+            } else if (characters.get(1).character.isVisible()) {
                 Game.setHero(new Mage());
                 Game.setHeroType(1);
-            }
-            else if (characters.get(2).character.isVisible()) {
+            } else if (characters.get(2).character.isVisible()) {
                 Game.setHero(new Ranger());
                 Game.setHeroType(2);
-            }
-            else if (characters.get(3).character.isVisible()) {
+            } else if (characters.get(3).character.isVisible()) {
                 Game.setHero(new Rogue());
                 Game.setHeroType(3);
             }
             Game.makeCharacterSet();
+            Game.setMaxMonster(maxMonster);
+            Game.setLevelSize(levelSize);
         }
 
-        if (logo.isVisible() && Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) { // change to character screen if title screen exited
-            logo.setVisible(false);
-            welcomeText.setVisible(false);
-            setupCharScreen();
+        if (logo.isVisible()) {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) { // change to character screen if title screen exited
+                if (menuArrow.getX() == menuOption1.x) { // go to character menu
+                    // MAIN MENU ELEMENTS
+                    logo.setVisible(false);
+                    newGame.setVisible(false);
+                    settings.setVisible(false);
+                    menuArrow.setVisible(false);
+
+                    // CHARACTER MENU ELEMENTS
+                    chooseCharacter.setVisible(true);
+                    characterCard.setVisible(true);
+                    characterDescription.setVisible(true);
+                    characters.get(pointer).character.setVisible(true);
+                }
+                else if (menuArrow.getX() == menuOption2.x) {
+                    toggleSettings();
+                }
+            }
+
+            if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN) || Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+                if (menuArrow.getX() == menuOption1.x) menuArrow.setPosition(menuOption2.x, menuOption2.y);
+                else menuArrow.setPosition(menuOption1.x, menuOption1.y);
+            }
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) && !logo.isVisible()) { // iterate down in the character screen
-            characters.get(pointer).character.setVisible(false);
-            pointer++;
-            if (pointer >= characters.size()) pointer = 0;
-            characters.get(pointer).character.setVisible(true);
-            characterDescription.setText(characters.get(pointer).characterDescription);
+        if (!logo.isVisible()) {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) { // iterate down in the character screen
+                characters.get(pointer).character.setVisible(false);
+                pointer++;
+                if (pointer >= characters.size()) pointer = 0;
+                characters.get(pointer).character.setVisible(true);
+                characterDescription.setText(characters.get(pointer).characterDescription);
+            } else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) { // iterate up in the character screen
+                characters.get(pointer).character.setVisible(false);
+                pointer--;
+                if (pointer < 0) pointer = characters.size() - 1;
+                characters.get(pointer).character.setVisible(true);
+                characterDescription.setText(characters.get(pointer).characterDescription);
+            }
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+                // MAIN MENU ELEMENTS
+                logo.setVisible(true);
+                newGame.setVisible(true);
+                settings.setVisible(true);
+                menuArrow.setVisible(true);
+
+                // CHARACTER MENU ELEMENTS
+                chooseCharacter.setVisible(false);
+                characterCard.setVisible(false);
+                characterDescription.setVisible(false);
+                characters.get(pointer).character.setVisible(false);
+            }
         }
-        else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT) && !logo.isVisible()) { // iterate up in the character screen
-            characters.get(pointer).character.setVisible(false);
-            pointer--;
-            if (pointer < 0) pointer = characters.size() - 1;
-            characters.get(pointer).character.setVisible(true);
-            characterDescription.setText(characters.get(pointer).characterDescription);
+    }
+
+    private void toggleSettings() {
+        if (levelSize == LevelSize.SMALL) {
+            levelSize = LevelSize.MEDIUM;
+            maxMonster = 15;
+            info.setText("LevelSize = MEDIUM (maxMonster: 15)");
+            logger.fine("Level size set to medium (maxMonster: 15)");
+        } else if (levelSize == LevelSize.MEDIUM) {
+            levelSize = LevelSize.LARGE;
+            maxMonster = 20;
+            info.setText("LevelSize = LARGE (maxMonster: 20) !!! STRONG CPU REQUIRED");
+            logger.fine("Level size set to large (maxMonster: 10)");
+        } else {
+            levelSize = LevelSize.SMALL;
+            maxMonster = 10;
+            info.setText("LevelSize = SMALL (maxMonster: 10)");
+            logger.fine("Level size set to small (maxMonster: 20)");
         }
+        fadeCounter = 1;
     }
 
     /*
@@ -116,38 +181,65 @@ public class MainMenuUI<T extends Actor> extends ScreenController<T> {
         add((T) logo);
         logger.log(Level.FINE, "Logo loaded.");
 
-        welcomeText = new ScreenText(
-            "Press [Enter] to start",
-            new Point((float) Constants.WINDOW_WIDTH / 2 - 100, 100),
+        menuArrow = new ScreenImage(
+            "hud/arrow.png",
+            menuOption1);
+        menuArrow.scaleBy(-1f);
+        add((T) menuArrow);
+        logger.log(Level.FINE, "menuArrow-ScreenImage loaded.");
+
+        newGame = new ScreenText(
+            "NEW GAME",
+            new Point((float) Constants.WINDOW_WIDTH / 2 - 60, 140),
             1f
         );
-        welcomeText.setColor(Color.WHITE);
-        welcomeText.setFontScale(1.5f);
-        add((T) welcomeText);
-        logger.log(Level.FINE, "Welcome-ScreenText initialized.");
+        newGame.setColor(Color.WHITE);
+        newGame.setFontScale(1.5f);
+        add((T) newGame);
+        logger.log(Level.FINE, "NEW_GAME-ScreenText initialized.");
+
+        settings = new ScreenText(
+            "CHANGE SETTINGS",
+            new Point((float) Constants.WINDOW_WIDTH / 2 - 105, 90),
+            1f
+        );
+        settings.setColor(Color.WHITE);
+        settings.setFontScale(1.5f);
+        add((T) settings);
+        logger.log(Level.FINE, "CHANGE_SETTINGS-ScreenText initialized.");
+
+        info = new ScreenText(
+            "SAMPLE",
+            new Point(2, 2),
+            1f);
+        info.setColor(255, 255, 255, fadeCounter);
+        add((T) info);
+        logger.log(Level.FINE, "info-ScreenText initialized.");
     }
 
     /*
     Sets up the character screen.
      */
     private void setupCharScreen() {
-        ScreenText screenText = new ScreenText(
+        chooseCharacter = new ScreenText(
             "Choose a character:",
             new Point((float) Constants.WINDOW_WIDTH / 2 - 100, Constants.WINDOW_HEIGHT - 120),
             1f);
-        screenText.setColor(Color.WHITE);
-        screenText.setFontScale(1.5f);
-        add((T) screenText);
-        logger.log(Level.FINE, "ChooseChar-ScreenText initialized.");
+        chooseCharacter.setColor(Color.WHITE);
+        chooseCharacter.setFontScale(1.5f);
+        chooseCharacter.setVisible(false);
+        add((T) chooseCharacter);
+        logger.log(Level.FINE, "chooseCharacter-ScreenText initialized.");
 
         characterCard = new ScreenImage(
             "hud/characterCard.png",
             new Point(0, 0));
         characterCard.scaleBy(-1.2f);
+        characterCard.setVisible(false);
         add((T) characterCard);
         logger.log(Level.FINE, "CharacterCard loaded.");
 
-        characters.add(new Node( // Knight
+        characters.add(new CharacterNode( // Knight
             new ScreenImage(
                 "character/hero/knight/idleRight/knight_m_idle_anim_f0.png",
                 characterIconPosition
@@ -162,10 +254,11 @@ public class MainMenuUI<T extends Actor> extends ScreenController<T> {
                 STAMINA:    40
                 """
         ));
+        characters.get(0).character.setVisible(false);
         add((T) characters.get(0).character);
         logger.log(Level.FINE, "Added Knight as character option.");
 
-        characters.add(new Node( // Mage
+        characters.add(new CharacterNode( // Mage
             new ScreenImage(
                 "character/hero/mage/idleRight/wizzard_m_idle_anim_f0.png",
                 characterIconPosition
@@ -182,10 +275,11 @@ public class MainMenuUI<T extends Actor> extends ScreenController<T> {
                 MANA:        80
                 """
         ));
+        characters.get(1).character.setVisible(false);
         add((T) characters.get(1).character);
         logger.log(Level.FINE, "Added Mage as character option.");
 
-        characters.add(new Node( // Ranger
+        characters.add(new CharacterNode( // Ranger
             new ScreenImage(
                 "character/hero/ranger/idleRight/elf_f_idle_anim_f0.png",
                 characterIconPosition
@@ -201,10 +295,11 @@ public class MainMenuUI<T extends Actor> extends ScreenController<T> {
                 STAMINA:   60
                 """
         ));
+        characters.get(2).character.setVisible(false);
         add((T) characters.get(2).character);
         logger.log(Level.FINE, "Added Ranger as character option.");
 
-        characters.add(new Node( // Rogue
+        characters.add(new CharacterNode( // Rogue
             new ScreenImage(
                 "character/hero/rogue/idleRight/lizard_m_idle_anim_f0.png",
                 characterIconPosition
@@ -220,31 +315,30 @@ public class MainMenuUI<T extends Actor> extends ScreenController<T> {
                 STAMINA:   80
                 """
         ));
+        characters.get(3).character.setVisible(false);
         add((T) characters.get(3).character);
         logger.log(Level.FINE, "Added Rogue as character option.");
 
         characterDescription = new ScreenText(
             characters.get(pointer).characterDescription,
-            new Point((float) Constants.WINDOW_WIDTH / 2 - 40,100),
+            new Point((float) Constants.WINDOW_WIDTH / 2 - 40, 100),
             1f
         );
         characterDescription.setColor(Color.BLACK);
         characterDescription.setFontScale(1.5f);
+        characterDescription.setVisible(false);
         add((T) characterDescription);
         logger.log(Level.FINE, "Character Description ScreenText initialized.");
 
-        characters.get(pointer).character.setVisible(true);
+        characters.get(pointer).character.setVisible(false);
     }
 
     /*
-    A private Node containing information of each character that can be picked from.
-    It is used in the character screen.
-     */
-    private static class Node {
-        private final ScreenImage character;
-        private final String characterDescription;
-
-        private Node(ScreenImage character, String characterDescription) {
+        A private Node containing information of each character that can be picked from.
+        It is used in the character screen.
+         */
+    private record CharacterNode(ScreenImage character, String characterDescription) {
+        private CharacterNode(ScreenImage character, String characterDescription) {
             this.character = character;
             this.character.scaleBy(8f);
             this.character.setVisible(false);

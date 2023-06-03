@@ -41,7 +41,8 @@ import tools.Point;
 /** The heart of the framework. From here all strings are pulled. */
 public class Game extends ScreenAdapter implements IOnLevelLoader {
 
-    private final LevelSize LEVELSIZE = LevelSize.SMALL;
+    private static LevelSize levelSize = LevelSize.SMALL;
+    private static int maxMonster = 20;
 
     /**
      * The batch is necessary to draw ALL the stuff. Every object that uses draw need to know the
@@ -150,7 +151,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
             controller.add(gameOverScreen);
 
             levelAPI = new LevelAPI(batch, painter, new WallGenerator(new RandomWalkGenerator()), this);
-            levelAPI.loadLevel(LEVELSIZE);
+            levelAPI.loadLevel(levelSize);
             createSystems();
         }
     }
@@ -179,15 +180,12 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         gameOverScreen = new GameOverScreen<>(this);
         controller.add(gameOverScreen);
 
-        levelAPI.loadLevel(LEVELSIZE);
+        levelAPI.loadLevel(levelSize);
     }
 
     /** Generates an array of Monsters */
     protected void generateMonsters() {
-        monsters =
-                new Entity
-                        [currentLevel.getFloorTiles().size()
-                                / 20]; // amount of monsters = amount of floor tiles / 20
+        monsters = new Entity[Math.min(currentLevel.getFloorTiles().size()/ 20, maxMonster)];
 
         hero.getComponent(XPComponent.class)
                 .ifPresent(
@@ -275,7 +273,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
     }
 
     private void loadNextLevelIfEntityIsOnEndTile(Entity hero) {
-        if (isOnEndTile(hero)) levelAPI.loadLevel(LEVELSIZE);
+        if (isOnEndTile(hero)) levelAPI.loadLevel(levelSize);
     }
 
     private boolean isOnEndTile(Entity entity) {
@@ -413,5 +411,13 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         new XPSystem();
         new SkillSystem();
         new ProjectileSystem();
+    }
+
+    public static void setLevelSize(LevelSize levelSize) {
+        Game.levelSize = levelSize;
+    }
+
+    public static void setMaxMonster(int maxMonster) {
+        Game.maxMonster = maxMonster;
     }
 }
