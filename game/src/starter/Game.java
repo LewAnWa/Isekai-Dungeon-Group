@@ -43,7 +43,7 @@ import tools.Point;
 /** The heart of the framework. From here all strings are pulled. */
 public class Game extends ScreenAdapter implements IOnLevelLoader {
 
-    private final LevelSize LEVELSIZE = LevelSize.SMALL;
+    private final LevelSize LEVELSIZE = LevelSize.MEDIUM;
     private DesignLabel LEVELDESIGN = DesignLabel.LUSH;
     private int floor = 0;
 
@@ -169,10 +169,8 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
 
     /** Generates an array of Monsters */
     protected void generateMonsters() {
-        monsters =
-                new Entity
-                        [currentLevel.getFloorTiles().size()
-                                / 20]; // amount of monsters = amount of floor tiles / 20
+        int monsterAmount = Math.min(currentLevel.getFloorTiles().size() / 20, 15);
+        monsters = new Entity[monsterAmount];
 
         hero.getComponent(XPComponent.class)
                 .ifPresent(
