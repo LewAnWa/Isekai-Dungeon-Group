@@ -35,6 +35,7 @@ import level.elements.tile.Tile;
 import level.generator.IGenerator;
 import level.generator.postGeneration.WallGenerator;
 import level.generator.randomwalk.RandomWalkGenerator;
+import level.tools.DesignLabel;
 import level.tools.LevelSize;
 import tools.Constants;
 import tools.Point;
@@ -42,7 +43,9 @@ import tools.Point;
 /** The heart of the framework. From here all strings are pulled. */
 public class Game extends ScreenAdapter implements IOnLevelLoader {
 
-    private final LevelSize LEVELSIZE = LevelSize.SMALL;
+    private final LevelSize LEVELSIZE = LevelSize.MEDIUM;
+    private DesignLabel LEVELDESIGN = DesignLabel.LUSH;
+    private int floor = 0;
 
     /**
      * The batch is necessary to draw ALL the stuff. Every object that uses draw need to know the
@@ -137,7 +140,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         controller.add(gameOverScreen);
 
         levelAPI = new LevelAPI(batch, painter, new WallGenerator(new RandomWalkGenerator()), this);
-        levelAPI.loadLevel(LEVELSIZE);
+        levelAPI.loadLevel(LEVELSIZE, LEVELDESIGN);
         createSystems();
     }
 
@@ -160,18 +163,14 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         gameOverScreen = new GameOverScreen<>(this);
         controller.add(gameOverScreen);
 
-        levelAPI.loadLevel(LEVELSIZE);
+        floor = 0;
+        levelAPI.loadLevel(LEVELSIZE, LEVELDESIGN);
     }
 
     /** Generates an array of Monsters */
     protected void generateMonsters() {
-        monsters =
-                new Entity
-                        [currentLevel.getFloorTiles().size()
-                                / 20]; // amount of monsters = amount of floor tiles / 20
-
-        // TODO: Find out how to get the position of the hero via the getComponent()-Method
-        // Point heroPosition = hero.getComponent(PositionComponent.class).
+        int monsterAmount = Math.min(currentLevel.getFloorTiles().size() / 20, 10);
+        monsters = new Entity[monsterAmount];
 
         hero.getComponent(XPComponent.class)
                 .ifPresent(
@@ -258,7 +257,11 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
     }
 
     private void loadNextLevelIfEntityIsOnEndTile(Entity hero) {
-        if (isOnEndTile(hero)) levelAPI.loadLevel(LEVELSIZE);
+        if (isOnEndTile(hero)) {
+            levelAPI.loadLevel(LEVELSIZE, LEVELDESIGN);
+            floor++;
+            if (floor == 6) LEVELDESIGN = DesignLabel.DEFAULT;
+        }
     }
 
     private boolean isOnEndTile(Entity entity) {

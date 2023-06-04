@@ -94,6 +94,14 @@ public class TileTextureFactory {
         if (levelPart.element() == LevelElement.SKIP) {
             return "floor/empty";
         } else if (levelPart.element() == LevelElement.FLOOR) {
+            if (levelPart.design == DesignLabel.LUSH) {
+                int chance = (int) (Math.random() * 100);
+                if (chance < 39) return "floor/floor_4";
+                else if (chance < 57) return "floor/floor_3";
+                else if (chance < 73) return "floor/floor_2";
+                else if (chance < 87) return "floor/floor_1";
+                else return "floor/floor_0";
+            }
             return "floor/floor_1";
         } else if (levelPart.element() == LevelElement.EXIT) {
             return "floor/floor_ladder";
@@ -124,12 +132,40 @@ public class TileTextureFactory {
 
     private static String findTexturePathWall(LevelPart levelPart) {
         if (isRightWall(levelPart.position(), levelPart.layout())) {
+            if (levelPart.design == DesignLabel.LUSH) {
+                int chance = (int) (Math.random() * 100);
+                if (chance < 57) return "wall/wall_right/wall_right_3";
+                else if (chance < 73) return "wall/wall_right/wall_right_2";
+                else if (chance < 87) return "wall/wall_right/wall_right_1";
+                else return "wall/wall_right/wall_right_0";
+            }
             return "wall/wall_right";
         } else if (isLeftWall(levelPart.position(), levelPart.layout())) {
+            if (levelPart.design == DesignLabel.LUSH) {
+                int chance = (int) (Math.random() * 100);
+                if (chance < 57) return "wall/wall_left/wall_left_3";
+                else if (chance < 73) return "wall/wall_left/wall_left_2";
+                else if (chance < 87) return "wall/wall_left/wall_left_1";
+                else return "wall/wall_left/wall_left_0";
+            }
             return "wall/wall_left";
         } else if (isTopWall(levelPart.position(), levelPart.layout())) {
+            if (levelPart.design == DesignLabel.LUSH) {
+                int chance = (int) (Math.random() * 100);
+                if (chance < 57) return "wall/wall_top/wall_top_3";
+                else if (chance < 73) return "wall/wall_top/wall_top_2";
+                else if (chance < 87) return "wall/wall_top/wall_top_1";
+                else return "wall/wall_top/wall_top_0";
+            }
             return "wall/wall_top";
         } else if (isBottomWall(levelPart.position(), levelPart.layout())) {
+            if (levelPart.design == DesignLabel.LUSH) {
+                int chance = (int) (Math.random() * 100);
+                if (chance < 57) return "wall/wall_bottom/wall_bottom_3";
+                else if (chance < 73) return "wall/wall_bottom/wall_bottom_2";
+                else if (chance < 87) return "wall/wall_bottom/wall_bottom_1";
+                else return "wall/wall_bottom/wall_bottom_0";
+            }
             return "wall/wall_bottom";
         }
         return null;
