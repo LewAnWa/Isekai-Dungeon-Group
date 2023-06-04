@@ -18,6 +18,7 @@ public class Entity {
     private final Logger entityLogger;
     protected boolean isVisible = true;
 
+    protected boolean isProjectile = false;
     private boolean isBoomerang = false;
     private Entity user;
     public boolean reachedMiddlePoint = false;
@@ -37,6 +38,15 @@ public class Entity {
 
         this.isBoomerang = isBoomerang;
         this.user = user;
+    }
+
+    public Entity(boolean isProjectile) {
+        components = new HashMap<>();
+        Game.addEntity(this);
+        entityLogger = Logger.getLogger(this.getClass().getName());
+        entityLogger.info("The entity '" + this.getClass().getSimpleName() + "' was created.");
+
+        this.isProjectile = isProjectile;
     }
 
     /**
@@ -60,6 +70,10 @@ public class Entity {
     // -------------------- Getter and Setter -------------------- //
     public boolean isBoomerang() {
         return isBoomerang;
+    }
+
+    public boolean isProjectile() {
+        return isProjectile;
     }
 
     public Entity getUser() {

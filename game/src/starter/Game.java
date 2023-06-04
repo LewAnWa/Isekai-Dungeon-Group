@@ -19,6 +19,7 @@ import ecs.components.xp.XPComponent;
 import ecs.entities.Entity;
 import ecs.entities.heros.*;
 import ecs.entities.monsters.MonsterFactory;
+import ecs.entities.traps.TrapFactory;
 import ecs.systems.*;
 import graphic.DungeonCamera;
 import graphic.Painter;
@@ -83,6 +84,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
     private static Entity hero;
     private static int heroType;
     private static Entity[] monsters;
+    private static Entity[] traps;
     private Logger gameLogger;
 
     public static void main(String[] args) {
@@ -211,6 +213,31 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
                         });
     }
 
+    protected void generateTraps(){
+        traps = new Entity[currentLevel.getFloorTiles().size()/10];
+
+        hero.getComponent(XPComponent.class)
+            .ifPresent(
+                component -> {
+                    XPComponent comp = (XPComponent) component;
+
+                    hero.getComponent(PositionComponent.class)
+                        .ifPresent(
+                            component1 -> {
+                                PositionComponent posComp =
+                                    (PositionComponent) component1;
+
+                                for (int i = 0; i < traps.length; i++) {
+                                    traps[i] =
+                                        TrapFactory.generateTraps(
+                                            (int) comp.getCurrentLevel(),
+                                            posComp.getPosition(),
+                                            currentLevel);
+                                }
+                            });
+                });
+    }
+
     /** Called at the beginning of each frame. Before the controllers call <code>update</code>. */
     protected void frame() {
         setCameraFocus();
@@ -243,6 +270,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         entities.clear();
         getHero().ifPresent(this::placeOnLevelStart);
         generateMonsters();
+        generateTraps();
     }
 
     private void manageEntitiesSets() {

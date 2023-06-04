@@ -70,7 +70,7 @@ public abstract class ImpairingProjectileSkill implements ISkillFunction {
                                                 + comp.getMaximalManaPoints()
                                                 + " MANA");
 
-                                Entity projectile = new Entity();
+                                Entity projectile = new Entity(true);
 
                                 PositionComponent epc =
                                         (PositionComponent)
