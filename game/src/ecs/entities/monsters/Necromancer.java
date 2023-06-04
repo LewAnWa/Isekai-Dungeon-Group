@@ -41,6 +41,7 @@ public class Necromancer extends Monster {
         setUpDamageComponent(8 + flux);
     }
 
+    /* Sets up the Skill that the Necromancer will use */
     private void setupSkillComponent() {
         SkillComponent skillComp = new SkillComponent(this);
         skill = new Skill(new FireballSkill(
@@ -50,6 +51,7 @@ public class Necromancer extends Monster {
         skillComp.addSkill(skill);
     }
 
+    /* Sets up the AIComponent of the Necromancer */
     private void setUpAIComponent() {
         AIComponent aiComponent = new AIComponent(this);
         aiComponent.setFightAI(new MeleeAI(5f, skill));
