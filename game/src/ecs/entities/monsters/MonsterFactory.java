@@ -45,4 +45,21 @@ public class MonsterFactory {
 
         return monster;
     }
+
+    /**
+     * Generates a new Mimic Monster
+     *
+     * @param playerLevel current level of the player.
+     * @param playerPos the current position of the player in the level.
+     * @param currentLevel the generated map.
+     * @return a mimic
+     */
+    public static Entity spawnMimic(int playerLevel, Point playerPos, ILevel currentLevel){
+        int flux =
+            (int)
+                (Math.random()
+                    * (playerLevel * 2));
+        Monster mimic = new Mimic(0.12f, flux, playerPos, currentLevel);
+        return mimic;
+    }
 }

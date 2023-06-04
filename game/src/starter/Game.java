@@ -16,9 +16,12 @@ import ecs.components.MissingComponentException;
 import ecs.components.PositionComponent;
 import ecs.components.skill.InvisibilitySkill;
 import ecs.components.xp.XPComponent;
+import ecs.entities.Chest;
 import ecs.entities.Entity;
 import ecs.entities.heros.*;
 import ecs.entities.monsters.MonsterFactory;
+import ecs.items.ItemData;
+import ecs.items.ItemDataGenerator;
 import ecs.systems.*;
 import graphic.DungeonCamera;
 import graphic.Painter;
@@ -83,6 +86,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
     private static Entity hero;
     private static int heroType;
     private static Entity[] monsters;
+    private static Entity chest;
     private Logger gameLogger;
 
     public static void main(String[] args) {
@@ -211,6 +215,32 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
                         });
     }
 
+    /** spawns a chest in the Dungeon*/
+    protected void spawnChest(){
+        Chest.spawnChest();
+    }
+
+     /** spawns a Mimic Enemy in the Dungeon*/
+     public static void spawnMimicEnemy(){
+         hero.getComponent(XPComponent.class)
+             .ifPresent(
+                 component -> {
+                     XPComponent heroComp = (XPComponent) component;
+
+                     chest.getComponent(PositionComponent.class)
+                         .ifPresent(
+                             component1 -> {
+                                 PositionComponent chestComp =
+                                     (PositionComponent) component1;
+
+                                 MonsterFactory.spawnMimic(
+                                     (int) heroComp.getCurrentLevel(),
+                                     chestComp.getPosition(),
+                                     currentLevel);
+                             });
+                 });
+     }
+
     /** Called at the beginning of each frame. Before the controllers call <code>update</code>. */
     protected void frame() {
         setCameraFocus();
@@ -243,6 +273,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         entities.clear();
         getHero().ifPresent(this::placeOnLevelStart);
         generateMonsters();
+        spawnChest();
     }
 
     private void manageEntitiesSets() {
@@ -371,6 +402,15 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
      */
     public static void setHero(Entity hero) {
         Game.hero = hero;
+    }
+
+    /**
+     * set the reference of the chest
+     *
+     * @param chest new reference of chest
+     */
+    public static void setChest(Entity chest){
+        Game.chest = chest;
     }
 
     /**
