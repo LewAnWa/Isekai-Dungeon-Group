@@ -2,6 +2,7 @@ package ecs.entities.monsters;
 
 import ecs.components.ai.AIComponent;
 import ecs.components.ai.fight.CollideAI;
+import ecs.components.ai.idle.WalkToHero;
 import ecs.components.ai.transition.RangeTransition;
 import level.elements.ILevel;
 import tools.Point;
@@ -34,8 +35,8 @@ public class Bat extends Monster {
 
     private void setUpAIComponent() {
         AIComponent aiComponent = new AIComponent(this);
-        aiComponent.setFightAI(new CollideAI(1f));
-        aiComponent.setTransitionAI(new RangeTransition(100f));
-        // has no IdleAI, because the bat always knows where the player is
+        aiComponent.setFightAI(new CollideAI(3f));
+        aiComponent.setTransitionAI(new RangeTransition(2f));
+        aiComponent.setIdleAI(new WalkToHero());
     }
 }

@@ -168,7 +168,6 @@ public abstract class DamageProjectileSkill implements ISkillFunction {
      * @return the new path to textures of projectile
      */
     protected String animationHelper(Point targetDirection, Entity entity) {
-        System.out.println("ich funktioniere");
         PositionComponent epc =
                 (PositionComponent)
                         entity.getComponent(PositionComponent.class)
