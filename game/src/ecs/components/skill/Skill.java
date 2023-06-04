@@ -27,8 +27,6 @@ public class Skill {
         if (!isOnCoolDown()) {
             skillFunction.execute(entity);
             activateCoolDown();
-        } else {
-            System.out.println(currentCoolDownInFrames);
         }
     }
 

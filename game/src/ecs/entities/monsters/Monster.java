@@ -2,6 +2,7 @@ package ecs.entities.monsters;
 
 import dslToGame.AnimationBuilder;
 import ecs.components.*;
+import ecs.components.skill.Skill;
 import ecs.components.xp.XPComponent;
 import ecs.damage.Damage;
 import ecs.damage.DamageType;
@@ -22,6 +23,7 @@ public abstract class Monster extends Entity {
     private final float xSpeed;
     private final float ySpeed;
     private final ILevel currentLevel;
+    protected Skill skill;
 
     protected String pathToIdleLeft;
     protected String pathToIdleRight;
