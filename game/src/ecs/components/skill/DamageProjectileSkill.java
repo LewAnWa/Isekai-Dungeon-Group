@@ -63,7 +63,7 @@ public abstract class DamageProjectileSkill implements ISkillFunction {
         new ProjectileComponent(projectile, epc.getPosition(), targetPoint);
         ICollide collide =
                 (a, b, from) -> {
-                    if (b != entity) {
+                    if (b != entity && !b.isIgnorable()) {
                         b.getComponent(HealthComponent.class)
                                 .ifPresent(
                                         hc -> {

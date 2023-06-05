@@ -3,7 +3,6 @@ package ecs.entities.traps;
 import dslToGame.AnimationBuilder;
 import ecs.components.AnimationComponent;
 import ecs.components.PositionComponent;
-import ecs.damage.Damage;
 import ecs.entities.Entity;
 import graphic.Animation;
 import level.elements.ILevel;
@@ -13,10 +12,9 @@ import tools.Point;
 public abstract class Trap extends Entity {
 
     protected String pathToIdle;
-    private Damage damage;
 
     public Trap(Point playerPos, ILevel currentLevel) {
-        super();
+        super(true);
 
         setUpPositionComponent(playerPos, currentLevel);
     }
@@ -31,11 +29,10 @@ public abstract class Trap extends Entity {
         new PositionComponent(this, randomPoint);
     }
 
-    protected void setupAnimationComponent() {
-        Animation idle = AnimationBuilder.buildAnimation(pathToIdle);
-        new AnimationComponent(this, idle);
-    }
+    protected abstract void setupAnimationComponent();
+
 
     protected abstract void setHitboxComponent();
+
 
 }
