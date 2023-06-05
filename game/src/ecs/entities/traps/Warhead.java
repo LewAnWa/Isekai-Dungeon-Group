@@ -10,21 +10,20 @@ import graphic.Animation;
 import level.elements.ILevel;
 import tools.Point;
 
-import java.util.List;
-
 public class Warhead extends Trap {
 
     private boolean active = true;
     private AnimationComponent animComp;
+    private Animation explosion;
+    private Animation idle;
 
     public Warhead(Point playerPos, ILevel currentLevel) {
         super(playerPos, currentLevel);
 
-         pathToIdle = "warhead/warhead_active";
+        pathToIdle = "warhead/warhead_active";
 
         setupAnimationComponent();
         setHitboxComponent();
-
     }
 
     @Override
@@ -35,25 +34,26 @@ public class Warhead extends Trap {
                     other.getComponent(HealthComponent.class)
                         .ifPresent(hc -> {
                             if (active) {
+                                active = false;
+
                                 ((HealthComponent) hc).receiveHit(new Damage(30, DamageType.PHYSICAL, you));
                                 System.out.println("ouch");
-                                animComp.setCurrentAnimation(AnimationBuilder.buildAnimation("warhead/warhead_explosion", 1, false));
-                                active = false;
-                                animComp.setCurrentAnimation(AnimationBuilder.buildAnimation("warhead/warhead_explosion", 1, false));
+                                animComp.setCurrentAnimation(explosion);
                             }
-
-
                         });
                 }
-
             }, (you, other, direction) -> System.out.print(""));
 
     }
 
     @Override
     protected void setupAnimationComponent() {
-        Animation idle = AnimationBuilder.buildAnimation(pathToIdle, 1, false);
+        idle = AnimationBuilder.buildAnimation(pathToIdle, 1);
+        explosion = AnimationBuilder.buildAnimation("traps/warhead/warhead_explosion", 1, false);
         animComp = new AnimationComponent(this, idle);
     }
 
+    public void setIdleAnimation() {
+        animComp.setCurrentAnimation(idle);
+    }
 }
