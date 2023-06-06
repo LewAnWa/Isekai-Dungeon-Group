@@ -10,17 +10,25 @@ import graphic.Animation;
 import level.elements.ILevel;
 import tools.Point;
 
+/**
+ * The warhead is a trap which wil be activated when stepped on.
+ * This trap does damage to the first enemy stepping on it.
+ */
 public class Warhead extends Trap {
 
     private boolean active = true;
-    private AnimationComponent animComp;
     private Animation explosion;
     private Animation idle;
+    private Animation finish;
 
+    /**
+     * Default constructor for a warhead trap.
+     *
+     * @param playerPos    The position of the player in the level.
+     * @param currentLevel The current map.
+     */
     public Warhead(Point playerPos, ILevel currentLevel) {
         super(playerPos, currentLevel);
-
-        pathToIdle = "warhead/warhead_active";
 
         setupAnimationComponent();
         setHitboxComponent();
@@ -31,29 +39,31 @@ public class Warhead extends Trap {
         new HitboxComponent(this,
             (you, other, direction) -> {
                 if (!other.isIgnorable()) {
-                    other.getComponent(HealthComponent.class)
-                        .ifPresent(hc -> {
-                            if (active) {
-                                active = false;
-
+                    if (active) {
+                        other.getComponent(HealthComponent.class)
+                            .ifPresent(hc -> {
                                 ((HealthComponent) hc).receiveHit(new Damage(30, DamageType.PHYSICAL, you));
                                 System.out.println("ouch");
-                                animComp.setCurrentAnimation(explosion);
-                            }
-                        });
+                            });
+                        active = false;
+                        new AnimationComponent(this, explosion);
+                    }
                 }
             }, (you, other, direction) -> System.out.print(""));
-
     }
 
     @Override
     protected void setupAnimationComponent() {
-        idle = AnimationBuilder.buildAnimation(pathToIdle, 1);
+        idle = AnimationBuilder.buildAnimation("warhead/warhead_active", 1);
         explosion = AnimationBuilder.buildAnimation("traps/warhead/warhead_explosion", 1, false);
-        animComp = new AnimationComponent(this, idle);
+        finish = AnimationBuilder.buildAnimation("warhead/finish.png", 1);
+        new AnimationComponent(this, idle);
     }
 
+    /**
+     * Special setter for the used animation.
+     */
     public void setIdleAnimation() {
-        animComp.setCurrentAnimation(idle);
+        new AnimationComponent(this, finish);
     }
 }

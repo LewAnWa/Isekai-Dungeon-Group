@@ -213,8 +213,11 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
                         });
     }
 
+    /**
+     * Generates an arrays of traps depending on the current level size.
+     */
     protected void generateTraps(){
-        traps = new Entity[currentLevel.getFloorTiles().size()/10];
+        traps = new Entity[currentLevel.getFloorTiles().size()/30];
 
         hero.getComponent(XPComponent.class)
             .ifPresent(

@@ -4,12 +4,22 @@ import ecs.entities.Entity;
 import level.elements.ILevel;
 import tools.Point;
 
+/**
+ * A class which chooses the trap to be generated
+ */
 public class TrapFactory {
 
+    /**
+     * Generates a random trap relative to the player's level.
+     *
+     * @param playerLevel current level of the player.
+     * @param playerPos the current position of the player in the level.
+     * @param currentLevel the generated map.
+     * @return A random trap.
+     */
     public static Entity generateTraps(int playerLevel, Point playerPos, ILevel currentLevel) {
         Trap trap = null;
-        trap = new Warhead(playerPos, currentLevel);
-/*
+
         do {
             switch ((int) (Math.random() * 3)) {
                 case 0 -> trap = new Warhead(playerPos, currentLevel);
@@ -26,9 +36,7 @@ public class TrapFactory {
                 }
                 default -> trap = new Warhead(playerPos, currentLevel);
             }
-
-
-        } while (trap == null);*/
+        } while (trap == null);
 
         return trap;
     }

@@ -15,15 +15,24 @@ import tools.Point;
 
 import static starter.Game.currentLevel;
 
+/**
+ * The ritual is a trap, which cannot be seen until stepped on. Monsters will spawn when activated.
+ */
 public class Ritual extends Trap {
 
     private boolean active = true;
-    private AnimationComponent animComp;
 
+    private Animation ritualHidden;
+    private Animation ritualVisible;
+
+    /**
+     * Default constructor for a ritual trap.
+     *
+     * @param playerPos The position of the player in the level.
+     * @param currentLevel The current map.
+     */
     public Ritual(Point playerPos, ILevel currentLevel) {
         super(playerPos, currentLevel);
-
-        pathToIdle = "ritual/ritual1";
 
         setupAnimationComponent();
         setHitboxComponent();
@@ -32,8 +41,9 @@ public class Ritual extends Trap {
 
     @Override
     protected void setupAnimationComponent() {
-        Animation idle = AnimationBuilder.buildAnimation(pathToIdle, 1);
-        animComp = new AnimationComponent(this, idle);
+        ritualHidden = AnimationBuilder.buildAnimation("ritual/ritual1.png", 1);
+        ritualVisible = AnimationBuilder.buildAnimation("ritual/ritual3.png", 1);
+        new AnimationComponent(this, ritualHidden);
     }
 
 
@@ -48,6 +58,11 @@ public class Ritual extends Trap {
             }, (you, other, direction) -> System.out.print(""));
     }
 
+    /**
+     * Method which creates monsters when steeping on the ritual trap.
+     *
+     * @param threat Amount of monsters which will be created by the method.
+     */
     protected void generateMonsters(int threat) {
 
         if (active) {
@@ -73,7 +88,7 @@ public class Ritual extends Trap {
                                 });
                     });
 
-            animComp.setCurrentAnimation(AnimationBuilder.buildAnimation("ritual", 1, false));
+            new AnimationComponent(this, ritualVisible);
             active = false;
         }
     }
