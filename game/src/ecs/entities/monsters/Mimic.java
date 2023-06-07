@@ -14,7 +14,7 @@ import graphic.Animation;
 import level.elements.ILevel;
 import tools.Point;
 
-/** The Mimic is an Enemy camouflaged as a Chest, it will attack the Hero after trying to loot it*/
+/** The Mimic is an Enemy camouflaged as a Chest, it will attack the Hero after trying to loot it */
 public class Mimic extends Monster {
 
     /**
@@ -25,7 +25,7 @@ public class Mimic extends Monster {
      * @param chestPos the position of the chest in the level.
      * @param currentLevel the current map.
      */
-    public Mimic(float movementSpeed, int flux, Point chestPos, ILevel currentLevel){
+    public Mimic(float movementSpeed, int flux, Point chestPos, ILevel currentLevel) {
         super(movementSpeed, 0, chestPos, currentLevel);
 
         pathToIdleLeft = "monster/mimic/idleLeft";
@@ -53,16 +53,16 @@ public class Mimic extends Monster {
         healthComponent.setDieAnimation(deathAnim);
         healthComponent.setGetHitAnimation(deathAnim);
         healthComponent.setOnDeath(
-            new IOnDeathFunction() {
-                @Override
-                public void onDeath(Entity entity) {
-                    spawnRewardChest(entity);
-                }
-            });
+                new IOnDeathFunction() {
+                    @Override
+                    public void onDeath(Entity entity) {
+                        spawnRewardChest(entity);
+                    }
+                });
         // entity -> new AnimationComponent(entity, deathAnim)); // does nothing
     }
 
-    private void setUpPositionComponent(Point chestPos){
+    private void setUpPositionComponent(Point chestPos) {
         new PositionComponent(this, chestPos);
     }
 
@@ -73,7 +73,7 @@ public class Mimic extends Monster {
         aiComponent.setIdleAI(new RadiusWalk(30f, 2));
     }
 
-    private void spawnRewardChest(Entity mimic){
+    private void spawnRewardChest(Entity mimic) {
         PositionComponent psC =
                 (PositionComponent) mimic.getComponent(PositionComponent.class).get();
 

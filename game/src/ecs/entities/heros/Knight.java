@@ -9,11 +9,7 @@ import ecs.components.skill.Skill;
 import ecs.components.skill.SkillTools;
 import graphic.Animation;
 
-/**
- * The Knight is a playable character which has the following skills:
- * - Sword stab
- * - Dash
- */
+/** The Knight is a playable character which has the following skills: - Sword stab - Dash */
 public class Knight extends Hero {
 
     private static final String pathToIdleRight = "character/hero/knight/idleRight";
@@ -22,6 +18,7 @@ public class Knight extends Hero {
     private static final String pathToRunRight = "character/hero/knight/runRight";
     private static final String pathToHit = "character/hero/knight/hit";
 
+    /** Default constructor for a Knight Hero */
     public Knight() {
         super(130, 40, pathToHit);
         setupAnimationComponent();
@@ -47,19 +44,17 @@ public class Knight extends Hero {
 
     private void setupSkills() {
         // Sword
-        firstSkill = new Skill(
-            new SchwertstichSkill(SkillTools::getCursorPositionAsPoint, this),
-            0.5f,
-            SchwertstichSkill.pathToTextureUI);
+        firstSkill =
+                new Skill(
+                        new SchwertstichSkill(SkillTools::getCursorPositionAsPoint, this),
+                        0.5f,
+                        SchwertstichSkill.pathToTextureUI);
 
         playableComponent.setSkillSlot1(firstSkill);
         skillComponent.addSkill(firstSkill);
 
         // Dash
-        thirdSkill = new Skill(
-            new DashSkill(),
-            1,
-            DashSkill.pathToTextures);
+        thirdSkill = new Skill(new DashSkill(), 1, DashSkill.pathToTextures);
 
         playableComponent.setSkillSlot3(thirdSkill);
         skillComponent.addSkill(thirdSkill);

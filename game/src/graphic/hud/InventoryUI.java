@@ -106,8 +106,7 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
                         component -> {
                             logger.log(new LogRecord(Level.INFO, "SkillComponent detected!"));
                             skillComp = (SkillComponent) component;
-                        }
-                );
+                        });
     }
 
     /** Makes the screen invisible */
@@ -327,16 +326,15 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
         inventory.scaleBy(-1.1f);
         add((T) inventory);
 
-        ScreenImage hero = new ScreenImage(
-            ((Hero) inventoryComp.getEntity()).getPathToUITexture(),
-            new Point(50, 320));
+        ScreenImage hero =
+                new ScreenImage(
+                        ((Hero) inventoryComp.getEntity()).getPathToUITexture(),
+                        new Point(50, 320));
         hero.scaleBy(4f);
         add((T) hero);
 
-        ScreenText classType = new ScreenText(
-            inventoryComp.getEntity().toString() + ":",
-            new Point(180, 440),
-            1f);
+        ScreenText classType =
+                new ScreenText(inventoryComp.getEntity().toString() + ":", new Point(180, 440), 1f);
         classType.setColor(Color.BLACK);
         add((T) classType);
 
@@ -365,22 +363,25 @@ public class InventoryUI<T extends Actor> extends ScreenController<T> {
 
     // Builds the icons of the four main Skills.
     private void buildSkillOverview() {
-        skill1 = new ScreenImage(
-            ((Skill) skillComp.getSkillSet().toArray()[0]).getPathToTextureUI(),
-            skillSlot1);
+        skill1 =
+                new ScreenImage(
+                        ((Skill) skillComp.getSkillSet().toArray()[0]).getPathToTextureUI(),
+                        skillSlot1);
         skill1.scaleBy(1.35f);
         add((T) skill1);
 
-        skill2 = new ScreenImage(
-            ((Skill) skillComp.getSkillSet().toArray()[1]).getPathToTextureUI(),
-            skillSlot2);
+        skill2 =
+                new ScreenImage(
+                        ((Skill) skillComp.getSkillSet().toArray()[1]).getPathToTextureUI(),
+                        skillSlot2);
         skill2.scaleBy(1.35f);
         add((T) skill2);
 
         if (Arrays.stream(skillComp.getSkillSet().toArray()).count() == 3) {
-            skill3 = new ScreenImage(
-                ((Skill) skillComp.getSkillSet().toArray()[2]).getPathToTextureUI(),
-                skillSlot3);
+            skill3 =
+                    new ScreenImage(
+                            ((Skill) skillComp.getSkillSet().toArray()[2]).getPathToTextureUI(),
+                            skillSlot3);
             skill3.scaleBy(1.35f);
             add((T) skill3);
         }

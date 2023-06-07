@@ -7,10 +7,8 @@ import ecs.components.skill.*;
 import graphic.Animation;
 
 /**
- * The Rogue is a playable character which has the following skills:
- * - Sword stab
- * - Invisibility
- * - Dash
+ * The Rogue is a playable character which has the following skills: - Sword stab - Invisibility -
+ * Dash
  */
 public class Rogue extends Hero {
 
@@ -20,6 +18,7 @@ public class Rogue extends Hero {
     private static final String pathToRunRight = "character/hero/rogue/runRight";
     private static final String pathToHit = "character/hero/rogue/hit";
 
+    /** Default constructor for a Rogue Hero */
     public Rogue() {
         super(100, 80, pathToHit);
         setupAnimationComponent();
@@ -45,28 +44,23 @@ public class Rogue extends Hero {
 
     private void setupSkills() {
         // Sword
-        firstSkill = new Skill(
-            new SchwertstichSkill(SkillTools::getCursorPositionAsPoint, this),
-            1,
-            SchwertstichSkill.pathToTextureUI);
+        firstSkill =
+                new Skill(
+                        new SchwertstichSkill(SkillTools::getCursorPositionAsPoint, this),
+                        1,
+                        SchwertstichSkill.pathToTextureUI);
 
         playableComponent.setSkillSlot1(firstSkill);
         skillComponent.addSkill(firstSkill);
 
         // Invisibility
-        secondSkill = new Skill(
-            new InvisibilitySkill(1),
-            1,
-            InvisibilitySkill.pathToTextureUI);
+        secondSkill = new Skill(new InvisibilitySkill(1), 1, InvisibilitySkill.pathToTextureUI);
 
         playableComponent.setSkillSlot2(secondSkill);
         skillComponent.addSkill(secondSkill);
 
         // Dash
-        thirdSkill = new Skill(
-            new DashSkill(),
-            1,
-            DashSkill.pathToTextures);
+        thirdSkill = new Skill(new DashSkill(), 1, DashSkill.pathToTextures);
 
         playableComponent.setSkillSlot3(thirdSkill);
         skillComponent.addSkill(thirdSkill);

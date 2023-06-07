@@ -6,8 +6,8 @@ import level.elements.ILevel;
 import tools.Point;
 
 /**
- * The Trap is an entity which makes the progress in the dungeon harder.
- * There are three different Traps in the game.
+ * The Trap is an entity which makes the progress in the dungeon harder. There are three different
+ * Traps in the game.
  */
 public abstract class Trap extends Entity {
 
@@ -23,8 +23,7 @@ public abstract class Trap extends Entity {
     }
 
     /**
-     * Sets ups the position component for generated trap.
-     * Won't be spawned to close to the hero.
+     * Sets ups the position component for generated trap. Won't be spawned to close to the hero.
      *
      * @param playerPos The position of the player in the level.
      * @param currentLevel The current map.
@@ -40,16 +39,14 @@ public abstract class Trap extends Entity {
     }
 
     /**
-     *  Implements the behaviour of the AnimationComponent of a trap.
-     *  Will be specified when implemented in subclasses.
+     * Implements the behaviour of the AnimationComponent of a trap. Will be specified when
+     * implemented in subclasses.
      */
     protected abstract void setupAnimationComponent();
 
     /**
-     *  Implements the behaviour of the HitboxComponent of a trap.
-     *  Will be specified when implemented in subclasses.
+     * Implements the behaviour of the HitboxComponent of a trap. Will be specified when implemented
+     * in subclasses.
      */
     protected abstract void setHitboxComponent();
-
-
 }

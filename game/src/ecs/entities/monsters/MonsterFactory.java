@@ -4,6 +4,10 @@ import ecs.entities.Entity;
 import level.elements.ILevel;
 import tools.Point;
 
+/**
+ * Creates a random type of monster depending on herolevel, playerposition and the current level
+ * layout.
+ */
 public class MonsterFactory {
 
     /**
@@ -54,11 +58,8 @@ public class MonsterFactory {
      * @param currentLevel the generated map.
      * @return a mimic
      */
-    public static Entity spawnMimic(int playerLevel, Point playerPos, ILevel currentLevel){
-        int flux =
-            (int)
-                (Math.random()
-                    * (playerLevel * 2));
+    public static Entity spawnMimic(int playerLevel, Point playerPos, ILevel currentLevel) {
+        int flux = (int) (Math.random() * (playerLevel * 2));
         Monster mimic = new Mimic(0.12f, flux, playerPos, currentLevel);
         return mimic;
     }

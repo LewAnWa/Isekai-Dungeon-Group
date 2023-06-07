@@ -10,7 +10,6 @@ import ecs.components.StaminaComponent;
 import ecs.components.skill.Skill;
 import ecs.components.skill.SkillComponent;
 import ecs.entities.heros.Hero;
-
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -115,22 +114,25 @@ public class HeroUI<T extends Actor> extends ScreenController<T> {
 
     // Builds the icons of the four main Skills.
     private void buildSkillOverview() {
-        skill1 = new ScreenImage(
-            ((Skill) skillComp.getSkillSet().toArray()[0]).getPathToTextureUI(),
-            new Point(0, 5));
+        skill1 =
+                new ScreenImage(
+                        ((Skill) skillComp.getSkillSet().toArray()[0]).getPathToTextureUI(),
+                        new Point(0, 5));
         skill1.scaleBy(1.05f);
         add((T) skill1);
 
-        skill2 = new ScreenImage(
-            ((Skill) skillComp.getSkillSet().toArray()[1]).getPathToTextureUI(),
-            new Point(50, 5));
+        skill2 =
+                new ScreenImage(
+                        ((Skill) skillComp.getSkillSet().toArray()[1]).getPathToTextureUI(),
+                        new Point(50, 5));
         skill2.scaleBy(1.05f);
         add((T) skill2);
 
         if (Arrays.stream(skillComp.getSkillSet().toArray()).count() == 3) {
-            skill3 = new ScreenImage(
-                ((Skill) skillComp.getSkillSet().toArray()[2]).getPathToTextureUI(),
-                new Point(100, 5));
+            skill3 =
+                    new ScreenImage(
+                            ((Skill) skillComp.getSkillSet().toArray()[2]).getPathToTextureUI(),
+                            new Point(100, 5));
             skill3.scaleBy(1.05f);
             add((T) skill3);
         }
@@ -160,15 +162,15 @@ public class HeroUI<T extends Actor> extends ScreenController<T> {
 
         if (manaComp != null) {
             manaDisplay =
-                new ScreenText(
-                    "MANA:",
-                    new Point(
-                        (float) Constants.WINDOW_WIDTH / 2 - 50,
-                        Constants.WINDOW_HEIGHT - 20),
-                    2,
-                    new LabelStyleBuilder(FontBuilder.DEFAULT_FONT)
-                        .setFontcolor(fontColor)
-                        .build());
+                    new ScreenText(
+                            "MANA:",
+                            new Point(
+                                    (float) Constants.WINDOW_WIDTH / 2 - 50,
+                                    Constants.WINDOW_HEIGHT - 20),
+                            2,
+                            new LabelStyleBuilder(FontBuilder.DEFAULT_FONT)
+                                    .setFontcolor(fontColor)
+                                    .build());
             add((T) manaDisplay);
         }
     }

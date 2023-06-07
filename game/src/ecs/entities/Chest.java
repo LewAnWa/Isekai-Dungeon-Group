@@ -1,20 +1,17 @@
 package ecs.entities;
 
 import ecs.components.*;
-import ecs.entities.monsters.Mimic;
-import ecs.entities.monsters.Monster;
 import ecs.items.ItemData;
 import ecs.items.ItemDataGenerator;
 import graphic.Animation;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
-
-import level.elements.ILevel;
 import level.tools.LevelElement;
 import starter.Game;
 import tools.Point;
 
+/** A chest is an entity which drops loot when opened. */
 public class Chest extends Entity {
 
     public static final float defaultInteractionRadius = 1f;
@@ -50,6 +47,7 @@ public class Chest extends Entity {
 
     /**
      * generates the chest after killing a mimic chest
+     *
      * @param mimicPos position where the mimic has been killed
      * @return a configured chest
      */
@@ -58,20 +56,21 @@ public class Chest extends Entity {
         ItemDataGenerator itemDataGenerator = new ItemDataGenerator();
 
         List<ItemData> itemData =
-            IntStream.range(0, random.nextInt(1, 3))
-                .mapToObj(i -> itemDataGenerator.generateItemData())
-                .toList();
+                IntStream.range(0, random.nextInt(1, 3))
+                        .mapToObj(i -> itemDataGenerator.generateItemData())
+                        .toList();
         return new Chest(itemData, mimicPos);
     }
 
     /**
      * generates a false chest
+     *
      * @return a chest that spawns a mimic on interaction
      */
     public static Chest createMonsterChest() {
         return new Chest(
-            Game.currentLevel.getRandomTile(LevelElement.FLOOR).getCoordinate().toPoint(),
-            DEFAULT_CLOSED_MIMIC_ANIMATION_FRAMES);
+                Game.currentLevel.getRandomTile(LevelElement.FLOOR).getCoordinate().toPoint(),
+                DEFAULT_CLOSED_MIMIC_ANIMATION_FRAMES);
     }
 
     /**
@@ -103,23 +102,20 @@ public class Chest extends Entity {
         new PositionComponent(this, position);
         new InteractionComponent(this, defaultInteractionRadius, false, this::spawnMimic);
         AnimationComponent ac =
-            new AnimationComponent(
-                this,
-                new Animation(animation, 100, false),
-                new Animation(DEFAULT_OPENING_ANIMATION_FRAMES, 100, false));
+                new AnimationComponent(
+                        this,
+                        new Animation(animation, 100, false),
+                        new Animation(DEFAULT_OPENING_ANIMATION_FRAMES, 100, false));
         Game.setChest(this);
     }
 
-    /**
-     * Decides whether a normal- or monster-chest will be created
-     * creates only one of them
-     */
-    public static void spawnChest(){
+    /** Decides whether a normal- or monster-chest will be created and creates only one of them */
+    public static void spawnChest() {
         boolean thisIsAMimic = new Random().nextBoolean();
 
-        if(thisIsAMimic){
+        if (thisIsAMimic) {
             createMonsterChest();
-        }else {
+        } else {
             createNewChest();
         }
     }
@@ -155,7 +151,7 @@ public class Chest extends Entity {
                 .ifPresent(x -> x.setCurrentAnimation(x.getIdleRight()));
     }
 
-    private void spawnMimic(Entity entity){
+    private void spawnMimic(Entity entity) {
         Game.spawnMimicEnemy();
         Game.removeEntity(entity);
     }

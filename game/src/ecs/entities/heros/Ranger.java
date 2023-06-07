@@ -7,10 +7,8 @@ import ecs.components.skill.*;
 import graphic.Animation;
 
 /**
- * The Ranger is a playable character which has the following skills:
- * - magic Arrow
- * - Boomerang
- * - Dash
+ * The Ranger is a playable character which has the following skills: - magic Arrow - Boomerang -
+ * Dash
  */
 public class Ranger extends Hero {
 
@@ -20,6 +18,7 @@ public class Ranger extends Hero {
     private static final String pathToRunRight = "character/hero/ranger/runRight";
     private static final String pathToHit = "character/hero/ranger/hit";
 
+    /** Default constructor for a Ranger Hero */
     public Ranger() {
         super(100, 60, pathToHit);
         setupAnimationComponent();
@@ -45,28 +44,27 @@ public class Ranger extends Hero {
 
     private void setupSkills() {
         // magic Arrow
-        firstSkill = new Skill(
-            new MagicArrowSkill(SkillTools::getCursorPositionAsPoint, this),
-            1,
-            MagicArrowSkill.pathToTextureUI);
+        firstSkill =
+                new Skill(
+                        new MagicArrowSkill(SkillTools::getCursorPositionAsPoint, this),
+                        1,
+                        MagicArrowSkill.pathToTextureUI);
 
         playableComponent.setSkillSlot1(firstSkill);
         skillComponent.addSkill(firstSkill);
 
         // Boomerang
-        secondSkill = new Skill(
-            new BumerangSkill(SkillTools::getCursorPositionAsPoint, this),
-            2,
-            BumerangSkill.pathToTextureUI);
+        secondSkill =
+                new Skill(
+                        new BumerangSkill(SkillTools::getCursorPositionAsPoint, this),
+                        2,
+                        BumerangSkill.pathToTextureUI);
 
         playableComponent.setSkillSlot2(secondSkill);
         skillComponent.addSkill(secondSkill);
 
         // Dash
-        thirdSkill = new Skill(
-            new DashSkill(),
-            1,
-            DashSkill.pathToTextures);
+        thirdSkill = new Skill(new DashSkill(), 1, DashSkill.pathToTextures);
 
         playableComponent.setSkillSlot3(thirdSkill);
         skillComponent.addSkill(thirdSkill);

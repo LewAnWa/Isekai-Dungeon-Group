@@ -1,5 +1,7 @@
 package ecs.entities.traps;
 
+import static starter.Game.currentLevel;
+
 import dslToGame.AnimationBuilder;
 import ecs.components.AnimationComponent;
 import ecs.components.HitboxComponent;
@@ -12,8 +14,6 @@ import graphic.Animation;
 import level.elements.ILevel;
 import starter.Game;
 import tools.Point;
-
-import static starter.Game.currentLevel;
 
 /**
  * The ritual is a trap, which cannot be seen until stepped on. Monsters will spawn when activated.
@@ -36,7 +36,6 @@ public class Ritual extends Trap {
 
         setupAnimationComponent();
         setHitboxComponent();
-
     }
 
     @Override
@@ -46,16 +45,16 @@ public class Ritual extends Trap {
         new AnimationComponent(this, ritualHidden);
     }
 
-
     @Override
     protected void setHitboxComponent() {
-        new HitboxComponent(this,
-            (you, other, direction) -> {
-                if (other instanceof Hero) {
-                    generateMonsters(5);
-                }
-
-            }, (you, other, direction) -> System.out.print(""));
+        new HitboxComponent(
+                this,
+                (you, other, direction) -> {
+                    if (other instanceof Hero) {
+                        generateMonsters(5);
+                    }
+                },
+                (you, other, direction) -> System.out.print(""));
     }
 
     /**
@@ -69,24 +68,24 @@ public class Ritual extends Trap {
             Entity hero = Game.getHero().get();
 
             hero.getComponent(XPComponent.class)
-                .ifPresent(
-                    component -> {
-                        XPComponent comp = (XPComponent) component;
+                    .ifPresent(
+                            component -> {
+                                XPComponent comp = (XPComponent) component;
 
-                        hero.getComponent(PositionComponent.class)
-                            .ifPresent(
-                                component1 -> {
-                                    PositionComponent posComp =
-                                        (PositionComponent) component1;
+                                hero.getComponent(PositionComponent.class)
+                                        .ifPresent(
+                                                component1 -> {
+                                                    PositionComponent posComp =
+                                                            (PositionComponent) component1;
 
-                                    for (int i = 0; i < threat; i++) {
-                                        MonsterFactory.generateMonster(
-                                            (int) comp.getCurrentLevel(),
-                                            posComp.getPosition(),
-                                            currentLevel);
-                                    }
-                                });
-                    });
+                                                    for (int i = 0; i < threat; i++) {
+                                                        MonsterFactory.generateMonster(
+                                                                (int) comp.getCurrentLevel(),
+                                                                posComp.getPosition(),
+                                                                currentLevel);
+                                                    }
+                                                });
+                            });
 
             new AnimationComponent(this, ritualVisible);
             active = false;

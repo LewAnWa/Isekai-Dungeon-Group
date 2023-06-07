@@ -9,9 +9,8 @@ import ecs.entities.Entity;
 import ecs.entities.monsters.Monster;
 
 /**
- * The Hero is the player character. It's an entity in the ECS.
- * This class helps to set up the hero with
- * all its base components and attributes.
+ * The Hero is the player character. It's an entity in the ECS. This class helps to set up the hero
+ * with all its base components and attributes.
  */
 public abstract class Hero extends Entity {
 
@@ -41,13 +40,13 @@ public abstract class Hero extends Entity {
 
     private void setupHitboxComponent() {
         new HitboxComponent(
-            this,
-            (you, other, direction) -> {
-                if (other instanceof Monster) {
-                    you.setVisible(true);
-                }
-            },
-            (you, other, direction) -> System.out.print(""));
+                this,
+                (you, other, direction) -> {
+                    if (other instanceof Monster) {
+                        you.setVisible(true);
+                    }
+                },
+                (you, other, direction) -> System.out.print(""));
     }
 
     private void setupXPComponent() {

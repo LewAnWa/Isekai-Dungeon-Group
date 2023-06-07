@@ -25,7 +25,6 @@ import ecs.systems.*;
 import graphic.DungeonCamera;
 import graphic.Painter;
 import graphic.hud.*;
-
 import java.io.IOException;
 import java.util.*;
 import java.util.logging.Logger;
@@ -154,7 +153,9 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
             gameOverScreen = new GameOverScreen<>(this);
             controller.add(gameOverScreen);
 
-            levelAPI = new LevelAPI(batch, painter, new WallGenerator(new RandomWalkGenerator()), this);
+            levelAPI =
+                    new LevelAPI(
+                            batch, painter, new WallGenerator(new RandomWalkGenerator()), this);
             levelAPI.loadLevel(levelSize);
             createSystems();
         }
@@ -189,7 +190,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
 
     /** Generates an array of Monsters */
     protected void generateMonsters() {
-        monsters = new Entity[Math.min(currentLevel.getFloorTiles().size()/ 20, maxMonster)];
+        monsters = new Entity[Math.min(currentLevel.getFloorTiles().size() / 20, maxMonster)];
 
         hero.getComponent(XPComponent.class)
                 .ifPresent(
@@ -213,68 +214,64 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
                         });
     }
 
-
-    /** spawns a chest in the Dungeon*/
-    protected void spawnChest(){
+    /** spawns a chest in the Dungeon */
+    protected void spawnChest() {
         Chest.spawnChest();
     }
 
-     /** spawns a Mimic Enemy in the Dungeon*/
-     public static void spawnMimicEnemy(){
-         hero.getComponent(XPComponent.class)
-             .ifPresent(
-                 component -> {
-                     XPComponent heroComp = (XPComponent) component;
-
-                     chest.getComponent(PositionComponent.class)
-                         .ifPresent(
-                             component1 -> {
-                                 PositionComponent chestComp =
-                                     (PositionComponent) component1;
-
-                                 MonsterFactory.spawnMimic(
-                                     (int) heroComp.getCurrentLevel(),
-                                     chestComp.getPosition(),
-                                     currentLevel);
-                             });
-                 });
-     }
-
-    /**
-     * Generates an arrays of traps depending on the current level size.
-     */
-    protected void generateTraps(){
-        traps = new Entity[currentLevel.getFloorTiles().size()/30];
-
+    /** spawns a Mimic Enemy in the Dungeon */
+    public static void spawnMimicEnemy() {
         hero.getComponent(XPComponent.class)
-            .ifPresent(
-                component -> {
-                    XPComponent comp = (XPComponent) component;
+                .ifPresent(
+                        component -> {
+                            XPComponent heroComp = (XPComponent) component;
 
-                    hero.getComponent(PositionComponent.class)
-                        .ifPresent(
-                            component1 -> {
-                                PositionComponent posComp =
-                                    (PositionComponent) component1;
+                            chest.getComponent(PositionComponent.class)
+                                    .ifPresent(
+                                            component1 -> {
+                                                PositionComponent chestComp =
+                                                        (PositionComponent) component1;
 
-                                for (int i = 0; i < traps.length; i++) {
-                                    traps[i] =
-                                        TrapFactory.generateTraps(
-                                            (int) comp.getCurrentLevel(),
-                                            posComp.getPosition(),
-                                            currentLevel);
-                                }
-                            });
-                });
+                                                MonsterFactory.spawnMimic(
+                                                        (int) heroComp.getCurrentLevel(),
+                                                        chestComp.getPosition(),
+                                                        currentLevel);
+                                            });
+                        });
     }
 
+    /** Generates an arrays of traps depending on the current level size. */
+    protected void generateTraps() {
+        traps = new Entity[currentLevel.getFloorTiles().size() / 30];
+
+        hero.getComponent(XPComponent.class)
+                .ifPresent(
+                        component -> {
+                            XPComponent comp = (XPComponent) component;
+
+                            hero.getComponent(PositionComponent.class)
+                                    .ifPresent(
+                                            component1 -> {
+                                                PositionComponent posComp =
+                                                        (PositionComponent) component1;
+
+                                                for (int i = 0; i < traps.length; i++) {
+                                                    traps[i] =
+                                                            TrapFactory.generateTraps(
+                                                                    (int) comp.getCurrentLevel(),
+                                                                    posComp.getPosition(),
+                                                                    currentLevel);
+                                                }
+                                            });
+                        });
+    }
 
     /** Called at the beginning of each frame. Before the controllers call <code>update</code>. */
     protected void frame() {
         setCameraFocus();
         manageEntitiesSets();
         getHero().ifPresent(this::loadNextLevelIfEntityIsOnEndTile);
-        if (heroType == CharacterType.ROGUE ) InvisibilitySkill.applyInvisibilityCost(hero);
+        if (heroType == CharacterType.ROGUE) InvisibilitySkill.applyInvisibilityCost(hero);
         if (Gdx.input.isKeyJustPressed(Input.Keys.P)) togglePause();
         if (Gdx.input.isKeyJustPressed(KeyboardConfig.INVENTORY_OPEN.get())) toggleInventory();
     }
@@ -303,7 +300,6 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         generateMonsters();
         spawnChest();
         generateTraps();
-
     }
 
     private void manageEntitiesSets() {
@@ -439,13 +435,14 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
      *
      * @param chest new reference of chest
      */
-    public static void setChest(Entity chest){
+    public static void setChest(Entity chest) {
         Game.chest = chest;
     }
 
     /**
-     * Sets the heroType, which will determine as what characterClass the player will respawn,
-     * when restarting the game from the gameOverScreen.
+     * Sets the heroType, which will determine as what characterClass the player will respawn, when
+     * restarting the game from the gameOverScreen.
+     *
      * @param characterType The type of character the player chose to play as.
      */
     public static void setHeroType(CharacterType characterType) {

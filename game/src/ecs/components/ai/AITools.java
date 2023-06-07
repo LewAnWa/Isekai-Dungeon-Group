@@ -6,8 +6,6 @@ import ecs.components.PositionComponent;
 import ecs.components.VelocityComponent;
 import ecs.entities.Entity;
 import java.util.*;
-
-import ecs.entities.heros.Hero;
 import level.elements.ILevel;
 import level.elements.tile.Tile;
 import level.tools.Coordinate;
@@ -237,7 +235,8 @@ public class AITools {
     public static boolean playerInRange(Entity entity, float range) {
 
         Optional<Entity> hero = Game.getHero();
-        if (hero.isPresent()) return entityInRange(entity, hero.get(), range) && hero.get().isVisible();
+        if (hero.isPresent())
+            return entityInRange(entity, hero.get(), range) && hero.get().isVisible();
         else return false;
     }
 

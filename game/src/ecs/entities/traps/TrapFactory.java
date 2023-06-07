@@ -4,9 +4,7 @@ import ecs.entities.Entity;
 import level.elements.ILevel;
 import tools.Point;
 
-/**
- * A class which chooses the trap to be generated
- */
+/** A class which chooses the trap to be generated */
 public class TrapFactory {
 
     /**

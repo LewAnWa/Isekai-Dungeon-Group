@@ -11,8 +11,8 @@ import level.elements.ILevel;
 import tools.Point;
 
 /**
- * The warhead is a trap which wil be activated when stepped on.
- * This trap does damage to the first enemy stepping on it.
+ * The warhead is a trap which wil be activated when stepped on. This trap does damage to the first
+ * enemy stepping on it.
  */
 public class Warhead extends Trap {
 
@@ -24,7 +24,7 @@ public class Warhead extends Trap {
     /**
      * Default constructor for a warhead trap.
      *
-     * @param playerPos    The position of the player in the level.
+     * @param playerPos The position of the player in the level.
      * @param currentLevel The current map.
      */
     public Warhead(Point playerPos, ILevel currentLevel) {
@@ -36,20 +36,28 @@ public class Warhead extends Trap {
 
     @Override
     protected void setHitboxComponent() {
-        new HitboxComponent(this,
-            (you, other, direction) -> {
-                if (!other.isIgnorable()) {
-                    if (active) {
-                        other.getComponent(HealthComponent.class)
-                            .ifPresent(hc -> {
-                                ((HealthComponent) hc).receiveHit(new Damage(30, DamageType.PHYSICAL, you));
-                                System.out.println("ouch");
-                            });
-                        active = false;
-                        new AnimationComponent(this, explosion);
+        new HitboxComponent(
+                this,
+                (you, other, direction) -> {
+                    if (!other.isIgnorable()) {
+                        if (active) {
+                            other.getComponent(HealthComponent.class)
+                                    .ifPresent(
+                                            hc -> {
+                                                ((HealthComponent) hc)
+                                                        .receiveHit(
+                                                                new Damage(
+                                                                        30,
+                                                                        DamageType.PHYSICAL,
+                                                                        you));
+                                                System.out.println("ouch");
+                                            });
+                            active = false;
+                            new AnimationComponent(this, explosion);
+                        }
                     }
-                }
-            }, (you, other, direction) -> System.out.print(""));
+                },
+                (you, other, direction) -> System.out.print(""));
     }
 
     @Override
@@ -60,9 +68,7 @@ public class Warhead extends Trap {
         new AnimationComponent(this, idle);
     }
 
-    /**
-     * Special setter for the used animation.
-     */
+    /** Special setter for the used animation. */
     public void setIdleAnimation() {
         new AnimationComponent(this, finish);
     }

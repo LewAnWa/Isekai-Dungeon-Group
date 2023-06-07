@@ -19,6 +19,7 @@ public class AnimationBuilder {
 
     @DSLTypeAdapter(t = Animation.class)
     public static Animation buildAnimation(String path, int frameTime, boolean looping) {
-        return new Animation(TextureHandler.getInstance().getTexturePaths(path), frameTime, looping);
+        return new Animation(
+                TextureHandler.getInstance().getTexturePaths(path), frameTime, looping);
     }
 }

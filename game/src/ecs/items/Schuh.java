@@ -77,9 +77,13 @@ public class Schuh extends ItemData implements IOnCollect, IOnDrop {
                 .ifPresent(
                         vC -> {
                             ((VelocityComponent) vC)
-                                    .setYVelocity(((VelocityComponent) vC).getYVelocity() - velocityModifier);
+                                    .setYVelocity(
+                                            ((VelocityComponent) vC).getYVelocity()
+                                                    - velocityModifier);
                             ((VelocityComponent) vC)
-                                    .setXVelocity(((VelocityComponent) vC).getXVelocity() - velocityModifier);
+                                    .setXVelocity(
+                                            ((VelocityComponent) vC).getXVelocity()
+                                                    - velocityModifier);
                         });
     }
 
@@ -93,9 +97,13 @@ public class Schuh extends ItemData implements IOnCollect, IOnDrop {
                 .ifPresent(
                         vC -> {
                             ((VelocityComponent) vC)
-                                    .setYVelocity(((VelocityComponent) vC).getYVelocity() + velocityModifier);
+                                    .setYVelocity(
+                                            ((VelocityComponent) vC).getYVelocity()
+                                                    + velocityModifier);
                             ((VelocityComponent) vC)
-                                    .setXVelocity(((VelocityComponent) vC).getXVelocity() + velocityModifier);
+                                    .setXVelocity(
+                                            ((VelocityComponent) vC).getXVelocity()
+                                                    + velocityModifier);
                         });
     }
 }

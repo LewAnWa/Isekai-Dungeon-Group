@@ -17,7 +17,7 @@ public class MagicArrowSkill extends DamageProjectileSkill {
      */
     public MagicArrowSkill(ITargetSelection targetSelection, Entity user) {
         super(
-            "skills/arrow/",
+                "skills/arrow/",
                 0.5f,
                 new Damage(15, DamageType.MAGIC, user),
                 new Point(1, 1),
