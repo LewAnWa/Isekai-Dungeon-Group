@@ -62,7 +62,7 @@ public class BumerangSkill extends DamageProjectileSkill {
 
         ICollide collide =
                 (a, b, from) -> {
-                    if (b != entity) {
+                    if (b != entity && !b.isIgnorable()) {
                         b.getComponent(HealthComponent.class)
                                 .ifPresent(
                                         hc -> {
@@ -118,7 +118,7 @@ public class BumerangSkill extends DamageProjectileSkill {
 
         ICollide collide =
                 (a, b, from) -> {
-                    if (b != entity.getUser()) {
+                    if (b != entity.getUser() && !b.isIgnorable()) {
                         b.getComponent(HealthComponent.class)
                                 .ifPresent(
                                         hc -> {
