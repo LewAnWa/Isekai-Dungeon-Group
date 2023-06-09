@@ -2,7 +2,6 @@ package ecs.entities.monsters;
 
 import ecs.components.PositionComponent;
 import ecs.components.ai.AIComponent;
-import ecs.components.ai.fight.CollideAI;
 import ecs.components.ai.fight.MeleeAI;
 import ecs.components.ai.idle.RadiusWalk;
 import ecs.components.ai.transition.RangeTransition;
@@ -44,10 +43,21 @@ public class Necromancer extends Monster {
     /* Sets up the Skill that the Necromancer will use */
     private void setupSkillComponent() {
         SkillComponent skillComp = new SkillComponent(this);
-        skill = new Skill(new FireballSkill(
-            () -> ((PositionComponent) Game.getHero().flatMap(hero -> hero.getComponent(PositionComponent.class)).orElseThrow()).getPosition(),
-            this
-        ), 5);
+        skill =
+                new Skill(
+                        new FireballSkill(
+                                () ->
+                                        ((PositionComponent)
+                                                        Game.getHero()
+                                                                .flatMap(
+                                                                        hero ->
+                                                                                hero.getComponent(
+                                                                                        PositionComponent
+                                                                                                .class))
+                                                                .orElseThrow())
+                                                .getPosition(),
+                                this),
+                        5);
         skillComp.addSkill(skill);
     }
 

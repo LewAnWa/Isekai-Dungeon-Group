@@ -1,6 +1,8 @@
 package level;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import ecs.components.MissingComponentException;
+import ecs.components.PositionComponent;
 import graphic.Painter;
 import graphic.PainterConfig;
 import java.util.HashMap;
@@ -12,6 +14,7 @@ import level.generator.IGenerator;
 import level.tools.DesignLabel;
 import level.tools.LevelElement;
 import level.tools.LevelSize;
+import starter.Game;
 
 /** Manages the level. */
 public class LevelAPI {
@@ -86,20 +89,61 @@ public class LevelAPI {
         return currentLevel;
     }
 
+    /**
+     * Calculates a tile's distance and depending on that, the tile will be drawn or not, with its
+     * alpha value being tweaked depending on its distance. This creates the effect of the player
+     * carrying a torch.
+     */
     protected void drawLevel() {
         Map<String, PainterConfig> mapping = new HashMap<>();
 
         Tile[][] layout = currentLevel.getLayout();
-        for (int y = 0; y < layout.length; y++) {
-            for (int x = 0; x < layout[0].length; x++) {
-                Tile t = layout[y][x];
-                if (t.getLevelElement() != LevelElement.SKIP) {
-                    String texturePath = t.getTexturePath();
-                    if (!mapping.containsKey(texturePath)) {
-                        mapping.put(texturePath, new PainterConfig(texturePath));
+        float playerX, playerY;
+
+        PositionComponent posComp =
+                (PositionComponent)
+                        Game.getHero()
+                                .orElseThrow()
+                                .getComponent(PositionComponent.class)
+                                .orElseThrow(
+                                        () ->
+                                                new MissingComponentException(
+                                                        "Missing "
+                                                                + PositionComponent.class.getName()
+                                                                + " which is required for "
+                                                                + LevelAPI.class.getName()));
+
+        playerX = posComp.getPosition().x;
+        playerY = posComp.getPosition().y;
+
+        // The maximum range the player can see
+        float maxRange = 8;
+
+        // Iterate through all tiles in the level
+        for (int i = 0; i < layout.length; i++) { // iterates through y-axis
+            for (int j = 0; j < layout[0].length; j++) { // iterates through x-axis
+
+                // Check if the tile is within the sight range of the player
+                float dx = j - playerX;
+                float dy = i - playerY;
+                float distance = (float) Math.sqrt(dx * dx + dy * dy);
+
+                if (distance <= maxRange) { // if tile in distance
+                    if (layout[i][j].getLevelElement() != LevelElement.SKIP) {
+                        String texturePath = layout[i][j].getTexturePath();
+                        if (!mapping.containsKey(texturePath)) {
+                            mapping.put(texturePath, new PainterConfig(texturePath));
+                        }
+
+                        // Calculate the transparency based on the distance
+                        float alpha = 1 - (distance / maxRange);
+
+                        painter.draw(
+                                layout[i][j].getCoordinate().toPoint(),
+                                texturePath,
+                                mapping.get(texturePath),
+                                alpha);
                     }
-                    painter.draw(
-                            t.getCoordinate().toPoint(), texturePath, mapping.get(texturePath));
                 }
             }
         }
