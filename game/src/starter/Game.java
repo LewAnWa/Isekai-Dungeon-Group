@@ -35,6 +35,7 @@ import level.elements.tile.Tile;
 import level.generator.IGenerator;
 import level.generator.postGeneration.WallGenerator;
 import level.generator.randomwalk.RandomWalkGenerator;
+import level.tools.DesignLabel;
 import level.tools.LevelSize;
 import tools.Constants;
 import tools.Point;
@@ -42,8 +43,10 @@ import tools.Point;
 /** The heart of the framework. From here all strings are pulled. */
 public class Game extends ScreenAdapter implements IOnLevelLoader {
 
+    private DesignLabel LEVELDESIGN = DesignLabel.LUSH;
     private static LevelSize levelSize = LevelSize.SMALL;
     private static int maxMonster = 20;
+    private int floor = 0;
 
     /**
      * The batch is necessary to draw ALL the stuff. Every object that uses draw need to know the
@@ -185,12 +188,14 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         gameOverScreen = new GameOverScreen<>(this);
         controller.add(gameOverScreen);
 
-        levelAPI.loadLevel(levelSize);
+        floor = 0;
+        levelAPI.loadLevel(LEVELSIZE, LEVELDESIGN);
     }
 
     /** Generates an array of Monsters */
     protected void generateMonsters() {
-        monsters = new Entity[Math.min(currentLevel.getFloorTiles().size() / 20, maxMonster)];
+        int monsterAmount = Math.min(currentLevel.getFloorTiles().size() / 20, maxMonster);
+        monsters = new Entity[monsterAmount];
 
         hero.getComponent(XPComponent.class)
                 .ifPresent(
@@ -332,7 +337,11 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
     }
 
     private void loadNextLevelIfEntityIsOnEndTile(Entity hero) {
-        if (isOnEndTile(hero)) levelAPI.loadLevel(levelSize);
+        if (isOnEndTile(hero)) {
+            levelAPI.loadLevel(LEVELSIZE, LEVELDESIGN);
+            floor++;
+            if (floor == 6) LEVELDESIGN = DesignLabel.DEFAULT;
+        }
     }
 
     private boolean isOnEndTile(Entity entity) {
