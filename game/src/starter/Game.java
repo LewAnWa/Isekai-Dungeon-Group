@@ -159,7 +159,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
             levelAPI =
                     new LevelAPI(
                             batch, painter, new WallGenerator(new RandomWalkGenerator()), this);
-            levelAPI.loadLevel(levelSize);
+            levelAPI.loadLevel(levelSize, LEVELDESIGN);
             createSystems();
         }
     }
@@ -189,7 +189,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         controller.add(gameOverScreen);
 
         floor = 0;
-        levelAPI.loadLevel(LEVELSIZE, LEVELDESIGN);
+        levelAPI.loadLevel(levelSize, LEVELDESIGN);
     }
 
     /** Generates an array of Monsters */
@@ -338,7 +338,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
 
     private void loadNextLevelIfEntityIsOnEndTile(Entity hero) {
         if (isOnEndTile(hero)) {
-            levelAPI.loadLevel(LEVELSIZE, LEVELDESIGN);
+            levelAPI.loadLevel(levelSize, LEVELDESIGN);
             floor++;
             if (floor == 6) LEVELDESIGN = DesignLabel.DEFAULT;
         }

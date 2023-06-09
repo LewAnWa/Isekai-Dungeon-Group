@@ -8,7 +8,7 @@ public class Skill {
     private final ISkillFunction skillFunction;
     private final int coolDownInFrames;
     private int currentCoolDownInFrames;
-    private final String pathToTextureUI;
+    private String pathToTextureUI;
 
     /**
      * @param skillFunction Function of this skill.
@@ -20,6 +20,15 @@ public class Skill {
         this.coolDownInFrames = (int) (coolDownInSeconds * Constants.FRAME_RATE);
         this.currentCoolDownInFrames = 0;
         this.pathToTextureUI = pathToTextureUI;
+    }
+
+    /**
+     * @param skillFunction Function of this skill
+     */
+    public Skill(ISkillFunction skillFunction, float coolDownInSeconds) {
+        this.skillFunction = skillFunction;
+        this.coolDownInFrames = (int) (coolDownInSeconds * Constants.FRAME_RATE);
+        this.currentCoolDownInFrames = 0;
     }
 
     /**
