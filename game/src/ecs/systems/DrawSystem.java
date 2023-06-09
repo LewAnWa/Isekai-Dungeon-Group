@@ -4,6 +4,7 @@ import ecs.components.AnimationComponent;
 import ecs.components.MissingComponentException;
 import ecs.components.PositionComponent;
 import ecs.entities.Entity;
+import ecs.entities.heros.Rogue;
 import ecs.entities.traps.Warhead;
 import graphic.Animation;
 import graphic.Painter;
@@ -41,21 +42,66 @@ public class DrawSystem extends ECS_System {
         final Animation animation = dsd.ac.getCurrentAnimation();
         String currentAnimationTexture = animation.getNextAnimationTexturePath();
 
+        float playerX, playerY;
+        PositionComponent heroPositionComp =
+                (PositionComponent)
+                        Game.getHero()
+                                .orElseThrow()
+                                .getComponent(PositionComponent.class)
+                                .orElseThrow(
+                                        () ->
+                                                new MissingComponentException(
+                                                        "Missing "
+                                                                + PositionComponent.class.getName()
+                                                                + " of Hero, which is required for "
+                                                                + DrawSystem.class.getName()));
+
+        playerX = heroPositionComp.getPosition().x;
+        playerY = heroPositionComp.getPosition().y;
+
+        float maxRange = 8;
+
+        float dx = dsd.pc.getPosition().x - playerX;
+        float dy = dsd.pc.getPosition().y - playerY;
+        float distance = (float) Math.sqrt(dx * dx + dy * dy);
+
         if (!configs.containsKey(currentAnimationTexture)) {
             configs.put(currentAnimationTexture, new PainterConfig(currentAnimationTexture));
         }
-        if (!dsd.e.isVisible()) { // draw the sprite slightly invisible
-            painter.draw(
+
+        // if entity is in range
+        if (distance <= maxRange) {
+            float alpha = 1 - (distance / maxRange);
+
+            // for rogue going invisible
+            if (!dsd.e.isVisible() && dsd.e instanceof Rogue) {
+                painter.draw(
                     dsd.pc().getPosition(),
                     currentAnimationTexture,
                     configs.get(currentAnimationTexture),
                     0.4f);
-            return;
+                return;
+            }
+
+            // for invisible entities
+            if (!dsd.e.isVisible()) {
+                painter.draw(
+                        dsd.pc().getPosition(),
+                        currentAnimationTexture,
+                        configs.get(currentAnimationTexture),
+                        0);
+                return;
+            }
+
+            // normal draw for other entities
+            alpha += 0.1f;
+            if (alpha > 1) alpha = 1;
+            painter.draw(
+                    dsd.pc.getPosition(),
+                    currentAnimationTexture,
+                    configs.get(currentAnimationTexture),
+                    alpha);
         }
-        painter.draw( // draw the sprite fully visible
-                dsd.pc.getPosition(),
-                currentAnimationTexture,
-                configs.get(currentAnimationTexture));
 
         // FIXME: THIS SOLUTION IS FOR ANIMATIONS REPEATING EVEN THOUGH THEY ARE SET NOT TO!
         // This solution is hardcoded. Must be changed, when new set of Textures are added
