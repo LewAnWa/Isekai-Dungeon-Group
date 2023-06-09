@@ -14,17 +14,17 @@ import controller.AbstractController;
 import controller.SystemController;
 import ecs.components.MissingComponentException;
 import ecs.components.PositionComponent;
+import ecs.components.skill.InvisibilitySkill;
 import ecs.components.xp.XPComponent;
+import ecs.entities.Chest;
 import ecs.entities.Entity;
-import ecs.entities.Hero;
+import ecs.entities.heros.*;
 import ecs.entities.monsters.MonsterFactory;
+import ecs.entities.traps.TrapFactory;
 import ecs.systems.*;
 import graphic.DungeonCamera;
 import graphic.Painter;
-import graphic.hud.GameOverScreen;
-import graphic.hud.HeroUI;
-import graphic.hud.InventoryUI;
-import graphic.hud.PauseMenu;
+import graphic.hud.*;
 import java.io.IOException;
 import java.util.*;
 import java.util.logging.Logger;
@@ -42,7 +42,8 @@ import tools.Point;
 /** The heart of the framework. From here all strings are pulled. */
 public class Game extends ScreenAdapter implements IOnLevelLoader {
 
-    private final LevelSize LEVELSIZE = LevelSize.SMALL;
+    private static LevelSize levelSize = LevelSize.SMALL;
+    private static int maxMonster = 20;
 
     /**
      * The batch is necessary to draw ALL the stuff. Every object that uses draw need to know the
@@ -62,6 +63,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
     protected IGenerator generator;
 
     private boolean doSetup = true;
+    private static boolean characterSet = false;
     private static boolean paused = false;
 
     /** All entities that are currently active in the dungeon */
@@ -76,11 +78,15 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
 
     public static ILevel currentLevel;
     private static PauseMenu<Actor> pauseMenu;
+    private static MainMenuUI<Actor> mainMenuUI;
     private static GameOverScreen<Actor> gameOverScreen;
     private static HeroUI<Actor> heroUI;
     private static InventoryUI<Actor> inventoryUI;
     private static Entity hero;
+    private static CharacterType heroType;
     private static Entity[] monsters;
+    private static Entity chest;
+    private static Entity[] traps;
     private Logger gameLogger;
 
     public static void main(String[] args) {
@@ -101,44 +107,58 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
      */
     @Override
     public void render(float delta) {
-        if (doSetup) setup();
-        batch.setProjectionMatrix(camera.combined);
-        frame();
-        clearScreen();
-        levelAPI.update();
-        controller.forEach(AbstractController::update);
-        camera.update();
+        if (!characterSet) setup();
+        else {
+            batch.setProjectionMatrix(camera.combined);
+            frame();
+            clearScreen();
+            levelAPI.update();
+            controller.forEach(AbstractController::update);
+            camera.update();
 
-        heroUI.updateUI();
-        inventoryUI.updateUI();
+            heroUI.updateUI();
+            inventoryUI.updateUI();
+        }
     }
 
     /** Called once at the beginning of the game. */
     protected void setup() {
-        doSetup = false;
-        controller = new ArrayList<>();
-        setupCameras();
-        painter = new Painter(batch, camera);
-        generator = new RandomWalkGenerator();
-        levelAPI = new LevelAPI(batch, painter, generator, this);
-        initBaseLogger();
-        gameLogger = Logger.getLogger(this.getClass().getName());
-        systems = new SystemController();
-        controller.add(systems);
-        pauseMenu = new PauseMenu<>();
-        controller.add(pauseMenu);
+        if (doSetup) { // build up the game
+            doSetup = false;
+            controller = new ArrayList<>();
+            setupCameras();
+            painter = new Painter(batch, camera);
+            generator = new RandomWalkGenerator();
+            levelAPI = new LevelAPI(batch, painter, generator, this);
+            initBaseLogger();
+            gameLogger = Logger.getLogger(this.getClass().getName());
+            systems = new SystemController();
+            controller.add(systems);
+            pauseMenu = new PauseMenu<>();
+            controller.add(pauseMenu);
+            mainMenuUI = new MainMenuUI<>();
+            controller.add(mainMenuUI);
+        }
+        mainMenuUI.update();
+        mainMenuUI.updateUI();
+        if (characterSet) { // only do this if character is set
 
-        hero = new Hero();
-        heroUI = new HeroUI<>((Hero) hero);
-        controller.add(heroUI);
-        inventoryUI = new InventoryUI<>((Hero) hero);
-        controller.add(inventoryUI);
-        gameOverScreen = new GameOverScreen<>(this);
-        controller.add(gameOverScreen);
+            controller.remove(mainMenuUI);
+            mainMenuUI = null;
 
-        levelAPI = new LevelAPI(batch, painter, new WallGenerator(new RandomWalkGenerator()), this);
-        levelAPI.loadLevel(LEVELSIZE);
-        createSystems();
+            heroUI = new HeroUI<>((Hero) hero);
+            controller.add(heroUI);
+            inventoryUI = new InventoryUI<>((Hero) hero);
+            controller.add(inventoryUI);
+            gameOverScreen = new GameOverScreen<>(this);
+            controller.add(gameOverScreen);
+
+            levelAPI =
+                    new LevelAPI(
+                            batch, painter, new WallGenerator(new RandomWalkGenerator()), this);
+            levelAPI.loadLevel(levelSize);
+            createSystems();
+        }
     }
 
     /**
@@ -146,7 +166,12 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
      * loading a new level.
      */
     public void doRestart() {
-        hero = new Hero();
+        switch (heroType) {
+            default -> hero = new Knight();
+            case MAGE -> hero = new Mage();
+            case RANGER -> hero = new Ranger();
+            case ROGUE -> hero = new Rogue();
+        }
 
         controller.remove(heroUI);
         heroUI = new HeroUI<>((Hero) hero);
@@ -160,18 +185,12 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         gameOverScreen = new GameOverScreen<>(this);
         controller.add(gameOverScreen);
 
-        levelAPI.loadLevel(LEVELSIZE);
+        levelAPI.loadLevel(levelSize);
     }
 
     /** Generates an array of Monsters */
     protected void generateMonsters() {
-        monsters =
-                new Entity
-                        [currentLevel.getFloorTiles().size()
-                                / 20]; // amount of monsters = amount of floor tiles / 20
-
-        // TODO: Find out how to get the position of the hero via the getComponent()-Method
-        // Point heroPosition = hero.getComponent(PositionComponent.class).
+        monsters = new Entity[Math.min(currentLevel.getFloorTiles().size() / 20, maxMonster)];
 
         hero.getComponent(XPComponent.class)
                 .ifPresent(
@@ -195,11 +214,64 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
                         });
     }
 
+    /** spawns a chest in the Dungeon */
+    protected void spawnChest() {
+        Chest.spawnChest();
+    }
+
+    /** spawns a Mimic Enemy in the Dungeon */
+    public static void spawnMimicEnemy() {
+        hero.getComponent(XPComponent.class)
+                .ifPresent(
+                        component -> {
+                            XPComponent heroComp = (XPComponent) component;
+
+                            chest.getComponent(PositionComponent.class)
+                                    .ifPresent(
+                                            component1 -> {
+                                                PositionComponent chestComp =
+                                                        (PositionComponent) component1;
+
+                                                MonsterFactory.spawnMimic(
+                                                        (int) heroComp.getCurrentLevel(),
+                                                        chestComp.getPosition(),
+                                                        currentLevel);
+                                            });
+                        });
+    }
+
+    /** Generates an arrays of traps depending on the current level size. */
+    protected void generateTraps() {
+        traps = new Entity[currentLevel.getFloorTiles().size() / 30];
+
+        hero.getComponent(XPComponent.class)
+                .ifPresent(
+                        component -> {
+                            XPComponent comp = (XPComponent) component;
+
+                            hero.getComponent(PositionComponent.class)
+                                    .ifPresent(
+                                            component1 -> {
+                                                PositionComponent posComp =
+                                                        (PositionComponent) component1;
+
+                                                for (int i = 0; i < traps.length; i++) {
+                                                    traps[i] =
+                                                            TrapFactory.generateTraps(
+                                                                    (int) comp.getCurrentLevel(),
+                                                                    posComp.getPosition(),
+                                                                    currentLevel);
+                                                }
+                                            });
+                        });
+    }
+
     /** Called at the beginning of each frame. Before the controllers call <code>update</code>. */
     protected void frame() {
         setCameraFocus();
         manageEntitiesSets();
         getHero().ifPresent(this::loadNextLevelIfEntityIsOnEndTile);
+        if (heroType == CharacterType.ROGUE) InvisibilitySkill.applyInvisibilityCost(hero);
         if (Gdx.input.isKeyJustPressed(Input.Keys.P)) togglePause();
         if (Gdx.input.isKeyJustPressed(KeyboardConfig.INVENTORY_OPEN.get())) toggleInventory();
     }
@@ -226,6 +298,8 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         entities.clear();
         getHero().ifPresent(this::placeOnLevelStart);
         generateMonsters();
+        spawnChest();
+        generateTraps();
     }
 
     private void manageEntitiesSets() {
@@ -258,7 +332,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
     }
 
     private void loadNextLevelIfEntityIsOnEndTile(Entity hero) {
-        if (isOnEndTile(hero)) levelAPI.loadLevel(LEVELSIZE);
+        if (isOnEndTile(hero)) levelAPI.loadLevel(levelSize);
     }
 
     private boolean isOnEndTile(Entity entity) {
@@ -356,6 +430,29 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         Game.hero = hero;
     }
 
+    /**
+     * set the reference of the chest
+     *
+     * @param chest new reference of chest
+     */
+    public static void setChest(Entity chest) {
+        Game.chest = chest;
+    }
+
+    /**
+     * Sets the heroType, which will determine as what characterClass the player will respawn, when
+     * restarting the game from the gameOverScreen.
+     *
+     * @param characterType The type of character the player chose to play as.
+     */
+    public static void setHeroType(CharacterType characterType) {
+        Game.heroType = characterType;
+    }
+
+    public static void makeCharacterSet() {
+        characterSet = true;
+    }
+
     public void setSpriteBatch(SpriteBatch batch) {
         this.batch = batch;
     }
@@ -383,5 +480,13 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         new XPSystem();
         new SkillSystem();
         new ProjectileSystem();
+    }
+
+    public static void setLevelSize(LevelSize levelSize) {
+        Game.levelSize = levelSize;
+    }
+
+    public static void setMaxMonster(int maxMonster) {
+        Game.maxMonster = maxMonster;
     }
 }

@@ -36,22 +36,16 @@ public class PlayerSystem extends ECS_System {
         else if (Gdx.input.isKeyPressed(KeyboardConfig.MOVEMENT_LEFT.get()))
             ksd.vc.setCurrentXVelocity(-1 * ksd.vc.getXVelocity());
 
-        if (Gdx.input.isKeyPressed(KeyboardConfig.INTERACT_WORLD.get()))
+        if (Gdx.input.isKeyJustPressed(KeyboardConfig.INTERACT_WORLD.get()))
             InteractionTool.interactWithClosestInteractable(ksd.e);
 
         // check skills
-        else if (Gdx.input.isKeyPressed(KeyboardConfig.FIRST_SKILL.get()))
+        if (Gdx.input.isKeyPressed(KeyboardConfig.FIRST_SKILL.get()))
             ksd.pc.getSkillSlot1().ifPresent(skill -> skill.execute(ksd.e));
-        else if (Gdx.input.isKeyPressed(KeyboardConfig.SECOND_SKILL.get()))
+        if (Gdx.input.isKeyPressed(KeyboardConfig.SECOND_SKILL.get()))
             ksd.pc.getSkillSlot2().ifPresent(skill -> skill.execute(ksd.e));
-        else if (Gdx.input.isKeyPressed(KeyboardConfig.THIRD_SKILL.get()))
+        if (Gdx.input.isKeyPressed(KeyboardConfig.THIRD_SKILL.get()))
             ksd.pc.getSkillSlot3().ifPresent(skill -> skill.execute(ksd.e));
-        else if (Gdx.input.isKeyPressed(KeyboardConfig.FOURTH_SKILL.get()))
-            ksd.pc.getSkillSlot4().ifPresent(skill -> skill.execute(ksd.e));
-        else if (Gdx.input.isKeyPressed(KeyboardConfig.FIFTH_SKILL.get()))
-            ksd.pc.getSkillSlot5().ifPresent(skill -> skill.execute(ksd.e));
-        else if (Gdx.input.isKeyPressed(KeyboardConfig.SIXTH_SKILL.get()))
-            ksd.pc.getSkillSlot6().ifPresent(skill -> skill.execute(ksd.e));
 
         if (Gdx.input.isKeyPressed(KeyboardConfig.XPADDER_SKILL.get())) {
             Game.getHero()

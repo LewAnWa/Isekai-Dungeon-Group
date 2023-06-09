@@ -2,7 +2,7 @@ package ecs.items;
 
 import ecs.components.*;
 import ecs.entities.Entity;
-import ecs.entities.Hero;
+import ecs.entities.heros.Hero;
 import graphic.Animation;
 import java.util.List;
 import starter.Game;
@@ -12,6 +12,7 @@ import tools.Point;
 public class Schuh extends ItemData implements IOnCollect, IOnDrop {
 
     private static final List<String> schuhTexture = List.of("items/Schuh/Schuh.png");
+    private static final float velocityModifier = 0.005f;
 
     /** The constructor for the Schuh */
     public Schuh() {
@@ -76,9 +77,13 @@ public class Schuh extends ItemData implements IOnCollect, IOnDrop {
                 .ifPresent(
                         vC -> {
                             ((VelocityComponent) vC)
-                                    .setYVelocity(((VelocityComponent) vC).getYVelocity() - 0.05f);
+                                    .setYVelocity(
+                                            ((VelocityComponent) vC).getYVelocity()
+                                                    - velocityModifier);
                             ((VelocityComponent) vC)
-                                    .setXVelocity(((VelocityComponent) vC).getXVelocity() - 0.05f);
+                                    .setXVelocity(
+                                            ((VelocityComponent) vC).getXVelocity()
+                                                    - velocityModifier);
                         });
     }
 
@@ -92,9 +97,13 @@ public class Schuh extends ItemData implements IOnCollect, IOnDrop {
                 .ifPresent(
                         vC -> {
                             ((VelocityComponent) vC)
-                                    .setYVelocity(((VelocityComponent) vC).getYVelocity() + 0.05f);
+                                    .setYVelocity(
+                                            ((VelocityComponent) vC).getYVelocity()
+                                                    + velocityModifier);
                             ((VelocityComponent) vC)
-                                    .setXVelocity(((VelocityComponent) vC).getXVelocity() + 0.05f);
+                                    .setXVelocity(
+                                            ((VelocityComponent) vC).getXVelocity()
+                                                    + velocityModifier);
                         });
     }
 }

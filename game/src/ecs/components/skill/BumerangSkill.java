@@ -12,6 +12,8 @@ import tools.Point;
 
 public class BumerangSkill extends DamageProjectileSkill {
 
+    public static final String pathToTextureUI = "skills/boomerrang/boomerrang3.png";
+
     /**
      * The constructor for the Bumerang
      *
@@ -23,7 +25,7 @@ public class BumerangSkill extends DamageProjectileSkill {
                 "skills/boomerrang/",
                 0.5f,
                 new Damage(13, DamageType.PHYSICAL, user),
-                new Point(10, 10),
+                new Point(1, 1),
                 targetSelection,
                 5f);
     }
@@ -60,7 +62,7 @@ public class BumerangSkill extends DamageProjectileSkill {
 
         ICollide collide =
                 (a, b, from) -> {
-                    if (b != entity) {
+                    if (b != entity && !b.isIgnorable()) {
                         b.getComponent(HealthComponent.class)
                                 .ifPresent(
                                         hc -> {
@@ -116,7 +118,7 @@ public class BumerangSkill extends DamageProjectileSkill {
 
         ICollide collide =
                 (a, b, from) -> {
-                    if (b != entity.getUser()) {
+                    if (b != entity.getUser() && !b.isIgnorable()) {
                         b.getComponent(HealthComponent.class)
                                 .ifPresent(
                                         hc -> {

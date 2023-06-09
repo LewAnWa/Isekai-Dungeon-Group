@@ -36,7 +36,7 @@ public abstract class DamageProjectileSkill implements ISkillFunction {
 
     @Override
     public void execute(Entity entity) {
-        Entity projectile = new Entity();
+        Entity projectile = new Entity(true);
 
         dmgCalcTime = System.currentTimeMillis();
 
@@ -63,7 +63,7 @@ public abstract class DamageProjectileSkill implements ISkillFunction {
         new ProjectileComponent(projectile, epc.getPosition(), targetPoint);
         ICollide collide =
                 (a, b, from) -> {
-                    if (b != entity) {
+                    if (b != entity && !b.isIgnorable()) {
                         b.getComponent(HealthComponent.class)
                                 .ifPresent(
                                         hc -> {
@@ -168,7 +168,6 @@ public abstract class DamageProjectileSkill implements ISkillFunction {
      * @return the new path to textures of projectile
      */
     protected String animationHelper(Point targetDirection, Entity entity) {
-        System.out.println("ich funktioniere");
         PositionComponent epc =
                 (PositionComponent)
                         entity.getComponent(PositionComponent.class)

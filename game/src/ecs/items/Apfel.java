@@ -3,7 +3,7 @@ package ecs.items;
 import ecs.components.HealthComponent;
 import ecs.components.InventoryComponent;
 import ecs.entities.Entity;
-import ecs.entities.Hero;
+import ecs.entities.heros.Hero;
 import graphic.Animation;
 import java.util.List;
 import java.util.Timer;
