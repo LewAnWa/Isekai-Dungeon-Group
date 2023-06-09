@@ -7,6 +7,8 @@ import tools.Point;
 
 public class SchwertstichSkill extends DamageProjectileSkill {
 
+    public static final String pathToTextureUI = "skills/schwertstich/right/schwert_Right4.png";
+
     /**
      * The constructor for the schwertstich
      *

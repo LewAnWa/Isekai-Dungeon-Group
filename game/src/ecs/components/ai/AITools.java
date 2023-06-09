@@ -230,12 +230,13 @@ public class AITools {
      * @param entity Entity whose position specifies the center point
      * @param range search radius
      * @return if the position of the player is within the given radius of the position of the given
-     *     entity. If there is no hero, return false.
+     *     entity and the player is visible. If there is no hero, return false.
      */
     public static boolean playerInRange(Entity entity, float range) {
 
         Optional<Entity> hero = Game.getHero();
-        if (hero.isPresent()) return entityInRange(entity, hero.get(), range);
+        if (hero.isPresent())
+            return entityInRange(entity, hero.get(), range) && hero.get().isVisible();
         else return false;
     }
 

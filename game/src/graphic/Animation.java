@@ -82,4 +82,8 @@ public class Animation {
     public List<String> getAnimationFrames() {
         return animationFrames;
     }
+
+    public int getCurrentFrameIndex() {
+        return currentFrameIndex;
+    }
 }

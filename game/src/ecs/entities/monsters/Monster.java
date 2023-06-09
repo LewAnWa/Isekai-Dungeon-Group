@@ -22,7 +22,6 @@ public abstract class Monster extends Entity {
 
     private final float xSpeed;
     private final float ySpeed;
-    private final ILevel currentLevel;
     protected Skill skill;
 
     protected String pathToIdleLeft;
@@ -45,7 +44,6 @@ public abstract class Monster extends Entity {
         super();
 
         xSpeed = ySpeed = movementSpeed;
-        this.currentLevel = currentLevel;
 
         setUpPositionComponent(playerPos, currentLevel);
         setupXPComponent(lootAmount);
@@ -121,7 +119,7 @@ public abstract class Monster extends Entity {
                                         }
                                     });
                 },
-                (you, other, direction) -> System.out.println("Monster left hit box"));
+                (you, other, direction) -> System.out.print(""));
     }
 
     /**

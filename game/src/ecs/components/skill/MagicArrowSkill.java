@@ -7,6 +7,8 @@ import tools.Point;
 
 public class MagicArrowSkill extends DamageProjectileSkill {
 
+    public static final String pathToTextureUI = "skills/arrow/right/arrow_Right1.png";
+
     /**
      * The constructor for the Bumerang
      *

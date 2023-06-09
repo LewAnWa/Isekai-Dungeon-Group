@@ -16,7 +16,8 @@ public class Entity {
     public final int id = nextId++;
     private HashMap<Class, Component> components;
     private final Logger entityLogger;
-
+    protected boolean isVisible = true;
+    protected boolean isIgnorable = false;
     private boolean isBoomerang = false;
     private Entity user;
     public boolean reachedMiddlePoint = false;
@@ -36,6 +37,15 @@ public class Entity {
 
         this.isBoomerang = isBoomerang;
         this.user = user;
+    }
+
+    public Entity(boolean isIgnorable) {
+        components = new HashMap<>();
+        Game.addEntity(this);
+        entityLogger = Logger.getLogger(this.getClass().getName());
+        entityLogger.info("The entity '" + this.getClass().getSimpleName() + "' was created.");
+
+        this.isIgnorable = isIgnorable;
     }
 
     /**
@@ -61,6 +71,10 @@ public class Entity {
         return isBoomerang;
     }
 
+    public boolean isIgnorable() {
+        return isIgnorable;
+    }
+
     public Entity getUser() {
         return user;
     }
@@ -73,5 +87,13 @@ public class Entity {
      */
     public Optional<Component> getComponent(Class klass) {
         return Optional.ofNullable(components.get(klass));
+    }
+
+    public boolean isVisible() {
+        return isVisible;
+    }
+
+    public void setVisible(boolean visible) {
+        isVisible = visible;
     }
 }

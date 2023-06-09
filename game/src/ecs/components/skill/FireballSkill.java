@@ -7,6 +7,8 @@ import tools.Point;
 
 public class FireballSkill extends DamageProjectileSkill {
 
+    public static final String pathToTextureUI = "skills/fireball/down/fireBall_Down4.png";
+
     /**
      * The constructor for the fireball.
      *
