@@ -1,6 +1,7 @@
 package ecs.systems;
 
 import ecs.components.AnimationComponent;
+import ecs.components.LightSourceComponent;
 import ecs.components.MissingComponentException;
 import ecs.components.PositionComponent;
 import ecs.entities.Entity;
@@ -9,9 +10,15 @@ import ecs.entities.traps.Warhead;
 import graphic.Animation;
 import graphic.Painter;
 import graphic.PainterConfig;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import level.elements.tile.Tile;
 import starter.Game;
+import tools.Point;
 
 /** used to draw entities */
 public class DrawSystem extends ECS_System {
@@ -39,10 +46,10 @@ public class DrawSystem extends ECS_System {
     }
 
     private void draw(DSData dsd) {
+
         final Animation animation = dsd.ac.getCurrentAnimation();
         String currentAnimationTexture = animation.getNextAnimationTexturePath();
 
-        float playerX, playerY;
         PositionComponent heroPositionComp =
                 (PositionComponent)
                         Game.getHero()
@@ -56,21 +63,18 @@ public class DrawSystem extends ECS_System {
                                                                 + " of Hero, which is required for "
                                                                 + DrawSystem.class.getName()));
 
-        playerX = heroPositionComp.getPosition().x;
-        playerY = heroPositionComp.getPosition().y;
+        float maxRange = 7;
 
-        float maxRange = 8;
+        float alphaFromLightSource = checkIfLit(dsd);
 
-        float dx = dsd.pc.getPosition().x - playerX;
-        float dy = dsd.pc.getPosition().y - playerY;
-        float distance = (float) Math.sqrt(dx * dx + dy * dy);
+        float distance = Point.calculateDistance(dsd.pc().getPosition(), heroPositionComp.getPosition());
 
         if (!configs.containsKey(currentAnimationTexture)) {
             configs.put(currentAnimationTexture, new PainterConfig(currentAnimationTexture));
         }
 
         // if entity is in range
-        if (distance <= maxRange) {
+        if (distance <= maxRange || alphaFromLightSource > 0) {
             float alpha = 1 - (distance / maxRange);
 
             // for rogue going invisible
@@ -94,19 +98,45 @@ public class DrawSystem extends ECS_System {
             }
 
             // normal draw for other entities
-            alpha += 0.1f;
-            if (alpha > 1) alpha = 1;
+            float finalAlpha = alpha + alphaFromLightSource + 0.1f;
+            if (finalAlpha > 1) finalAlpha = 1;
             painter.draw(
                     dsd.pc.getPosition(),
                     currentAnimationTexture,
                     configs.get(currentAnimationTexture),
-                    alpha);
+                    finalAlpha);
         }
 
         // FIXME: THIS SOLUTION IS FOR ANIMATIONS REPEATING EVEN THOUGH THEY ARE SET NOT TO!
         // This solution is hardcoded. Must be changed, when new set of Textures are added
         if (dsd.e instanceof Warhead && animation.getCurrentFrameIndex() == 8)
             ((Warhead) dsd.e).setIdleAnimation();
+    }
+
+    private float checkIfLit(DSData dsd) {
+        List<Entity> lightSources = new ArrayList<>();
+
+        Game.getEntities().forEach(entity -> {
+            entity.getComponent(LightSourceComponent.class).ifPresent(lightComp -> {
+                lightSources.add(entity);
+            });
+        });
+
+        float alpha = 0;
+
+        for (Entity light : lightSources) {
+            PositionComponent posComp = (PositionComponent) light.getComponent(PositionComponent.class).orElseThrow();
+            LightSourceComponent lightComp = (LightSourceComponent) light.getComponent(LightSourceComponent.class).orElseThrow();
+
+            float distance = Point.calculateDistance(dsd.pc.getPosition(), posComp.getPosition());
+
+            if (distance <= lightComp.getLightRadius()) {
+                alpha += 1 - (distance / lightComp.getLightRadius());
+            }
+        }
+
+        if (alpha > 1) return 1;
+        return alpha;
     }
 
     private DSData buildDataObject(AnimationComponent ac) {

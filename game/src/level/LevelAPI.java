@@ -1,11 +1,17 @@
 package level;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import ecs.components.LightSourceComponent;
 import ecs.components.MissingComponentException;
 import ecs.components.PositionComponent;
+import ecs.entities.Entity;
+import ecs.entities.LightSource;
 import graphic.Painter;
 import graphic.PainterConfig;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import level.elements.ILevel;
@@ -15,6 +21,7 @@ import level.tools.DesignLabel;
 import level.tools.LevelElement;
 import level.tools.LevelSize;
 import starter.Game;
+import tools.Point;
 
 /** Manages the level. */
 public class LevelAPI {
@@ -98,9 +105,8 @@ public class LevelAPI {
         Map<String, PainterConfig> mapping = new HashMap<>();
 
         Tile[][] layout = currentLevel.getLayout();
-        float playerX, playerY;
 
-        PositionComponent posComp =
+        PositionComponent playerPosComp =
                 (PositionComponent)
                         Game.getHero()
                                 .orElseThrow()
@@ -113,24 +119,20 @@ public class LevelAPI {
                                                                 + " which is required for "
                                                                 + LevelAPI.class.getName()));
 
-        playerX = posComp.getPosition().x;
-        playerY = posComp.getPosition().y;
-
         // The maximum range the player can see
-        float maxRange = 8;
+        float maxRange = 7;
 
         // Iterate through all tiles in the level
-        for (int i = 0; i < layout.length; i++) { // iterates through y-axis
-            for (int j = 0; j < layout[0].length; j++) { // iterates through x-axis
+        for (int y = 0; y < layout.length; y++) {
+            for (int x = 0; x < layout[0].length; x++) {
 
-                // Check if the tile is within the sight range of the player
-                float dx = j - playerX;
-                float dy = i - playerY;
-                float distance = (float) Math.sqrt(dx * dx + dy * dy);
+                float alphaFromLightSource = checkIfLit(layout[y][x]);
 
-                if (distance <= maxRange) { // if tile in distance
-                    if (layout[i][j].getLevelElement() != LevelElement.SKIP) {
-                        String texturePath = layout[i][j].getTexturePath();
+                float distance = Point.calculateDistance(playerPosComp.getPosition(), layout[y][x].getCoordinateAsPoint());
+
+                if (distance <= maxRange || alphaFromLightSource > 0) { // if tile in distance or is lit by lightSource
+                    if (layout[y][x].getLevelElement() != LevelElement.SKIP) {
+                        String texturePath = layout[y][x].getTexturePath();
                         if (!mapping.containsKey(texturePath)) {
                             mapping.put(texturePath, new PainterConfig(texturePath));
                         }
@@ -138,15 +140,46 @@ public class LevelAPI {
                         // Calculate the transparency based on the distance
                         float alpha = 1 - (distance / maxRange);
 
+                        if (alpha < 0) alpha = 0;
+
+                        float finalAlpha = alpha + alphaFromLightSource;
+                        if (finalAlpha > 1) finalAlpha = 1;
+
                         painter.draw(
-                                layout[i][j].getCoordinate().toPoint(),
+                                layout[y][x].getCoordinate().toPoint(),
                                 texturePath,
                                 mapping.get(texturePath),
-                                alpha);
+                                finalAlpha);
                     }
                 }
             }
         }
+    }
+
+    private float checkIfLit(Tile tile) {
+        List<Entity> lightSources = new ArrayList<>();
+
+        Game.getEntities().forEach(entity -> {
+            entity.getComponent(LightSourceComponent.class).ifPresent(lightComp -> {
+                lightSources.add(entity);
+            });
+        });
+
+        float alpha = 0;
+
+        for (Entity light : lightSources) {
+            PositionComponent posComp = (PositionComponent) light.getComponent(PositionComponent.class).orElseThrow();
+            LightSourceComponent lightComp = (LightSourceComponent) light.getComponent(LightSourceComponent.class).orElseThrow();
+
+            float distance = Point.calculateDistance(tile.getCoordinateAsPoint(), posComp.getPosition());
+
+            if (distance <= lightComp.getLightRadius()) {
+                alpha += 1 - (distance / lightComp.getLightRadius());
+            }
+        }
+
+        if (alpha > 1) return 1;
+        return alpha;
     }
 
     /**

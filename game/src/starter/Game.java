@@ -18,6 +18,7 @@ import ecs.components.skill.InvisibilitySkill;
 import ecs.components.xp.XPComponent;
 import ecs.entities.Chest;
 import ecs.entities.Entity;
+import ecs.entities.LightSource;
 import ecs.entities.heros.*;
 import ecs.entities.monsters.MonsterFactory;
 import ecs.entities.traps.TrapFactory;
@@ -305,6 +306,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         generateMonsters();
         spawnChest();
         generateTraps();
+        // new LightSource(6); // TEST
     }
 
     private void manageEntitiesSets() {
