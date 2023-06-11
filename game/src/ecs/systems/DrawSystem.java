@@ -113,30 +113,31 @@ public class DrawSystem extends ECS_System {
             ((Warhead) dsd.e).setIdleAnimation();
     }
 
+    /*
+    Checks if a given entity is lit by any entity acting as a lightSource.
+    It sums up all lights hitting a tile and then returns the calculated alpha value.
+     */
     private float checkIfLit(DSData dsd) {
-        List<Entity> lightSources = new ArrayList<>();
+        // var is used to be able to access an object outside a lambda expression
+        var reference = new Object() {
+            float alpha = 0;
+        };
 
         Game.getEntities().forEach(entity -> {
-            entity.getComponent(LightSourceComponent.class).ifPresent(lightComp -> {
-                lightSources.add(entity);
+            entity.getComponent(LightSourceComponent.class).ifPresent(lsC -> {
+
+                PositionComponent psC = (PositionComponent) entity.getComponent(PositionComponent.class).orElseThrow();
+
+                float distance = Point.calculateDistance(dsd.pc().getPosition(), psC.getPosition());
+
+                if (distance <= ((LightSourceComponent) lsC).getLightRadius()) {
+                    reference.alpha += 1 - (distance / ((LightSourceComponent) lsC).getLightRadius());
+                }
             });
         });
 
-        float alpha = 0;
-
-        for (Entity light : lightSources) {
-            PositionComponent posComp = (PositionComponent) light.getComponent(PositionComponent.class).orElseThrow();
-            LightSourceComponent lightComp = (LightSourceComponent) light.getComponent(LightSourceComponent.class).orElseThrow();
-
-            float distance = Point.calculateDistance(dsd.pc.getPosition(), posComp.getPosition());
-
-            if (distance <= lightComp.getLightRadius()) {
-                alpha += 1 - (distance / lightComp.getLightRadius());
-            }
-        }
-
-        if (alpha > 1) return 1;
-        return alpha;
+        if (reference.alpha > 1) return 1;
+        return reference.alpha;
     }
 
     private DSData buildDataObject(AnimationComponent ac) {
