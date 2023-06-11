@@ -168,6 +168,10 @@ public class LevelAPI {
 
         Game.getEntities().forEach(entity -> {
             entity.getComponent(LightSourceComponent.class).ifPresent(lsC -> {
+                if (reference.alpha >= 1) {
+                    return;
+                }
+
                 PositionComponent psC = (PositionComponent) entity.getComponent(PositionComponent.class).orElseThrow();
 
                 float distance = Point.calculateDistance(tile.getCoordinateAsPoint(), psC.getPosition());

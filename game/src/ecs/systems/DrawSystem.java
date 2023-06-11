@@ -125,6 +125,9 @@ public class DrawSystem extends ECS_System {
 
         Game.getEntities().forEach(entity -> {
             entity.getComponent(LightSourceComponent.class).ifPresent(lsC -> {
+                if (reference.alpha >= 1) {
+                    return;
+                }
 
                 PositionComponent psC = (PositionComponent) entity.getComponent(PositionComponent.class).orElseThrow();
 
