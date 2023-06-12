@@ -2,6 +2,10 @@ package ecs.components;
 
 import ecs.entities.Entity;
 
+/**
+ * A component that makes an Entity behave as a light source.
+ * <p>This is a process heavy component!!
+ */
 public class LightSourceComponent extends Component{
 
     private final float lightRadius;
@@ -18,6 +22,7 @@ public class LightSourceComponent extends Component{
         this.lightRadius = lightRadius;
     }
 
+    // -------------------- Getter -------------------- //
     public float getLightRadius() {
         return lightRadius;
     }
