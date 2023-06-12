@@ -22,6 +22,7 @@ import level.tools.LevelElement;
 import level.tools.LevelSize;
 import starter.Game;
 import tools.Point;
+import tools.Settings;
 
 /** Manages the level. */
 public class LevelAPI {
@@ -126,7 +127,7 @@ public class LevelAPI {
         for (int y = 0; y < layout.length; y++) {
             for (int x = 0; x < layout[0].length; x++) {
 
-                float alphaFromLightSource = checkIfLit(layout[y][x]);
+                float alphaFromLightSource = Settings.allowDynamicLighting ? checkIfLit(layout[y][x]) : 0;
 
                 float distance = Point.calculateDistance(playerPosComp.getPosition(), layout[y][x].getCoordinateAsPoint());
 

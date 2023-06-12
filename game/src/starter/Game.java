@@ -18,7 +18,6 @@ import ecs.components.skill.InvisibilitySkill;
 import ecs.components.xp.XPComponent;
 import ecs.entities.Chest;
 import ecs.entities.Entity;
-import ecs.entities.LightSource;
 import ecs.entities.heros.*;
 import ecs.entities.monsters.MonsterFactory;
 import ecs.entities.traps.TrapFactory;
@@ -29,6 +28,8 @@ import graphic.hud.*;
 import java.io.IOException;
 import java.util.*;
 import java.util.logging.Logger;
+
+import graphic.hud.mainMenu.MainMenuUI;
 import level.IOnLevelLoader;
 import level.LevelAPI;
 import level.elements.ILevel;
@@ -37,16 +38,14 @@ import level.generator.IGenerator;
 import level.generator.postGeneration.WallGenerator;
 import level.generator.randomwalk.RandomWalkGenerator;
 import level.tools.DesignLabel;
-import level.tools.LevelSize;
 import tools.Constants;
 import tools.Point;
+import tools.Settings;
 
 /** The heart of the framework. From here all strings are pulled. */
 public class Game extends ScreenAdapter implements IOnLevelLoader {
 
     private DesignLabel LEVELDESIGN = DesignLabel.LUSH;
-    private static LevelSize levelSize = LevelSize.SMALL;
-    private static int maxMonster = 20;
     private int floor = 0;
 
     /**
@@ -140,11 +139,9 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
             controller.add(systems);
             pauseMenu = new PauseMenu<>();
             controller.add(pauseMenu);
-            mainMenuUI = new MainMenuUI<>();
-            controller.add(mainMenuUI);
+            mainMenuUI = new MainMenuUI<>(controller);
         }
         mainMenuUI.update();
-        mainMenuUI.updateUI();
         if (characterSet) { // only do this if character is set
 
             controller.remove(mainMenuUI);
@@ -160,7 +157,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
             levelAPI =
                     new LevelAPI(
                             batch, painter, new WallGenerator(new RandomWalkGenerator()), this);
-            levelAPI.loadLevel(levelSize, LEVELDESIGN);
+            levelAPI.loadLevel(Settings.levelSize, LEVELDESIGN);
             createSystems();
         }
     }
@@ -190,12 +187,12 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         controller.add(gameOverScreen);
 
         floor = 0;
-        levelAPI.loadLevel(levelSize, LEVELDESIGN);
+        levelAPI.loadLevel(Settings.levelSize, LEVELDESIGN);
     }
 
     /** Generates an array of Monsters */
     protected void generateMonsters() {
-        int monsterAmount = Math.min(currentLevel.getFloorTiles().size() / 20, maxMonster);
+        int monsterAmount = Math.min(currentLevel.getFloorTiles().size() / 20, Settings.setMaxMonsterAmount);
         monsters = new Entity[monsterAmount];
 
         hero.getComponent(XPComponent.class)
@@ -340,7 +337,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
 
     private void loadNextLevelIfEntityIsOnEndTile(Entity hero) {
         if (isOnEndTile(hero)) {
-            levelAPI.loadLevel(levelSize, LEVELDESIGN);
+            levelAPI.loadLevel(Settings.levelSize, LEVELDESIGN);
             floor++;
             if (floor == 6) LEVELDESIGN = DesignLabel.DEFAULT;
         }
@@ -491,13 +488,5 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         new XPSystem();
         new SkillSystem();
         new ProjectileSystem();
-    }
-
-    public static void setLevelSize(LevelSize levelSize) {
-        Game.levelSize = levelSize;
-    }
-
-    public static void setMaxMonster(int maxMonster) {
-        Game.maxMonster = maxMonster;
     }
 }

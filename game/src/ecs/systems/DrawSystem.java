@@ -19,6 +19,7 @@ import java.util.Map;
 import level.elements.tile.Tile;
 import starter.Game;
 import tools.Point;
+import tools.Settings;
 
 /** used to draw entities */
 public class DrawSystem extends ECS_System {
@@ -65,7 +66,7 @@ public class DrawSystem extends ECS_System {
 
         float maxRange = 7;
 
-        float alphaFromLightSource = checkIfLit(dsd);
+        float alphaFromLightSource = Settings.allowDynamicLighting ? checkIfLit(dsd) : 0;
 
         float distance = Point.calculateDistance(dsd.pc().getPosition(), heroPositionComp.getPosition());
 
