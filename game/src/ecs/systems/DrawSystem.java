@@ -64,8 +64,6 @@ public class DrawSystem extends ECS_System {
                                                                 + " of Hero, which is required for "
                                                                 + DrawSystem.class.getName()));
 
-        float maxRange = 7;
-
         float alphaFromLightSource = Settings.allowDynamicLighting ? checkIfLit(dsd) : 0;
 
         float distance = Point.calculateDistance(dsd.pc().getPosition(), heroPositionComp.getPosition());
@@ -75,8 +73,8 @@ public class DrawSystem extends ECS_System {
         }
 
         // if entity is in range
-        if (distance <= maxRange || alphaFromLightSource > 0) {
-            float alpha = 1 - (distance / maxRange);
+        if (distance <= Settings.PLAYER_LIGHT_RANGE || alphaFromLightSource > 0) {
+            float alpha = 1 - (distance / Settings.PLAYER_LIGHT_RANGE);
 
             // for rogue going invisible
             if (!dsd.e.isVisible() && dsd.e instanceof Rogue) {

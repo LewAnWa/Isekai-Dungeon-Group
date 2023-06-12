@@ -120,9 +120,6 @@ public class LevelAPI {
                                                                 + " which is required for "
                                                                 + LevelAPI.class.getName()));
 
-        // The maximum range the player can see
-        float maxRange = 7;
-
         // Iterate through all tiles in the level
         for (int y = 0; y < layout.length; y++) {
             for (int x = 0; x < layout[0].length; x++) {
@@ -131,7 +128,7 @@ public class LevelAPI {
 
                 float distance = Point.calculateDistance(playerPosComp.getPosition(), layout[y][x].getCoordinateAsPoint());
 
-                if (distance <= maxRange || alphaFromLightSource > 0) { // if tile in distance or is lit by lightSource
+                if (distance <= Settings.PLAYER_LIGHT_RANGE || alphaFromLightSource > 0) { // if tile in distance or is lit by lightSource
                     if (layout[y][x].getLevelElement() != LevelElement.SKIP) {
                         String texturePath = layout[y][x].getTexturePath();
                         if (!mapping.containsKey(texturePath)) {
@@ -139,7 +136,7 @@ public class LevelAPI {
                         }
 
                         // Calculate the transparency based on the distance
-                        float alpha = 1 - (distance / maxRange);
+                        float alpha = 1 - (distance / Settings.PLAYER_LIGHT_RANGE);
 
                         if (alpha < 0) alpha = 0;
 
