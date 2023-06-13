@@ -11,12 +11,9 @@ import graphic.Animation;
 import graphic.Painter;
 import graphic.PainterConfig;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import level.elements.tile.Tile;
 import starter.Game;
 import tools.Point;
 import tools.Settings;

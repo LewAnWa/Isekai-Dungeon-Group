@@ -4,14 +4,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import ecs.components.LightSourceComponent;
 import ecs.components.MissingComponentException;
 import ecs.components.PositionComponent;
-import ecs.entities.Entity;
-import ecs.entities.LightSource;
 import graphic.Painter;
 import graphic.PainterConfig;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import level.elements.ILevel;
