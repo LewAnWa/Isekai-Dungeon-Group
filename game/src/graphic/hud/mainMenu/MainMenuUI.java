@@ -34,7 +34,7 @@ public class MainMenuUI<T extends Actor> extends ScreenController<T> {
 
     private final Logger logger = Logger.getLogger("MainMenuUI");
 
-    private final SettingsMenu<T> settingsMenu;
+    private SettingsMenu<T> settingsMenu;
 
     private ScreenImage logo, characterCard, menuArrow;
     private ScreenText newGame, settings, characterDescription, chooseCharacter;
@@ -53,6 +53,16 @@ public class MainMenuUI<T extends Actor> extends ScreenController<T> {
 
         settingsMenu = new SettingsMenu<>(this);
         controller.add(settingsMenu);
+    }
+
+    /**
+     * Removes itself and the settings menu from the controller.
+     * @param controller the controller in which the settings menu and main menu is contained.
+     */
+    public void cleanUp(List<AbstractController<?>> controller) {
+        controller.remove(settingsMenu);
+        settingsMenu = null;
+        controller.remove(this);
     }
 
     /**

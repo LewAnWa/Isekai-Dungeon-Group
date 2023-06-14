@@ -143,8 +143,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         }
         mainMenuUI.update();
         if (characterSet) { // only do this if character is set
-
-            controller.remove(mainMenuUI);
+            mainMenuUI.cleanUp(controller);
             mainMenuUI = null;
 
             heroUI = new HeroUI<>((Hero) hero);
