@@ -5,6 +5,7 @@ import ecs.components.LightSourceComponent;
 import ecs.components.MissingComponentException;
 import ecs.components.PositionComponent;
 import ecs.entities.Entity;
+import ecs.entities.heros.Hero;
 import ecs.entities.heros.Rogue;
 import ecs.entities.traps.Warhead;
 import graphic.Animation;
@@ -14,6 +15,8 @@ import graphic.PainterConfig;
 import java.util.HashMap;
 import java.util.Map;
 
+import level.LevelAPI;
+import level.elements.tile.Tile;
 import starter.Game;
 import tools.Point;
 import tools.Settings;
@@ -44,7 +47,6 @@ public class DrawSystem extends ECS_System {
     }
 
     private void draw(DSData dsd) {
-
         final Animation animation = dsd.ac.getCurrentAnimation();
         String currentAnimationTexture = animation.getNextAnimationTexturePath();
 
@@ -60,19 +62,13 @@ public class DrawSystem extends ECS_System {
                                                                 + PositionComponent.class.getName()
                                                                 + " of Hero, which is required for "
                                                                 + DrawSystem.class.getName()));
-
-        float alphaFromLightSource = Settings.allowDynamicLighting ? checkIfLit(dsd) : 0;
-
-        float distance = Point.calculateDistance(dsd.pc().getPosition(), heroPositionComp.getPosition());
+        Tile tileUnderEntity = Game.currentLevel.getTileAt(dsd.pc.getPosition().toCoordinate());
 
         if (!configs.containsKey(currentAnimationTexture)) {
             configs.put(currentAnimationTexture, new PainterConfig(currentAnimationTexture));
         }
 
-        // if entity is in range
-        if (distance <= Settings.PLAYER_LIGHT_RANGE || alphaFromLightSource > 0) {
-            float alpha = 1 - (distance / Settings.PLAYER_LIGHT_RANGE);
-
+        if (dsd.e instanceof Hero) {
             // for rogue going invisible
             if (!dsd.e.isVisible() && dsd.e instanceof Rogue) {
                 painter.draw(
@@ -83,15 +79,50 @@ public class DrawSystem extends ECS_System {
                 return;
             }
 
-            // for invisible entities
-            if (!dsd.e.isVisible()) {
-                painter.draw(
-                        dsd.pc().getPosition(),
-                        currentAnimationTexture,
-                        configs.get(currentAnimationTexture),
-                        0);
+            painter.draw(
+                    dsd.pc.getPosition(),
+                    currentAnimationTexture,
+                    configs.get(currentAnimationTexture));
+
+            return;
+        }
+
+        // for invisible entities
+        if (!dsd.e.isVisible()) {
+            painter.draw(
+                dsd.pc().getPosition(),
+                currentAnimationTexture,
+                configs.get(currentAnimationTexture),
+                0);
+            return;
+        }
+
+        if (Settings.potatoMode) {
+            painter.draw(
+                dsd.pc.getPosition(),
+                currentAnimationTexture,
+                configs.get(currentAnimationTexture));
+
+            // FIXME: THIS SOLUTION IS FOR ANIMATIONS REPEATING EVEN THOUGH THEY ARE SET NOT TO!
+            // This solution is hardcoded. Must be changed, when new set of Textures are added
+            if (dsd.e instanceof Warhead && animation.getCurrentFrameIndex() == 8)
+                ((Warhead) dsd.e).setIdleAnimation();
+
+            return;
+        }
+        if (LevelAPI.getDrawList() != null) {
+            if (!LevelAPI.getDrawList().contains(tileUnderEntity)) {
                 return;
             }
+        }
+
+        float alphaFromLightSource = Settings.allowDynamicLighting ? checkIfLit(dsd) : 0;
+
+        float distance = Point.calculateDistance(dsd.pc().getPosition(), heroPositionComp.getPosition());
+
+        // if entity is in range
+        if (distance <= Settings.PLAYER_LIGHT_RANGE || alphaFromLightSource > 0) {
+            float alpha = 1 - (distance / Settings.PLAYER_LIGHT_RANGE);
 
             // normal draw for other entities
             float finalAlpha = alpha + alphaFromLightSource + 0.1f;

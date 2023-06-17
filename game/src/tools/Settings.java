@@ -14,6 +14,8 @@ public class Settings {
      */
     public static boolean allowDynamicLighting = false;
 
+    public static boolean potatoMode = false;
+
     /**
      * Dictates how many monster entities are allowed to be generated on a new level.
      */
