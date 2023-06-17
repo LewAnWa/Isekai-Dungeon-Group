@@ -27,7 +27,7 @@ public class LevelAPI {
     private final IOnLevelLoader onLevelLoader;
     private IGenerator gen;
     private ILevel currentLevel;
-    private List<Tile> drawList;
+    private static List<Tile> drawList;
     private final Logger levelAPI_logger = Logger.getLogger(this.getClass().getName());
 
     /**
@@ -277,7 +277,7 @@ public class LevelAPI {
         onLevelLoader.onLevelLoad();
     }
 
-    public List<Tile> getDrawList() {
+    public static List<Tile> getDrawList() {
         return drawList;
     }
 }
