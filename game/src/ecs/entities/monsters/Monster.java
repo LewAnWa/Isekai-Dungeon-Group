@@ -23,13 +23,11 @@ public abstract class Monster extends Entity {
     private final float xSpeed;
     private final float ySpeed;
     protected Skill skill;
-
     protected String pathToIdleLeft;
     protected String pathToIdleRight;
     protected String pathToRunLeft;
     protected String pathToRunRight;
     protected String pathToDeathAnim = "deathAnimation/";
-
     private Damage damage;
 
     /**
