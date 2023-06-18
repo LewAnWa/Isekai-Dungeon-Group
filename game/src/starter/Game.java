@@ -302,7 +302,6 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         generateMonsters();
         spawnChest();
         generateTraps();
-        // new LightSource(6); // TEST
     }
 
     private void manageEntitiesSets() {

@@ -101,26 +101,23 @@ public class LevelAPI {
      */
     protected void drawFullLevel() {
         Map<String, PainterConfig> mapping = new HashMap<>();
-        Tile[][] layout = currentLevel.getLayout();
 
-        for (Tile[] tiles : layout) {
-            for (int j = 0; j < layout[0].length; j++) {
-                Tile currentTile = tiles[j];
-
-                if (currentTile.getLevelElement() != LevelElement.SKIP) {
-                    String texturePath = currentTile.getTexturePath();
+        Arrays.stream(currentLevel.getLayout()).forEach(tiles -> {
+            Arrays.stream(tiles).forEach(tile -> {
+                if (tile.getLevelElement() != LevelElement.SKIP) {
+                    String texturePath = tile.getTexturePath();
                     if (!mapping.containsKey(texturePath)) {
                         mapping.put(texturePath, new PainterConfig(texturePath));
                     }
 
                     painter.draw(
-                        currentTile.getCoordinateAsPoint(),
+                        tile.getCoordinateAsPoint(),
                         texturePath,
                         mapping.get(texturePath)
                     );
                 }
-            }
-        }
+            });
+        });
     }
 
     /**
@@ -146,12 +143,11 @@ public class LevelAPI {
 
         castRays(playerPosComp, drawList);
 
-        for (Tile tile : drawList) {
+        drawList.forEach(tile -> {
             float distance = Point.calculateDistance(playerPosComp.getPosition(), tile.getCoordinateAsPoint());
 
             float alpha = 1 - (distance / Settings.PLAYER_LIGHT_RANGE);
             float alphaFromOtherSource = Settings.allowDynamicLighting ? checkIfLit(tile) : 0;
-
             float finalAlpha = alpha + alphaFromOtherSource;
 
             if (finalAlpha < 0) finalAlpha = 0;
@@ -167,27 +163,16 @@ public class LevelAPI {
                 texturePath,
                 mapping.get(texturePath),
                 finalAlpha);
-        }
-
-        Tile tileAtHero = currentLevel.getTileAt(playerPosComp.getPosition().toCoordinate());
-
-        String texturePath = tileAtHero.getTexturePath();
-        if (!mapping.containsKey(texturePath)) {
-            mapping.put(texturePath, new PainterConfig(texturePath));
-        }
-
-        painter.draw(
-            tileAtHero.getCoordinateAsPoint(),
-            texturePath,
-            mapping.get(texturePath)
-        );
+        });
     }
 
     /*
-    Handles the ray casting. It calculates the offset the ray needs to have and
-    gives it to the castRay()-method.
+    Handles the ray casting. It calculates the radiant and based on that its offset, that the ray needs to traverse and
+    gives it to the castRay()-method. It always includes the tile that the player is standing on.
      */
     private void castRays(PositionComponent position, List<Tile> drawList) {
+        drawList.add(currentLevel.getTileAt(position.getPosition().toCoordinate()));
+
         for (int angle = 0; angle < 360; angle++) {
             float angleInRadians = (float) Math.toRadians(angle);
             float dirX = (float) Math.cos(angleInRadians);
@@ -200,7 +185,8 @@ public class LevelAPI {
     /*
     Casts the actual ray. It takes small steps into the given x- and y-direction
     and adds the hit tile to the drawList if it does not yet contain the tile.
-    It stops the process, when the ray has reached a wall or is out of range.
+    It stops the process, when the ray has reached a wall, a skip tile or when
+    a given tile position is out of bounds.
      */
     private void castRay(Point origin, float dirX, float dirY, List<Tile> drawList) {
         while (true) {
