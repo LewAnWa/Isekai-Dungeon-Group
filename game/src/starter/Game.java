@@ -4,7 +4,6 @@ import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 import static logging.LoggerConfig.initBaseLogger;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -274,7 +273,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         manageEntitiesSets();
         getHero().ifPresent(this::loadNextLevelIfEntityIsOnEndTile);
         if (heroType == CharacterType.ROGUE) InvisibilitySkill.applyInvisibilityCost(hero);
-        if (Gdx.input.isKeyJustPressed(Input.Keys.P)) togglePause();
+        if (Gdx.input.isKeyJustPressed(KeyboardConfig.TOGGLE_PAUSE.get())) togglePause();
         if (Gdx.input.isKeyJustPressed(KeyboardConfig.INVENTORY_OPEN.get())) toggleInventory();
     }
 

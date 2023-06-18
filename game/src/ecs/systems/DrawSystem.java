@@ -62,14 +62,15 @@ public class DrawSystem extends ECS_System {
                                                                 + PositionComponent.class.getName()
                                                                 + " of Hero, which is required for "
                                                                 + DrawSystem.class.getName()));
+
         Tile tileUnderEntity = Game.currentLevel.getTileAt(dsd.pc.getPosition().toCoordinate());
 
         if (!configs.containsKey(currentAnimationTexture)) {
             configs.put(currentAnimationTexture, new PainterConfig(currentAnimationTexture));
         }
 
+        // for rogue going invisible
         if (dsd.e instanceof Hero) {
-            // for rogue going invisible
             if (!dsd.e.isVisible() && dsd.e instanceof Rogue) {
                 painter.draw(
                     dsd.pc().getPosition(),
@@ -88,14 +89,7 @@ public class DrawSystem extends ECS_System {
         }
 
         // for invisible entities
-        if (!dsd.e.isVisible()) {
-            painter.draw(
-                dsd.pc().getPosition(),
-                currentAnimationTexture,
-                configs.get(currentAnimationTexture),
-                0);
-            return;
-        }
+        if (!dsd.e.isVisible()) return;
 
         if (Settings.potatoMode) {
             painter.draw(
@@ -110,6 +104,7 @@ public class DrawSystem extends ECS_System {
 
             return;
         }
+
         if (LevelAPI.getDrawList() != null) {
             if (!LevelAPI.getDrawList().contains(tileUnderEntity)) {
                 return;
