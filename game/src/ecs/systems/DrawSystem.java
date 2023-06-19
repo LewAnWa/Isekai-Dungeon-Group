@@ -11,10 +11,8 @@ import ecs.entities.traps.Warhead;
 import graphic.Animation;
 import graphic.Painter;
 import graphic.PainterConfig;
-
 import java.util.HashMap;
 import java.util.Map;
-
 import level.LevelAPI;
 import level.elements.tile.Tile;
 import starter.Game;
@@ -73,10 +71,10 @@ public class DrawSystem extends ECS_System {
         if (dsd.e instanceof Hero) {
             if (!dsd.e.isVisible() && dsd.e instanceof Rogue) {
                 painter.draw(
-                    dsd.pc().getPosition(),
-                    currentAnimationTexture,
-                    configs.get(currentAnimationTexture),
-                    0.4f);
+                        dsd.pc().getPosition(),
+                        currentAnimationTexture,
+                        configs.get(currentAnimationTexture),
+                        0.4f);
                 return;
             }
 
@@ -93,9 +91,9 @@ public class DrawSystem extends ECS_System {
 
         if (Settings.potatoMode) {
             painter.draw(
-                dsd.pc.getPosition(),
-                currentAnimationTexture,
-                configs.get(currentAnimationTexture));
+                    dsd.pc.getPosition(),
+                    currentAnimationTexture,
+                    configs.get(currentAnimationTexture));
 
             // FIXME: THIS SOLUTION IS FOR ANIMATIONS REPEATING EVEN THOUGH THEY ARE SET NOT TO!
             // This solution is hardcoded. Must be changed, when new set of Textures are added
@@ -113,7 +111,8 @@ public class DrawSystem extends ECS_System {
 
         float alphaFromLightSource = Settings.allowDynamicLighting ? checkIfLit(dsd) : 0;
 
-        float distance = Point.calculateDistance(dsd.pc().getPosition(), heroPositionComp.getPosition());
+        float distance =
+                Point.calculateDistance(dsd.pc().getPosition(), heroPositionComp.getPosition());
 
         // if entity is in range
         if (distance <= Settings.PLAYER_LIGHT_RANGE || alphaFromLightSource > 0) {
@@ -141,25 +140,45 @@ public class DrawSystem extends ECS_System {
      */
     private float checkIfLit(DSData dsd) {
         // var is used to be able to access an object outside a lambda expression
-        var reference = new Object() {
-            float alpha = 0;
-        };
+        var reference =
+                new Object() {
+                    float alpha = 0;
+                };
 
-        Game.getEntities().forEach(entity -> {
-            entity.getComponent(LightSourceComponent.class).ifPresent(lsC -> {
-                if (reference.alpha >= 1) {
-                    return;
-                }
+        Game.getEntities()
+                .forEach(
+                        entity -> {
+                            entity.getComponent(LightSourceComponent.class)
+                                    .ifPresent(
+                                            lsC -> {
+                                                if (reference.alpha >= 1) {
+                                                    return;
+                                                }
 
-                PositionComponent psC = (PositionComponent) entity.getComponent(PositionComponent.class).orElseThrow();
+                                                PositionComponent psC =
+                                                        (PositionComponent)
+                                                                entity.getComponent(
+                                                                                PositionComponent
+                                                                                        .class)
+                                                                        .orElseThrow();
 
-                float distance = Point.calculateDistance(dsd.pc().getPosition(), psC.getPosition());
+                                                float distance =
+                                                        Point.calculateDistance(
+                                                                dsd.pc().getPosition(),
+                                                                psC.getPosition());
 
-                if (distance <= ((LightSourceComponent) lsC).getLightRadius()) {
-                    reference.alpha += 1 - (distance / ((LightSourceComponent) lsC).getLightRadius());
-                }
-            });
-        });
+                                                if (distance
+                                                        <= ((LightSourceComponent) lsC)
+                                                                .getLightRadius()) {
+                                                    reference.alpha +=
+                                                            1
+                                                                    - (distance
+                                                                            / ((LightSourceComponent)
+                                                                                            lsC)
+                                                                                    .getLightRadius());
+                                                }
+                                            });
+                        });
 
         if (reference.alpha > 1) return 1;
         return reference.alpha;

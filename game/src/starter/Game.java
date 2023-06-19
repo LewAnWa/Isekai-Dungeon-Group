@@ -24,11 +24,10 @@ import ecs.systems.*;
 import graphic.DungeonCamera;
 import graphic.Painter;
 import graphic.hud.*;
+import graphic.hud.mainMenu.MainMenuUI;
 import java.io.IOException;
 import java.util.*;
 import java.util.logging.Logger;
-
-import graphic.hud.mainMenu.MainMenuUI;
 import level.IOnLevelLoader;
 import level.LevelAPI;
 import level.elements.ILevel;
@@ -190,7 +189,8 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
 
     /** Generates an array of Monsters */
     protected void generateMonsters() {
-        int monsterAmount = Math.min(currentLevel.getFloorTiles().size() / 20, Settings.setMaxMonsterAmount);
+        int monsterAmount =
+                Math.min(currentLevel.getFloorTiles().size() / 20, Settings.setMaxMonsterAmount);
         monsters = new Entity[monsterAmount];
 
         hero.getComponent(XPComponent.class)

@@ -8,13 +8,12 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import controller.AbstractController;
 import controller.ScreenController;
 import ecs.entities.heros.*;
+import graphic.hud.ScreenImage;
+import graphic.hud.ScreenText;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import graphic.hud.ScreenImage;
-import graphic.hud.ScreenText;
 import starter.Game;
 import tools.Constants;
 import tools.Point;
@@ -57,6 +56,7 @@ public class MainMenuUI<T extends Actor> extends ScreenController<T> {
 
     /**
      * Removes itself and the settings menu from the controller.
+     *
      * @param controller the controller in which the settings menu and main menu is contained.
      */
     public void cleanUp(List<AbstractController<?>> controller) {
@@ -65,9 +65,7 @@ public class MainMenuUI<T extends Actor> extends ScreenController<T> {
         controller.remove(this);
     }
 
-    /**
-     * Makes the elements of the main menu visible again.
-     */
+    /** Makes the elements of the main menu visible again. */
     protected void setFocused() {
         newGame.setVisible(true);
         settings.setVisible(true);

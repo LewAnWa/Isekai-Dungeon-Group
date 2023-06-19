@@ -18,20 +18,19 @@ public class KeyboardConfig {
 
     // --------------- Hero Skills --------------- //
     public static final ConfigKey<Integer> FIRST_SKILL =
-        new ConfigKey<>(new String[] {"skill", "first"}, new ConfigIntValue(Input.Keys.Q));
+            new ConfigKey<>(new String[] {"skill", "first"}, new ConfigIntValue(Input.Keys.Q));
     public static final ConfigKey<Integer> SECOND_SKILL =
-        new ConfigKey<>(new String[] {"skill", "second"}, new ConfigIntValue(Input.Keys.R));
+            new ConfigKey<>(new String[] {"skill", "second"}, new ConfigIntValue(Input.Keys.R));
     public static final ConfigKey<Integer> THIRD_SKILL =
-        new ConfigKey<>(new String[] {"skill", "third"}, new ConfigIntValue(Input.Keys.SPACE));
+            new ConfigKey<>(new String[] {"skill", "third"}, new ConfigIntValue(Input.Keys.SPACE));
 
     // --------------- Interaction --------------- //
     public static final ConfigKey<Integer> TOGGLE_PAUSE =
-        new ConfigKey<>(new String[] {"game", "pause"}, new ConfigIntValue(Input.Keys.ESCAPE));
+            new ConfigKey<>(new String[] {"game", "pause"}, new ConfigIntValue(Input.Keys.ESCAPE));
     public static final ConfigKey<Integer> INVENTORY_OPEN =
             new ConfigKey<>(new String[] {"inventory", "open"}, new ConfigIntValue(Input.Keys.I));
     public static final ConfigKey<Integer> INTERACT_WORLD =
             new ConfigKey<>(new String[] {"interact", "world"}, new ConfigIntValue(Input.Keys.E));
-
 
     // --------------- DEBUG --------------- //
     public static final ConfigKey<Integer> HERO_ADD_XP =

@@ -37,46 +37,46 @@ public class FireballSkill extends DamageProjectileSkill {
         dmgCalcTime = System.currentTimeMillis();
 
         PositionComponent epc =
-            (PositionComponent)
-                entity.getComponent(PositionComponent.class)
-                    .orElseThrow(
-                        () -> new MissingComponentException("PositionComponent"));
+                (PositionComponent)
+                        entity.getComponent(PositionComponent.class)
+                                .orElseThrow(
+                                        () -> new MissingComponentException("PositionComponent"));
         new PositionComponent(projectile, epc.getPosition());
 
         Point aimedOn = selectionFunction.selectTargetPoint();
         Point targetPoint =
-            SkillTools.calculateLastPositionInRange(
-                epc.getPosition(), aimedOn, projectileRange);
+                SkillTools.calculateLastPositionInRange(
+                        epc.getPosition(), aimedOn, projectileRange);
 
         Animation animation =
-            AnimationBuilder.buildAnimation(animationHelper(targetPoint, entity), 1);
+                AnimationBuilder.buildAnimation(animationHelper(targetPoint, entity), 1);
         new AnimationComponent(projectile, animation);
 
         Point velocity =
-            SkillTools.calculateVelocity(epc.getPosition(), targetPoint, projectileSpeed);
+                SkillTools.calculateVelocity(epc.getPosition(), targetPoint, projectileSpeed);
         VelocityComponent vc =
-            new VelocityComponent(projectile, velocity.x, velocity.y, animation, animation);
+                new VelocityComponent(projectile, velocity.x, velocity.y, animation, animation);
         new ProjectileComponent(projectile, epc.getPosition(), targetPoint);
         ICollide collide =
-            (a, b, from) -> {
-                if (b != entity && !b.isIgnorable()) {
-                    b.getComponent(HealthComponent.class)
-                        .ifPresent(
-                            hc -> {
-                                ((HealthComponent) hc).receiveHit(calculateDmg());
-                                Game.removeEntity(projectile);
-                            });
-                    b.getComponent(PositionComponent.class)
-                        .ifPresent(
-                            bpc -> {
-                                PositionComponent bComp = (PositionComponent) bpc;
-                                knockBack(epc, bComp);
-                            });
-                }
-            };
+                (a, b, from) -> {
+                    if (b != entity && !b.isIgnorable()) {
+                        b.getComponent(HealthComponent.class)
+                                .ifPresent(
+                                        hc -> {
+                                            ((HealthComponent) hc).receiveHit(calculateDmg());
+                                            Game.removeEntity(projectile);
+                                        });
+                        b.getComponent(PositionComponent.class)
+                                .ifPresent(
+                                        bpc -> {
+                                            PositionComponent bComp = (PositionComponent) bpc;
+                                            knockBack(epc, bComp);
+                                        });
+                    }
+                };
 
         new HitboxComponent(
-            projectile, new Point(0.25f, 0.25f), projectileHitboxSize, collide, null);
+                projectile, new Point(0.25f, 0.25f), projectileHitboxSize, collide, null);
 
         new LightSourceComponent(projectile, 4.5f);
     }

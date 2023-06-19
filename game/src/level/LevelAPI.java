@@ -6,7 +6,6 @@ import ecs.components.MissingComponentException;
 import ecs.components.PositionComponent;
 import graphic.Painter;
 import graphic.PainterConfig;
-
 import java.util.*;
 import java.util.logging.Logger;
 import level.elements.ILevel;
@@ -96,33 +95,38 @@ public class LevelAPI {
     }
 
     /**
-     * Draws the whole level, except for level elements that should be skipped.
-     * This is the basic draw style. Useful for low level pcs.
+     * Draws the whole level, except for level elements that should be skipped. This is the basic
+     * draw style. Useful for low level pcs.
      */
     protected void drawFullLevel() {
         Map<String, PainterConfig> mapping = new HashMap<>();
 
-        Arrays.stream(currentLevel.getLayout()).forEach(tiles -> {
-            Arrays.stream(tiles).forEach(tile -> {
-                if (tile.getLevelElement() != LevelElement.SKIP) {
-                    String texturePath = tile.getTexturePath();
-                    if (!mapping.containsKey(texturePath)) {
-                        mapping.put(texturePath, new PainterConfig(texturePath));
-                    }
+        Arrays.stream(currentLevel.getLayout())
+                .forEach(
+                        tiles -> {
+                            Arrays.stream(tiles)
+                                    .forEach(
+                                            tile -> {
+                                                if (tile.getLevelElement() != LevelElement.SKIP) {
+                                                    String texturePath = tile.getTexturePath();
+                                                    if (!mapping.containsKey(texturePath)) {
+                                                        mapping.put(
+                                                                texturePath,
+                                                                new PainterConfig(texturePath));
+                                                    }
 
-                    painter.draw(
-                        tile.getCoordinateAsPoint(),
-                        texturePath,
-                        mapping.get(texturePath)
-                    );
-                }
-            });
-        });
+                                                    painter.draw(
+                                                            tile.getCoordinateAsPoint(),
+                                                            texturePath,
+                                                            mapping.get(texturePath));
+                                                }
+                                            });
+                        });
     }
 
     /**
-     * Draws the current level via ray casting. Every tile element that gets hit by the ray
-     * will be saved in a list. Then it calculates the distance and draws the tile.
+     * Draws the current level via ray casting. Every tile element that gets hit by the ray will be
+     * saved in a list. Then it calculates the distance and draws the tile.
      */
     protected void drawLevel() {
         Map<String, PainterConfig> mapping = new HashMap<>();
@@ -143,27 +147,31 @@ public class LevelAPI {
 
         castRays(playerPosComp, drawList);
 
-        drawList.forEach(tile -> {
-            float distance = Point.calculateDistance(playerPosComp.getPosition(), tile.getCoordinateAsPoint());
+        drawList.forEach(
+                tile -> {
+                    float distance =
+                            Point.calculateDistance(
+                                    playerPosComp.getPosition(), tile.getCoordinateAsPoint());
 
-            float alpha = 1 - (distance / Settings.PLAYER_LIGHT_RANGE);
-            float alphaFromOtherSource = Settings.allowDynamicLighting ? checkIfLit(tile) : 0;
-            float finalAlpha = alpha + alphaFromOtherSource;
+                    float alpha = 1 - (distance / Settings.PLAYER_LIGHT_RANGE);
+                    float alphaFromOtherSource =
+                            Settings.allowDynamicLighting ? checkIfLit(tile) : 0;
+                    float finalAlpha = alpha + alphaFromOtherSource;
 
-            if (finalAlpha < 0) finalAlpha = 0;
-            if (finalAlpha > 1) finalAlpha = 1;
+                    if (finalAlpha < 0) finalAlpha = 0;
+                    if (finalAlpha > 1) finalAlpha = 1;
 
-            String texturePath = tile.getTexturePath();
-            if (!mapping.containsKey(texturePath)) {
-                mapping.put(texturePath, new PainterConfig(texturePath));
-            }
+                    String texturePath = tile.getTexturePath();
+                    if (!mapping.containsKey(texturePath)) {
+                        mapping.put(texturePath, new PainterConfig(texturePath));
+                    }
 
-            painter.draw(
-                tile.getCoordinateAsPoint(),
-                texturePath,
-                mapping.get(texturePath),
-                finalAlpha);
-        });
+                    painter.draw(
+                            tile.getCoordinateAsPoint(),
+                            texturePath,
+                            mapping.get(texturePath),
+                            finalAlpha);
+                });
     }
 
     /*
@@ -213,25 +221,45 @@ public class LevelAPI {
      */
     private float checkIfLit(Tile tile) {
         // var is used to be able to access an object outside a lambda expression
-        var reference = new Object() {
-            float alpha = 0;
-        };
+        var reference =
+                new Object() {
+                    float alpha = 0;
+                };
 
-        Game.getEntities().forEach(entity -> {
-            entity.getComponent(LightSourceComponent.class).ifPresent(lsC -> {
-                if (reference.alpha >= 1) {
-                    return;
-                }
+        Game.getEntities()
+                .forEach(
+                        entity -> {
+                            entity.getComponent(LightSourceComponent.class)
+                                    .ifPresent(
+                                            lsC -> {
+                                                if (reference.alpha >= 1) {
+                                                    return;
+                                                }
 
-                PositionComponent psC = (PositionComponent) entity.getComponent(PositionComponent.class).orElseThrow();
+                                                PositionComponent psC =
+                                                        (PositionComponent)
+                                                                entity.getComponent(
+                                                                                PositionComponent
+                                                                                        .class)
+                                                                        .orElseThrow();
 
-                float distance = Point.calculateDistance(tile.getCoordinateAsPoint(), psC.getPosition());
+                                                float distance =
+                                                        Point.calculateDistance(
+                                                                tile.getCoordinateAsPoint(),
+                                                                psC.getPosition());
 
-                if (distance <= ((LightSourceComponent) lsC).getLightRadius()) {
-                    reference.alpha += 1 - (distance / ((LightSourceComponent) lsC).getLightRadius());
-                }
-            });
-        });
+                                                if (distance
+                                                        <= ((LightSourceComponent) lsC)
+                                                                .getLightRadius()) {
+                                                    reference.alpha +=
+                                                            1
+                                                                    - (distance
+                                                                            / ((LightSourceComponent)
+                                                                                            lsC)
+                                                                                    .getLightRadius());
+                                                }
+                                            });
+                        });
 
         if (reference.alpha > 1) return 1;
         return reference.alpha;
