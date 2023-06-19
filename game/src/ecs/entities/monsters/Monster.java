@@ -22,6 +22,7 @@ public abstract class Monster extends Entity {
 
     private final float xSpeed;
     private final float ySpeed;
+
     protected Skill skill;
     protected Skill skill2;
     protected String pathToIdleLeft;
@@ -45,6 +46,13 @@ public abstract class Monster extends Entity {
         xSpeed = ySpeed = movementSpeed;
 
         setUpPositionComponent(playerPos, currentLevel);
+        setupXPComponent(lootAmount);
+    }
+
+    public Monster(float movementSpeed, long lootAmount){
+        super();
+
+        xSpeed = ySpeed = movementSpeed;
         setupXPComponent(lootAmount);
     }
 

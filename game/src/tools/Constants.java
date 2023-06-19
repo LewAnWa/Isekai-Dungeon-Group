@@ -52,5 +52,5 @@ public final class Constants {
     /**
      * Dictates on which floors a boss room should be generated.
      */
-    public static final int BOSS_ON_FLOORS = 5;
+    public static final int BOSS_ON_FLOORS = 2;
 }

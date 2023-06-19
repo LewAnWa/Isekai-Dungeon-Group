@@ -425,7 +425,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
                         () -> new MissingComponentException("PositionComponent"));
 
         if (floor % Constants.BOSS_ON_FLOORS == 0) {
-            pc.setPosition(new Point(7, 3));
+            pc.setPosition(new Point(7, 1));
             return;
         }
 

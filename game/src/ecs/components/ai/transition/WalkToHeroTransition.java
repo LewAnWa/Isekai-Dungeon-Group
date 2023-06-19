@@ -35,7 +35,7 @@ public class WalkToHeroTransition implements ITransition{
             heroPosition = ((PositionComponent) component).getPosition();
         });
 
-        if (heroPosition != null) {
+        if (heroPosition != null && AITools.playerInRange(entity, 4f)) {
             path = AITools.calculatePath(currentPosition, heroPosition);
             AITools.move(entity, path);
         }
