@@ -22,7 +22,7 @@ public class Boss extends Monster {
 
     private void setUpAIComponent() {
         AIComponent aiComponent = new AIComponent(this);
-        aiComponent.setFightAI(new BossAiPhase1());
+        //aiComponent.setFightAI(new BossAiPhase1());
         aiComponent.setTransitionAI(new RangeTransition(2f));
         aiComponent.setIdleAI(new WalkToHero());
     }
