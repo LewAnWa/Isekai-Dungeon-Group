@@ -29,10 +29,10 @@ public class Mimic extends Monster {
     public Mimic(float movementSpeed, int flux, Point chestPos, ILevel currentLevel) {
         super(movementSpeed, 0, chestPos, currentLevel);
 
-        pathToIdleLeft = "monster/mimic/idleLeft";
-        pathToIdleRight = "monster/mimic/idleRight";
-        pathToRunLeft = "monster/mimic/runLeft";
-        pathToRunRight = "monster/mimic/runRight";
+        pathToIdleLeftNormal = "monster/mimic/idleLeft";
+        pathToIdleRightNormal = "monster/mimic/idleRight";
+        pathToRunLeftNormal = "monster/mimic/runLeft";
+        pathToRunRightNormal = "monster/mimic/runRight";
 
         setUpPositionComponent(chestPos);
         setupVelocityComponent();

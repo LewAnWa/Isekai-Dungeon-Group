@@ -20,15 +20,15 @@ import tools.Point;
  */
 public abstract class Monster extends Entity {
 
-    private final float xSpeed;
-    private final float ySpeed;
+    protected final float xSpeed;
+    protected final float ySpeed;
 
     protected Skill skill;
     protected Skill skill2;
-    protected String pathToIdleLeft;
-    protected String pathToIdleRight;
-    protected String pathToRunLeft;
-    protected String pathToRunRight;
+    protected String pathToIdleLeftNormal;
+    protected String pathToIdleRightNormal;
+    protected String pathToRunLeftNormal;
+    protected String pathToRunRightNormal;
     protected String pathToDeathAnim = "deathAnimation/";
     private Damage damage;
 
@@ -102,14 +102,14 @@ public abstract class Monster extends Entity {
     }
 
     protected void setupVelocityComponent() {
-        Animation moveRight = AnimationBuilder.buildAnimation(pathToRunRight);
-        Animation moveLeft = AnimationBuilder.buildAnimation(pathToRunLeft);
+        Animation moveRight = AnimationBuilder.buildAnimation(pathToRunRightNormal);
+        Animation moveLeft = AnimationBuilder.buildAnimation(pathToRunLeftNormal);
         new VelocityComponent(this, xSpeed, ySpeed, moveLeft, moveRight);
     }
 
     protected void setupAnimationComponent() {
-        Animation idleRight = AnimationBuilder.buildAnimation(pathToIdleRight);
-        Animation idleLeft = AnimationBuilder.buildAnimation(pathToIdleLeft);
+        Animation idleRight = AnimationBuilder.buildAnimation(pathToIdleRightNormal);
+        Animation idleLeft = AnimationBuilder.buildAnimation(pathToIdleLeftNormal);
         new AnimationComponent(this, idleLeft, idleRight);
     }
 

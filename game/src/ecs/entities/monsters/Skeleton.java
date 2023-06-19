@@ -20,10 +20,10 @@ public class Skeleton extends Monster {
     public Skeleton(float movementSpeed, int flux, Point playerPos, ILevel currentLevel) {
         super(movementSpeed, 5 + flux, playerPos, currentLevel);
 
-        pathToIdleLeft = "monster/skeleton/idleLeft";
-        pathToIdleRight = "monster/skeleton/idleRight";
-        pathToRunLeft = "monster/skeleton/runLeft";
-        pathToRunRight = "monster/skeleton/runRight";
+        pathToIdleLeftNormal = "monster/skeleton/idleLeft";
+        pathToIdleRightNormal = "monster/skeleton/idleRight";
+        pathToRunLeftNormal = "monster/skeleton/runLeft";
+        pathToRunRightNormal = "monster/skeleton/runRight";
 
         setupVelocityComponent();
         setupAnimationComponent();

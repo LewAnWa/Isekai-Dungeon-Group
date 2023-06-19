@@ -2,7 +2,6 @@ package ecs.entities.monsters;
 
 import ecs.components.PositionComponent;
 import ecs.components.ai.AIComponent;
-import ecs.components.ai.fight.CollideAI;
 import ecs.components.ai.fight.MeleeAI;
 import ecs.components.ai.idle.RadiusWalk;
 import ecs.components.ai.transition.RangeTransition;
@@ -26,10 +25,10 @@ public class Necromancer extends Monster {
     public Necromancer(float movementSpeed, int flux, Point playerPos, ILevel currentLevel) {
         super(movementSpeed, 10 + flux, playerPos, currentLevel);
 
-        pathToIdleLeft = "monster/necromancer/idleLeft";
-        pathToIdleRight = "monster/necromancer/idleRight";
-        pathToRunLeft = "monster/necromancer/runLeft";
-        pathToRunRight = "monster/necromancer/runRight";
+        pathToIdleLeftNormal = "monster/necromancer/idleLeft";
+        pathToIdleRightNormal = "monster/necromancer/idleRight";
+        pathToRunLeftNormal = "monster/necromancer/runLeft";
+        pathToRunRightNormal = "monster/necromancer/runRight";
 
         setupSkillComponent();
 

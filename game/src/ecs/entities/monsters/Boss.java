@@ -1,10 +1,7 @@
 package ecs.entities.monsters;
 
 import dslToGame.AnimationBuilder;
-import ecs.components.HealthComponent;
-import ecs.components.IOnDeathFunction;
-import ecs.components.IOnHealthPercentage;
-import ecs.components.PositionComponent;
+import ecs.components.*;
 import ecs.components.ai.AIComponent;
 
 import ecs.components.ai.fight.BossAiPhase2;
@@ -17,6 +14,7 @@ import ecs.components.skill.FireballSkill;
 import ecs.components.skill.SchwertstichSkill;
 import ecs.components.skill.Skill;
 import ecs.components.skill.SkillComponent;
+import ecs.components.xp.XPComponent;
 import ecs.entities.Entity;
 import ecs.items.Apfel;
 import ecs.items.ItemData;
@@ -27,15 +25,21 @@ import tools.Point;
 import java.util.logging.Logger;
 
 public class Boss extends Monster {
-    private Logger logger = Logger.getLogger("Boss Logger");
+    private final Logger logger = Logger.getLogger("Boss Logger");
+
+    private final String pathToIdleLeftAngry = "monster/ogre/idleLeft/angry";
+    private final String pathToIdleRightAngry = "monster/ogre/idleRight/angry";
+    private final String pathToRunLeftAngry = "monster/ogre/runLeft/angry";
+    private final String pathToRunRightAngry = "monster/ogre/runRight/angry";
 
     public Boss(float movementSpeed, int flux) {
-        super(movementSpeed, 50 + flux);
+        super(movementSpeed,
+            ((XPComponent) Game.getHero().orElseThrow().getComponent(XPComponent.class).orElseThrow()).getXPToNextLevel());
 
-        pathToIdleLeft = "monster/ogre/idleLeft";
-        pathToIdleRight = "monster/ogre/idleRight";
-        pathToRunLeft = "monster/ogre/runLeft";
-        pathToRunRight = "monster/ogre/runRight";
+        pathToIdleLeftNormal = "monster/ogre/idleLeft/normal";
+        pathToIdleRightNormal = "monster/ogre/idleRight/normal";
+        pathToRunLeftNormal = "monster/ogre/runLeft/normal";
+        pathToRunRightNormal = "monster/ogre/runRight/normal";
 
         setupSkillComponent();
 
@@ -108,6 +112,12 @@ public class Boss extends Monster {
                     aIC.setIdleAI(new JumpAI());
                 });
 
+        entity.removeComponent(VelocityComponent.class);
+        setupVelocityComponent(pathToRunLeftAngry, pathToRunRightAngry);
+
+        entity.removeComponent(AnimationComponent.class);
+        setupAnimationComponent(pathToIdleLeftAngry, pathToIdleRightAngry);
+
         Game.spawnNecromancer();
         Game.spawnNecromancer();
     }
@@ -127,5 +137,15 @@ public class Boss extends Monster {
         droppedItem2.triggerDrop(entity, psC.getPosition());
     }
 
+    private void setupVelocityComponent(String newPathLeft, String newPathRight) {
+        Animation moveRight = AnimationBuilder.buildAnimation(newPathRight);
+        Animation moveLeft = AnimationBuilder.buildAnimation(newPathLeft);
+        new VelocityComponent(this, xSpeed, ySpeed, moveLeft, moveRight);
+    }
 
+    private void setupAnimationComponent(String newPathLeft, String newPathRight) {
+        Animation idleRight = AnimationBuilder.buildAnimation(newPathRight);
+        Animation idleLeft = AnimationBuilder.buildAnimation(newPathLeft);
+        new AnimationComponent(this, idleLeft, idleRight);
+    }
 }

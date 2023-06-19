@@ -19,6 +19,7 @@ import ecs.components.xp.XPComponent;
 import ecs.entities.Chest;
 import ecs.entities.Entity;
 import ecs.entities.heros.*;
+import ecs.entities.monsters.Boss;
 import ecs.entities.monsters.MonsterFactory;
 import ecs.entities.traps.TrapFactory;
 import ecs.systems.*;
@@ -411,6 +412,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
 
     private void loadNextLevelIfEntityIsOnEndTile(Entity hero) {
         if (!isOnEndTile(hero)) return;
+        if (getEntities().stream().anyMatch(entity -> entity instanceof Boss)) return;
 
         if (floor == 6) LEVELDESIGN = DesignLabel.DEFAULT;
 
