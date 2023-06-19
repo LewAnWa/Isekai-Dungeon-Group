@@ -271,6 +271,25 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
                 });
     }
 
+    public static void spawnNecromancer(){
+        hero.getComponent(XPComponent.class)
+            .ifPresent(
+                component -> {
+                    XPComponent comp = (XPComponent) component;
+
+                    hero.getComponent(PositionComponent.class)
+                        .ifPresent(
+                            component1 -> {
+                                PositionComponent posComp =
+                                    (PositionComponent) component1;
+                                MonsterFactory.spawnNecromancer((int) comp.getCurrentLevel(),
+                                    posComp.getPosition(),
+                                    currentLevel);
+                            });
+                });
+    }
+
+
     /**
      * Generates an arrays of traps depending on the current level size.
      */

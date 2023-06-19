@@ -18,15 +18,19 @@ import ecs.components.skill.SchwertstichSkill;
 import ecs.components.skill.Skill;
 import ecs.components.skill.SkillComponent;
 import ecs.entities.Entity;
+import ecs.items.Apfel;
+import ecs.items.ItemData;
 import graphic.Animation;
-import level.elements.ILevel;
 import starter.Game;
 import tools.Point;
 
-public class Boss extends Monster {
+import java.util.logging.Logger;
 
-    public Boss(float movementSpeed, Point playerPos, ILevel currentLevel) {
-        super(movementSpeed, 50);
+public class Boss extends Monster {
+    private Logger logger = Logger.getLogger("Boss Logger");
+
+    public Boss(float movementSpeed, int flux) {
+        super(movementSpeed, 50 + flux);
 
         pathToIdleLeft = "monster/ogre/idleLeft";
         pathToIdleRight = "monster/ogre/idleRight";
@@ -38,7 +42,7 @@ public class Boss extends Monster {
         setupVelocityComponent();
         setupAnimationComponent();
         setupHitboxComponent();
-        setUpHealthComponent(100);
+        setUpHealthComponent(150+(flux*2));
         setUpAIComponent();
         setUpPositionComponent();
         setUpDamageComponent(0);
@@ -80,7 +84,7 @@ public class Boss extends Monster {
             new IOnDeathFunction() {
                 @Override
                 public void onDeath(Entity entity) {
-                    dropLoot(entity);
+                    dropApfel(entity);
                 }
             });
         // entity -> new AnimationComponent(entity, deathAnim)); // does nothing
@@ -91,19 +95,37 @@ public class Boss extends Monster {
                     phase2(entity);
                 }
             });
+        logger.info("Boss HP: " + maxHealthPoints);
+        System.out.println("Boss HP: " + maxHealthPoints);
     }
 
     private void phase2(Entity entity) {
         entity.getComponent(AIComponent.class).
             ifPresent(aIComponent -> {
                     AIComponent aIC = (AIComponent) aIComponent;
-                    aIC.setFightAI(new BossAiPhase2(2f, skill));
+                    aIC.setFightAI(new BossAiPhase2(2f, skill2));
                     aIC.setTransitionAI(new RangeTransition(2f));
-                    aIC.setIdleAI(new JumpAI(skill));
+                    aIC.setIdleAI(new JumpAI());
                 });
+
+        Game.spawnNecromancer();
+        Game.spawnNecromancer();
     }
 
-    public void setUpPositionComponent(){
+    private void setUpPositionComponent(){
         new PositionComponent(this, new Point(7,7));
     }
+
+    private void dropApfel(Entity entity){
+        ItemData droppedItem1 = new Apfel();
+        ItemData droppedItem2 = new Apfel();
+
+        PositionComponent psC =
+            (PositionComponent) entity.getComponent(PositionComponent.class).get();
+
+        droppedItem1.triggerDrop(entity, psC.getPosition());
+        droppedItem2.triggerDrop(entity, psC.getPosition());
+    }
+
+
 }
