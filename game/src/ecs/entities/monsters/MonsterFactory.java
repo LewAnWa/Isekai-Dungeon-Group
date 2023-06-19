@@ -63,4 +63,8 @@ public class MonsterFactory {
         Monster mimic = new Mimic(0.12f, flux, playerPos, currentLevel);
         return mimic;
     }
+
+    public static Entity spawnBoss(int playerLevel, Point playerPos, ILevel currentLevel) {
+        return new Boss(0.12f, playerPos ,currentLevel);
+    }
 }

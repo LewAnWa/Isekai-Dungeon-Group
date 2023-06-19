@@ -25,9 +25,11 @@ import ecs.systems.*;
 import graphic.DungeonCamera;
 import graphic.Painter;
 import graphic.hud.*;
+
 import java.io.IOException;
 import java.util.*;
 import java.util.logging.Logger;
+
 import level.IOnLevelLoader;
 import level.LevelAPI;
 import level.elements.ILevel;
@@ -40,7 +42,9 @@ import level.tools.LevelSize;
 import tools.Constants;
 import tools.Point;
 
-/** The heart of the framework. From here all strings are pulled. */
+/**
+ * The heart of the framework. From here all strings are pulled.
+ */
 public class Game extends ScreenAdapter implements IOnLevelLoader {
 
     private DesignLabel LEVELDESIGN = DesignLabel.LUSH;
@@ -54,29 +58,43 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
      */
     protected SpriteBatch batch;
 
-    /** Contains all Controller of the Dungeon */
+    /**
+     * Contains all Controller of the Dungeon
+     */
     protected List<AbstractController<?>> controller;
 
     public static DungeonCamera camera;
-    /** Draws objects */
+    /**
+     * Draws objects
+     */
     protected Painter painter;
 
     protected LevelAPI levelAPI;
-    /** Generates the level */
+    /**
+     * Generates the level
+     */
     protected IGenerator generator;
 
     private boolean doSetup = true;
     private static boolean characterSet = false;
     private static boolean paused = false;
 
-    /** All entities that are currently active in the dungeon */
+    /**
+     * All entities that are currently active in the dungeon
+     */
     private static final Set<Entity> entities = new HashSet<>();
-    /** All entities to be removed from the dungeon in the next frame */
+    /**
+     * All entities to be removed from the dungeon in the next frame
+     */
     private static final Set<Entity> entitiesToRemove = new HashSet<>();
-    /** All entities to be added from the dungeon in the next frame */
+    /**
+     * All entities to be added from the dungeon in the next frame
+     */
     private static final Set<Entity> entitiesToAdd = new HashSet<>();
 
-    /** List of all Systems in the ECS */
+    /**
+     * List of all Systems in the ECS
+     */
     public static SystemController systems;
 
     public static ILevel currentLevel;
@@ -124,7 +142,9 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         }
     }
 
-    /** Called once at the beginning of the game. */
+    /**
+     * Called once at the beginning of the game.
+     */
     protected void setup() {
         if (doSetup) { // build up the game
             doSetup = false;
@@ -157,8 +177,8 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
             controller.add(gameOverScreen);
 
             levelAPI =
-                    new LevelAPI(
-                            batch, painter, new WallGenerator(new RandomWalkGenerator()), this);
+                new LevelAPI(
+                    batch, painter, new WallGenerator(new RandomWalkGenerator()), this);
             levelAPI.loadLevel(levelSize, LEVELDESIGN);
             createSystems();
         }
@@ -192,86 +212,114 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         levelAPI.loadLevel(levelSize, LEVELDESIGN);
     }
 
-    /** Generates an array of Monsters */
+    /**
+     * Generates an array of Monsters
+     */
     protected void generateMonsters() {
         int monsterAmount = Math.min(currentLevel.getFloorTiles().size() / 20, maxMonster);
         monsters = new Entity[monsterAmount];
 
         hero.getComponent(XPComponent.class)
-                .ifPresent(
-                        component -> {
-                            XPComponent comp = (XPComponent) component;
+            .ifPresent(
+                component -> {
+                    XPComponent comp = (XPComponent) component;
 
-                            hero.getComponent(PositionComponent.class)
-                                    .ifPresent(
-                                            component1 -> {
-                                                PositionComponent posComp =
-                                                        (PositionComponent) component1;
+                    hero.getComponent(PositionComponent.class)
+                        .ifPresent(
+                            component1 -> {
+                                PositionComponent posComp =
+                                    (PositionComponent) component1;
 
-                                                for (int i = 0; i < monsters.length; i++) {
-                                                    monsters[i] =
-                                                            MonsterFactory.generateMonster(
-                                                                    (int) comp.getCurrentLevel(),
-                                                                    posComp.getPosition(),
-                                                                    currentLevel);
-                                                }
-                                            });
-                        });
+                                for (int i = 0; i < monsters.length; i++) {
+                                    monsters[i] =
+                                        MonsterFactory.generateMonster(
+                                            (int) comp.getCurrentLevel(),
+                                            posComp.getPosition(),
+                                            currentLevel);
+                                }
+                            });
+                });
     }
 
-    /** spawns a chest in the Dungeon */
+    /**
+     * spawns a chest in the Dungeon
+     */
     protected void spawnChest() {
         Chest.spawnChest();
     }
 
-    /** spawns a Mimic Enemy in the Dungeon */
+    /**
+     * spawns a Mimic Enemy in the Dungeon
+     */
     public static void spawnMimicEnemy() {
         hero.getComponent(XPComponent.class)
-                .ifPresent(
-                        component -> {
-                            XPComponent heroComp = (XPComponent) component;
+            .ifPresent(
+                component -> {
+                    XPComponent heroComp = (XPComponent) component;
 
-                            chest.getComponent(PositionComponent.class)
-                                    .ifPresent(
-                                            component1 -> {
-                                                PositionComponent chestComp =
-                                                        (PositionComponent) component1;
+                    chest.getComponent(PositionComponent.class)
+                        .ifPresent(
+                            component1 -> {
+                                PositionComponent chestComp =
+                                    (PositionComponent) component1;
 
-                                                MonsterFactory.spawnMimic(
-                                                        (int) heroComp.getCurrentLevel(),
-                                                        chestComp.getPosition(),
-                                                        currentLevel);
-                                            });
-                        });
+                                MonsterFactory.spawnMimic(
+                                    (int) heroComp.getCurrentLevel(),
+                                    chestComp.getPosition(),
+                                    currentLevel);
+                            });
+                });
     }
 
-    /** Generates an arrays of traps depending on the current level size. */
+    /**
+     * Generates an arrays of traps depending on the current level size.
+     */
     protected void generateTraps() {
         traps = new Entity[currentLevel.getFloorTiles().size() / 30];
 
         hero.getComponent(XPComponent.class)
-                .ifPresent(
-                        component -> {
-                            XPComponent comp = (XPComponent) component;
+            .ifPresent(
+                component -> {
+                    XPComponent comp = (XPComponent) component;
 
-                            hero.getComponent(PositionComponent.class)
-                                    .ifPresent(
-                                            component1 -> {
-                                                PositionComponent posComp =
-                                                        (PositionComponent) component1;
+                    hero.getComponent(PositionComponent.class)
+                        .ifPresent(
+                            component1 -> {
+                                PositionComponent posComp =
+                                    (PositionComponent) component1;
 
-                                                for (int i = 0; i < traps.length; i++) {
-                                                    traps[i] =
-                                                            TrapFactory.generateTraps(
-                                                                    (int) comp.getCurrentLevel(),
-                                                                    posComp.getPosition(),
-                                                                    currentLevel);
-                                                }
-                                            });
-                        });
+                                for (int i = 0; i < traps.length; i++) {
+                                    traps[i] =
+                                        TrapFactory.generateTraps(
+                                            (int) comp.getCurrentLevel(),
+                                            posComp.getPosition(),
+                                            currentLevel);
+                                }
+                            });
+                });
     }
 
-    /** Called at the beginning of each frame. Before the controllers call <code>update</code>. */
+    protected void generateBoss() {
+        hero.getComponent(XPComponent.class)
+            .ifPresent(
+                component -> {
+                    XPComponent comp = (XPComponent) component;
+
+                    hero.getComponent(PositionComponent.class)
+                        .ifPresent(
+                            component1 -> {
+                                PositionComponent posComp =
+                                    (PositionComponent) component1;
+                                MonsterFactory.spawnBoss((int) comp.getCurrentLevel(),
+                                    posComp.getPosition(),
+                                    currentLevel);
+                            });
+                });
+    }
+
+    /**
+     * Called at the beginning of each frame. Before the controllers call <code>update</code>.
+     */
     protected void frame() {
         setCameraFocus();
         manageEntitiesSets();
@@ -304,8 +352,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         getHero().ifPresent(this::placeOnLevelStart);
 
         if (floor % Constants.BOSS_ON_FLOORS == 0) {
-            // TODO: IMPLEMENT BOSS SPAWNING
-
+            generateBoss();
             return;
         }
 
@@ -330,14 +377,14 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
     private void setCameraFocus() {
         if (getHero().isPresent()) {
             PositionComponent pc =
-                    (PositionComponent)
-                            getHero()
-                                    .get()
-                                    .getComponent(PositionComponent.class)
-                                    .orElseThrow(
-                                            () ->
-                                                    new MissingComponentException(
-                                                            "PositionComponent"));
+                (PositionComponent)
+                    getHero()
+                        .get()
+                        .getComponent(PositionComponent.class)
+                        .orElseThrow(
+                            () ->
+                                new MissingComponentException(
+                                    "PositionComponent"));
             camera.setFocusPoint(pc.getPosition());
 
         } else camera.setFocusPoint(new Point(0, 0));
@@ -361,10 +408,10 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
 
     private boolean isOnEndTile(Entity entity) {
         PositionComponent pc =
-                (PositionComponent)
-                        entity.getComponent(PositionComponent.class)
-                                .orElseThrow(
-                                        () -> new MissingComponentException("PositionComponent"));
+            (PositionComponent)
+                entity.getComponent(PositionComponent.class)
+                    .orElseThrow(
+                        () -> new MissingComponentException("PositionComponent"));
         Tile currentTile = currentLevel.getTileAt(pc.getPosition().toCoordinate());
         return currentTile.equals(currentLevel.getEndTile());
     }
@@ -372,20 +419,22 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
     private void placeOnLevelStart(Entity hero) {
         entities.add(hero);
         PositionComponent pc =
-                (PositionComponent)
-                        hero.getComponent(PositionComponent.class)
-                                .orElseThrow(
-                                        () -> new MissingComponentException("PositionComponent"));
+            (PositionComponent)
+                hero.getComponent(PositionComponent.class)
+                    .orElseThrow(
+                        () -> new MissingComponentException("PositionComponent"));
 
         if (floor % Constants.BOSS_ON_FLOORS == 0) {
-            pc.setPosition(new Point(7,3));
+            pc.setPosition(new Point(7, 3));
             return;
         }
 
         pc.setPosition(currentLevel.getStartTile().getCoordinate().toPoint());
     }
 
-    /** Toggle between pause and run */
+    /**
+     * Toggle between pause and run
+     */
     public static void togglePause() {
         paused = !paused;
         if (systems != null) {
