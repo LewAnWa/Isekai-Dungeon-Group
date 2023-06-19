@@ -6,7 +6,7 @@ import ecs.entities.Entity;
 import starter.Game;
 import tools.Constants;
 import tools.Point;
-
+/** idle ai used by the boss monster in phase 2 --> jumps directly to the heros position*/
 public class JumpAI implements IIdleAI {
 
     private Point heroPosition;

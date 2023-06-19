@@ -12,6 +12,7 @@ import level.elements.ILevel;
 import starter.Game;
 import tools.Point;
 
+/** the Necromancer is an Enemy which shoots fireballs */
 public class Necromancer extends Monster {
 
     /**

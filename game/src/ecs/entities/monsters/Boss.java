@@ -24,6 +24,7 @@ import tools.Point;
 
 import java.util.logging.Logger;
 
+/** This is the Boss Monster for the Dungeon. The Hero encounters the Boss after reaching lvl 10*/
 public class Boss extends Monster {
     private final Logger logger = Logger.getLogger("Boss Logger");
 
@@ -32,6 +33,12 @@ public class Boss extends Monster {
     private final String pathToRunLeftAngry = "monster/ogre/runLeft/angry";
     private final String pathToRunRightAngry = "monster/ogre/runRight/angry";
 
+    /**
+     * Creates a new Boss Monster
+     *
+     * @param movementSpeed the speed of the Monster.
+     * @param flux the possible fluctuation of the variables.
+     */
     public Boss(float movementSpeed, int flux) {
         super(movementSpeed,
             ((XPComponent) Game.getHero().orElseThrow().getComponent(XPComponent.class).orElseThrow()).getXPToNextLevel());
