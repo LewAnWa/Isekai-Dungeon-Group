@@ -9,7 +9,10 @@ import graphic.PainterConfig;
 import java.util.*;
 import java.util.logging.Logger;
 import level.elements.ILevel;
+import level.elements.TileLevel;
 import level.elements.tile.Tile;
+import level.elements.tile.TileFactory;
+import level.elements.tile.WallTile;
 import level.generator.IGenerator;
 import level.tools.Coordinate;
 import level.tools.DesignLabel;
@@ -44,6 +47,29 @@ public class LevelAPI {
         this.batch = batch;
         this.painter = painter;
         this.onLevelLoader = onLevelLoader;
+    }
+
+    public void loadBossLevel() {
+        currentLevel = new TileLevel(generateBossLevel());
+        onLevelLoader.onLevelLoad();
+        levelAPI_logger.info("A new level was loaded.");
+    }
+
+    /*
+    Very ugly way to generate a room.
+     */
+    private Tile[][] generateBossLevel() {
+        LevelElement[][] layout = new LevelElement[15][15];
+
+        for (int i = 0; i < layout.length; i++) {
+            for (int j = 0; j < layout[0].length; j++) {
+                if (i == 0 || j == 0 || i == layout.length-1 || j == layout.length-1) layout[i][j] = LevelElement.WALL;
+                else if (i == layout.length-3 && j == layout.length/2) layout[i][j] = LevelElement.EXIT;
+                else layout[i][j] = LevelElement.FLOOR;
+            }
+        }
+
+        return new TileLevel(layout, DesignLabel.DEFAULT).getLayout();
     }
 
     /**

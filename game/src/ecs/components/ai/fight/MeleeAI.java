@@ -7,10 +7,14 @@ import ecs.entities.Entity;
 import level.elements.tile.Tile;
 import tools.Constants;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class MeleeAI implements IFightAI {
     private final float attackRange;
     private final int delay = Constants.FRAME_RATE;
     private int timeSinceLastUpdate = 0;
+    private int timeSinceLastAttack = 0;
     private final Skill fightSkill;
     private GraphPath<Tile> path;
 
@@ -19,7 +23,7 @@ public class MeleeAI implements IFightAI {
      * player.
      *
      * @param attackRange Range in which the attack skill should be executed
-     * @param fightSkill Skill to be used when an attack is performed
+     * @param fightSkill  Skill to be used when an attack is performed
      */
     public MeleeAI(float attackRange, Skill fightSkill) {
         this.attackRange = attackRange;
@@ -29,7 +33,18 @@ public class MeleeAI implements IFightAI {
     @Override
     public void fight(Entity entity) {
         if (AITools.playerInRange(entity, attackRange)) {
-            fightSkill.execute(entity);
+            Timer timer = new Timer();
+
+            timer.schedule(
+                new TimerTask() {
+                    @Override
+                    public void run() {
+                        fightSkill.execute(entity);
+                        timer.cancel();
+                    }
+                },
+                1000);
+
         } else {
             if (timeSinceLastUpdate >= delay) {
                 path = AITools.calculatePathToHero(entity);
