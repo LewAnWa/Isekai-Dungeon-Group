@@ -85,6 +85,11 @@ public abstract class Monster extends Entity {
                     }
                 });
         // entity -> new AnimationComponent(entity, deathAnim)); // does nothing
+        healthComponent.setOnHealthPercentage(
+                new IOnHealthPercentage() {
+                    @Override
+                    public void onHealthPercentage(Entity entity) {inreaseMoveSpeed(entity);}
+                });
     }
 
     protected void setupVelocityComponent() {
@@ -132,5 +137,20 @@ public abstract class Monster extends Entity {
                 (PositionComponent) entity.getComponent(PositionComponent.class).get();
 
         droppedItem.triggerDrop(entity, psC.getPosition());
+    }
+
+    /**
+     *  increases the Entities movementspeed
+     *
+     * @param entity entity that will receive more movementspeed
+     */
+    public void inreaseMoveSpeed(Entity entity){
+        entity.getComponent(VelocityComponent.class)
+                .ifPresent(
+                        component -> {
+                            VelocityComponent vc = (VelocityComponent) component;
+                            vc.setYVelocity(vc.getYVelocity() + 0.05f);
+                            vc.setXVelocity(vc.getXVelocity() + 0.05f);
+                        });
     }
 }

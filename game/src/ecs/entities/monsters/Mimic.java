@@ -3,6 +3,7 @@ package ecs.entities.monsters;
 import dslToGame.AnimationBuilder;
 import ecs.components.HealthComponent;
 import ecs.components.IOnDeathFunction;
+import ecs.components.IOnHealthPercentage;
 import ecs.components.PositionComponent;
 import ecs.components.ai.AIComponent;
 import ecs.components.ai.fight.CollideAI;
@@ -60,6 +61,11 @@ public class Mimic extends Monster {
                     }
                 });
         // entity -> new AnimationComponent(entity, deathAnim)); // does nothing
+        healthComponent.setOnHealthPercentage(
+            new IOnHealthPercentage() {
+                @Override
+                public void onHealthPercentage(Entity entity) {inreaseMoveSpeed(entity);}
+            });
     }
 
     private void setUpPositionComponent(Point chestPos) {

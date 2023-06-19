@@ -24,9 +24,11 @@ public class HealthComponent extends Component {
     private int currentHealthpoints;
     private @Null Entity lastCause = null;
     private @DSLTypeMember(name = "on_death_function") IOnDeathFunction onDeath;
+    private @DSLTypeMember(name = "on_health_percentage") IOnHealthPercentage onHealthPercentage;
     private @DSLTypeMember(name = "get_hit_animation") Animation getHitAnimation;
     private @DSLTypeMember(name = "die_animation") Animation dieAnimation;
     private final Logger healthLogger = Logger.getLogger(this.getClass().getName());
+    private boolean halflife = false;
 
     /**
      * Creates a new HealthComponent
@@ -80,6 +82,19 @@ public class HealthComponent extends Component {
     /** Triggers the onDeath Function */
     public void triggerOnDeath() {
         onDeath.onDeath(entity);
+    }
+
+    /** Triggers the onHealthPercentage Function*/
+    public void triggerOnHealthPercentage(){
+        onHealthPercentage.onHealthPercentage(entity);
+        halflife = true;
+    }
+
+    /**
+     * @return true if the entity health is lower than 50%
+     * */
+    public boolean isHalflife(){
+        return halflife;
     }
 
     /**
@@ -156,6 +171,15 @@ public class HealthComponent extends Component {
      */
     public void setOnDeath(IOnDeathFunction onDeath) {
         this.onDeath = onDeath;
+    }
+
+    /**
+     * Set a new function to be called when reaching a certain amount of health.
+     *
+     * @param onHealthPercentage new onHealthPercentage function
+     */
+    public void setOnHealthPercentage(IOnHealthPercentage onHealthPercentage){
+        this.onHealthPercentage = onHealthPercentage;
     }
 
     /**
