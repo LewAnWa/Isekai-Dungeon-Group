@@ -46,7 +46,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
     private DesignLabel LEVELDESIGN = DesignLabel.LUSH;
     private static LevelSize levelSize = LevelSize.SMALL;
     private static int maxMonster = 20;
-    private int floor = 0;
+    private int floor = 1;
 
     /**
      * The batch is necessary to draw ALL the stuff. Every object that uses draw need to know the
@@ -188,7 +188,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         gameOverScreen = new GameOverScreen<>(this);
         controller.add(gameOverScreen);
 
-        floor = 0;
+        floor = 1;
         levelAPI.loadLevel(levelSize, LEVELDESIGN);
     }
 
@@ -302,6 +302,13 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         currentLevel = levelAPI.getCurrentLevel();
         entities.clear();
         getHero().ifPresent(this::placeOnLevelStart);
+
+        if (floor % Constants.BOSS_ON_FLOORS == 0) {
+            // TODO: IMPLEMENT BOSS SPAWNING
+
+            return;
+        }
+
         generateMonsters();
         spawnChest();
         generateTraps();
@@ -337,11 +344,19 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
     }
 
     private void loadNextLevelIfEntityIsOnEndTile(Entity hero) {
-        if (isOnEndTile(hero)) {
-            levelAPI.loadLevel(levelSize, LEVELDESIGN);
+        if (!isOnEndTile(hero)) return;
+
+        if (floor == 6) LEVELDESIGN = DesignLabel.DEFAULT;
+
+        if (floor % Constants.BOSS_ON_FLOORS == 0) {
+            levelAPI.loadBossLevel();
             floor++;
-            if (floor == 6) LEVELDESIGN = DesignLabel.DEFAULT;
+
+            return;
         }
+
+        levelAPI.loadLevel(levelSize, LEVELDESIGN);
+        floor++;
     }
 
     private boolean isOnEndTile(Entity entity) {
@@ -361,6 +376,12 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
                         hero.getComponent(PositionComponent.class)
                                 .orElseThrow(
                                         () -> new MissingComponentException("PositionComponent"));
+
+        if (floor % Constants.BOSS_ON_FLOORS == 0) {
+            pc.setPosition(new Point(7,3));
+            return;
+        }
+
         pc.setPosition(currentLevel.getStartTile().getCoordinate().toPoint());
     }
 
