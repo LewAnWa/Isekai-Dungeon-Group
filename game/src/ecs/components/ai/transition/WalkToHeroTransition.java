@@ -9,7 +9,7 @@ import ecs.entities.Entity;
 import level.elements.tile.Tile;
 import starter.Game;
 import tools.Point;
-
+/** transition used by the boss monster in phase 1 --> moving directly to the hero within a certain range*/
 public class WalkToHeroTransition implements ITransition{
 
     private GraphPath<Tile> path;
@@ -17,6 +17,7 @@ public class WalkToHeroTransition implements ITransition{
     private Point heroPosition;
     private final float range;
 
+    /** constructor for the WalkToHeroTransition*/
     public WalkToHeroTransition(float range) {
         this.range = range;
     }
@@ -35,10 +36,12 @@ public class WalkToHeroTransition implements ITransition{
             heroPosition = ((PositionComponent) component).getPosition();
         });
 
+        //already moves to the hero at range of 4
         if (heroPosition != null && AITools.playerInRange(entity, 4f)) {
             path = AITools.calculatePath(currentPosition, heroPosition);
             AITools.move(entity, path);
         }
+        //returns the original range with declares when to switch to meeleAI
         return AITools.playerInRange(entity,range);
     }
 }

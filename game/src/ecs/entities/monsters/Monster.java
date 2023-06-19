@@ -49,6 +49,12 @@ public abstract class Monster extends Entity {
         setupXPComponent(lootAmount);
     }
 
+    /**
+     * Another constructor for the monster
+     *
+     * @param movementSpeed the speed of the monster.
+     * @param lootAmount the amount of loot that should be dropped on death.
+     */
     public Monster(float movementSpeed, long lootAmount){
         super();
 
@@ -56,12 +62,12 @@ public abstract class Monster extends Entity {
         setupXPComponent(lootAmount);
     }
 
+    /** Sets up the damageComponent for the monster with the needed parameters */
     protected void setUpDamageComponent(int damageAmount) {
         damage = new Damage(damageAmount, DamageType.PHYSICAL, this);
     }
 
-    // Sets up the positionComponent of the Monster with a random point, which has a minimum
-    // distance to the player
+    /** Sets up the positionComponent of the Monster with a random point, which has minimum distance to the player*/
     protected void setUpPositionComponent(Point playerPos, ILevel currentLevel) {
         Point randomPoint;
 
@@ -72,11 +78,16 @@ public abstract class Monster extends Entity {
         new PositionComponent(this, randomPoint);
     }
 
+    /** Sets up the XPComponent for the monster with the needed parameters */
     protected void setupXPComponent(long lootAmount) {
         XPComponent xpComponent = new XPComponent(this);
         xpComponent.setLootXP(lootAmount);
     }
 
+    /** Sets up the HealthComponent for the monster with the needed parameters
+     * sets the onDeath function
+     * sets the onHealthPercentage function
+     */
     protected void setUpHealthComponent(int maxHealthPoints) {
         HealthComponent healthComponent = new HealthComponent(this);
         healthComponent.setMaximalHealthpoints(maxHealthPoints);
@@ -101,18 +112,21 @@ public abstract class Monster extends Entity {
                 });
     }
 
+    /** Sets up the VelocityComponent for the monster with the needed parameters and walking animation */
     protected void setupVelocityComponent() {
         Animation moveRight = AnimationBuilder.buildAnimation(pathToRunRight);
         Animation moveLeft = AnimationBuilder.buildAnimation(pathToRunLeft);
         new VelocityComponent(this, xSpeed, ySpeed, moveLeft, moveRight);
     }
 
+    /** Sets up the AnimationComponent for the monster with the needed paths and idle animation */
     protected void setupAnimationComponent() {
         Animation idleRight = AnimationBuilder.buildAnimation(pathToIdleRight);
         Animation idleLeft = AnimationBuilder.buildAnimation(pathToIdleLeft);
         new AnimationComponent(this, idleLeft, idleRight);
     }
 
+    /** Sets up the HitboxComponent for the monster */
     protected void setupHitboxComponent() {
         new HitboxComponent(
                 this,

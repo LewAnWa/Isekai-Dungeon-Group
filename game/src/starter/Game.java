@@ -271,6 +271,9 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
                 });
     }
 
+    /**
+     *  spawns a Necromancer in the Dungeon
+     */
     public static void spawnNecromancer(){
         hero.getComponent(XPComponent.class)
             .ifPresent(
@@ -318,6 +321,9 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
                 });
     }
 
+    /**
+     * Generates the Boss Monster for the Dungeon
+     */
     protected void generateBoss() {
         hero.getComponent(XPComponent.class)
             .ifPresent(

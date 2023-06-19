@@ -7,6 +7,7 @@ import ecs.components.ai.transition.RangeTransition;
 import level.elements.ILevel;
 import tools.Point;
 
+/** the Bat is an Enemy which always flys to the Heros location*/
 public class Bat extends Monster {
 
     /**
