@@ -84,16 +84,16 @@ public class HealthComponent extends Component {
         onDeath.onDeath(entity);
     }
 
-    /** Triggers the onHealthPercentage Function*/
-    public void triggerOnHealthPercentage(){
+    /** Triggers the onHealthPercentage Function */
+    public void triggerOnHealthPercentage() {
         onHealthPercentage.onHealthPercentage(entity);
         halflife = true;
     }
 
     /**
      * @return true if the entity health is lower than 50%
-     * */
-    public boolean isHalflife(){
+     */
+    public boolean isHalflife() {
         return halflife;
     }
 
@@ -178,7 +178,7 @@ public class HealthComponent extends Component {
      *
      * @param onHealthPercentage new onHealthPercentage function
      */
-    public void setOnHealthPercentage(IOnHealthPercentage onHealthPercentage){
+    public void setOnHealthPercentage(IOnHealthPercentage onHealthPercentage) {
         this.onHealthPercentage = onHealthPercentage;
     }
 

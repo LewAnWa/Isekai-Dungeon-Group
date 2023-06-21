@@ -62,10 +62,12 @@ public class Mimic extends Monster {
                 });
         // entity -> new AnimationComponent(entity, deathAnim)); // does nothing
         healthComponent.setOnHealthPercentage(
-            new IOnHealthPercentage() {
-                @Override
-                public void onHealthPercentage(Entity entity) {inreaseMoveSpeed(entity);}
-            });
+                new IOnHealthPercentage() {
+                    @Override
+                    public void onHealthPercentage(Entity entity) {
+                        inreaseMoveSpeed(entity);
+                    }
+                });
     }
 
     private void setUpPositionComponent(Point chestPos) {

@@ -55,7 +55,7 @@ public abstract class Monster extends Entity {
      * @param movementSpeed the speed of the monster.
      * @param lootAmount the amount of loot that should be dropped on death.
      */
-    public Monster(float movementSpeed, long lootAmount){
+    public Monster(float movementSpeed, long lootAmount) {
         super();
 
         xSpeed = ySpeed = movementSpeed;
@@ -67,7 +67,10 @@ public abstract class Monster extends Entity {
         damage = new Damage(damageAmount, DamageType.PHYSICAL, this);
     }
 
-    /** Sets up the positionComponent of the Monster with a random point, which has minimum distance to the player*/
+    /**
+     * Sets up the positionComponent of the Monster with a random point, which has minimum distance
+     * to the player
+     */
     protected void setUpPositionComponent(Point playerPos, ILevel currentLevel) {
         Point randomPoint;
 
@@ -84,9 +87,9 @@ public abstract class Monster extends Entity {
         xpComponent.setLootXP(lootAmount);
     }
 
-    /** Sets up the HealthComponent for the monster with the needed parameters
-     * sets the onDeath function
-     * sets the onHealthPercentage function
+    /**
+     * Sets up the HealthComponent for the monster with the needed parameters sets the onDeath
+     * function sets the onHealthPercentage function
      */
     protected void setUpHealthComponent(int maxHealthPoints) {
         HealthComponent healthComponent = new HealthComponent(this);
@@ -108,11 +111,16 @@ public abstract class Monster extends Entity {
         healthComponent.setOnHealthPercentage(
                 new IOnHealthPercentage() {
                     @Override
-                    public void onHealthPercentage(Entity entity) {inreaseMoveSpeed(entity);}
+                    public void onHealthPercentage(Entity entity) {
+                        inreaseMoveSpeed(entity);
+                    }
                 });
     }
 
-    /** Sets up the VelocityComponent for the monster with the needed parameters and walking animation */
+    /**
+     * Sets up the VelocityComponent for the monster with the needed parameters and walking
+     * animation
+     */
     protected void setupVelocityComponent() {
         Animation moveRight = AnimationBuilder.buildAnimation(pathToRunRightNormal);
         Animation moveLeft = AnimationBuilder.buildAnimation(pathToRunLeftNormal);
@@ -163,11 +171,11 @@ public abstract class Monster extends Entity {
     }
 
     /**
-     *  increases the Entities movementspeed
+     * increases the Entities movementspeed
      *
      * @param entity entity that will receive more movementspeed
      */
-    public void inreaseMoveSpeed(Entity entity){
+    public void inreaseMoveSpeed(Entity entity) {
         entity.getComponent(VelocityComponent.class)
                 .ifPresent(
                         component -> {

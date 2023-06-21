@@ -7,7 +7,7 @@ import ecs.components.ai.transition.RangeTransition;
 import level.elements.ILevel;
 import tools.Point;
 
-/** the skeleton is a basic and easy to kill Enemy in the dungeon*/
+/** the skeleton is a basic and easy to kill Enemy in the dungeon */
 public class Skeleton extends Monster {
 
     /**

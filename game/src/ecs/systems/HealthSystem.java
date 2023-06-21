@@ -7,9 +7,8 @@ import ecs.components.xp.XPComponent;
 import ecs.components.xp.stats.StatsComponent;
 import ecs.damage.DamageType;
 import ecs.entities.Entity;
-import java.util.stream.Stream;
-
 import ecs.entities.heros.Hero;
+import java.util.stream.Stream;
 import starter.Game;
 
 /**
@@ -24,16 +23,19 @@ public class HealthSystem extends ECS_System {
     @Override
     public void update() {
         Game.getEntities().stream()
-            // Consider only entities that have a HealthComponent
-            .flatMap(e -> e.getComponent(HealthComponent.class).stream())
-            // Form triples (e, hc, ac)
-            .map(hc -> buildDataObject((HealthComponent) hc))
-            // Filter all entities with only 50% Health left
-            .filter(hsd -> hsd.hc.getCurrentHealthpoints() <= (hsd.hc.getMaximalHealthpoints() / 2)
-                    && !hsd.hc.isHalflife()
-                    && !(hsd.hc.getEntity() instanceof Hero))
-            // engage phase Two for all these entities
-            .forEach(this::enagagePhaseTwo);
+                // Consider only entities that have a HealthComponent
+                .flatMap(e -> e.getComponent(HealthComponent.class).stream())
+                // Form triples (e, hc, ac)
+                .map(hc -> buildDataObject((HealthComponent) hc))
+                // Filter all entities with only 50% Health left
+                .filter(
+                        hsd ->
+                                hsd.hc.getCurrentHealthpoints()
+                                                <= (hsd.hc.getMaximalHealthpoints() / 2)
+                                        && !hsd.hc.isHalflife()
+                                        && !(hsd.hc.getEntity() instanceof Hero))
+                // engage phase Two for all these entities
+                .forEach(this::enagagePhaseTwo);
 
         Game.getEntities().stream()
                 // Consider only entities that have a HealthComponent
@@ -137,7 +139,7 @@ public class HealthSystem extends ECS_System {
         Game.removeEntity(hsd.hc.getEntity());
     }
 
-    private void enagagePhaseTwo(HSData hsd){
+    private void enagagePhaseTwo(HSData hsd) {
         hsd.hc.triggerOnHealthPercentage();
     }
 

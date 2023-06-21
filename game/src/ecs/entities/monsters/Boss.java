@@ -3,7 +3,6 @@ package ecs.entities.monsters;
 import dslToGame.AnimationBuilder;
 import ecs.components.*;
 import ecs.components.ai.AIComponent;
-
 import ecs.components.ai.fight.BossAiPhase2;
 import ecs.components.ai.fight.MeleeAI;
 import ecs.components.ai.idle.Fireballing;
@@ -19,12 +18,11 @@ import ecs.entities.Entity;
 import ecs.items.Apfel;
 import ecs.items.ItemData;
 import graphic.Animation;
+import java.util.logging.Logger;
 import starter.Game;
 import tools.Point;
 
-import java.util.logging.Logger;
-
-/** This is the Boss Monster for the Dungeon. The Hero encounters the Boss after reaching lvl 10*/
+/** This is the Boss Monster for the Dungeon. The Hero encounters the Boss after reaching lvl 10 */
 public class Boss extends Monster {
     private final Logger logger = Logger.getLogger("Boss Logger");
 
@@ -40,8 +38,14 @@ public class Boss extends Monster {
      * @param flux the possible fluctuation of the variables.
      */
     public Boss(float movementSpeed, int flux) {
-        super(movementSpeed,
-            ((XPComponent) Game.getHero().orElseThrow().getComponent(XPComponent.class).orElseThrow()).getXPToNextLevel());
+        super(
+                movementSpeed,
+                ((XPComponent)
+                                Game.getHero()
+                                        .orElseThrow()
+                                        .getComponent(XPComponent.class)
+                                        .orElseThrow())
+                        .getXPToNextLevel());
 
         pathToIdleLeftNormal = "monster/ogre/idleLeft/normal";
         pathToIdleRightNormal = "monster/ogre/idleRight/normal";
@@ -53,7 +57,7 @@ public class Boss extends Monster {
         setupVelocityComponent();
         setupAnimationComponent();
         setupHitboxComponent();
-        setUpHealthComponent(150+(flux*2));
+        setUpHealthComponent(150 + (flux * 2));
         setUpAIComponent();
         setUpPositionComponent();
         setUpDamageComponent(0);
@@ -61,16 +65,38 @@ public class Boss extends Monster {
 
     private void setupSkillComponent() {
         SkillComponent skillComp = new SkillComponent(this);
-        skill = new Skill(new FireballSkill(
-            () -> ((PositionComponent) Game.getHero().flatMap(hero -> hero.getComponent(PositionComponent.class)).orElseThrow()).getPosition(),
-            this
-        ), 2);
+        skill =
+                new Skill(
+                        new FireballSkill(
+                                () ->
+                                        ((PositionComponent)
+                                                        Game.getHero()
+                                                                .flatMap(
+                                                                        hero ->
+                                                                                hero.getComponent(
+                                                                                        PositionComponent
+                                                                                                .class))
+                                                                .orElseThrow())
+                                                .getPosition(),
+                                this),
+                        2);
         skillComp.addSkill(skill);
 
-        skill2 = new Skill(new SchwertstichSkill(
-            () -> ((PositionComponent) Game.getHero().flatMap(hero -> hero.getComponent(PositionComponent.class)).orElseThrow()).getPosition(),
-            this
-        ), 1);
+        skill2 =
+                new Skill(
+                        new SchwertstichSkill(
+                                () ->
+                                        ((PositionComponent)
+                                                        Game.getHero()
+                                                                .flatMap(
+                                                                        hero ->
+                                                                                hero.getComponent(
+                                                                                        PositionComponent
+                                                                                                .class))
+                                                                .orElseThrow())
+                                                .getPosition(),
+                                this),
+                        1);
         skillComp.addSkill(skill2);
     }
 
@@ -92,32 +118,33 @@ public class Boss extends Monster {
         healthComponent.setDieAnimation(deathAnim);
         healthComponent.setGetHitAnimation(deathAnim);
         healthComponent.setOnDeath(
-            new IOnDeathFunction() {
-                @Override
-                public void onDeath(Entity entity) {
-                    dropApfel(entity);
-                }
-            });
+                new IOnDeathFunction() {
+                    @Override
+                    public void onDeath(Entity entity) {
+                        dropApfel(entity);
+                    }
+                });
         // entity -> new AnimationComponent(entity, deathAnim)); // does nothing
         healthComponent.setOnHealthPercentage(
-            new IOnHealthPercentage() {
-                @Override
-                public void onHealthPercentage(Entity entity) {
-                    phase2(entity);
-                }
-            });
+                new IOnHealthPercentage() {
+                    @Override
+                    public void onHealthPercentage(Entity entity) {
+                        phase2(entity);
+                    }
+                });
         logger.info("Boss HP: " + maxHealthPoints);
         System.out.println("Boss HP: " + maxHealthPoints);
     }
 
     private void phase2(Entity entity) {
-        entity.getComponent(AIComponent.class).
-            ifPresent(aIComponent -> {
-                    AIComponent aIC = (AIComponent) aIComponent;
-                    aIC.setFightAI(new BossAiPhase2(2f, skill2));
-                    aIC.setTransitionAI(new RangeTransition(2f));
-                    aIC.setIdleAI(new JumpAI());
-                });
+        entity.getComponent(AIComponent.class)
+                .ifPresent(
+                        aIComponent -> {
+                            AIComponent aIC = (AIComponent) aIComponent;
+                            aIC.setFightAI(new BossAiPhase2(2f, skill2));
+                            aIC.setTransitionAI(new RangeTransition(2f));
+                            aIC.setIdleAI(new JumpAI());
+                        });
 
         entity.removeComponent(VelocityComponent.class);
         setupVelocityComponent(pathToRunLeftAngry, pathToRunRightAngry);
@@ -129,16 +156,16 @@ public class Boss extends Monster {
         Game.spawnNecromancer();
     }
 
-    private void setUpPositionComponent(){
-        new PositionComponent(this, new Point(7,7));
+    private void setUpPositionComponent() {
+        new PositionComponent(this, new Point(7, 7));
     }
 
-    private void dropApfel(Entity entity){
+    private void dropApfel(Entity entity) {
         ItemData droppedItem1 = new Apfel();
         ItemData droppedItem2 = new Apfel();
 
         PositionComponent psC =
-            (PositionComponent) entity.getComponent(PositionComponent.class).get();
+                (PositionComponent) entity.getComponent(PositionComponent.class).get();
 
         droppedItem1.triggerDrop(entity, psC.getPosition());
         droppedItem2.triggerDrop(entity, psC.getPosition());

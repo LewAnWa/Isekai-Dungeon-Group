@@ -4,11 +4,10 @@ import com.badlogic.gdx.ai.pfa.GraphPath;
 import ecs.components.ai.AITools;
 import ecs.components.skill.Skill;
 import ecs.entities.Entity;
-import level.elements.tile.Tile;
-import tools.Constants;
-
 import java.util.Timer;
 import java.util.TimerTask;
+import level.elements.tile.Tile;
+import tools.Constants;
 
 public class MeleeAI implements IFightAI {
     private final float attackRange;
@@ -23,7 +22,7 @@ public class MeleeAI implements IFightAI {
      * player.
      *
      * @param attackRange Range in which the attack skill should be executed
-     * @param fightSkill  Skill to be used when an attack is performed
+     * @param fightSkill Skill to be used when an attack is performed
      */
     public MeleeAI(float attackRange, Skill fightSkill) {
         this.attackRange = attackRange;
@@ -36,14 +35,14 @@ public class MeleeAI implements IFightAI {
             Timer timer = new Timer();
 
             timer.schedule(
-                new TimerTask() {
-                    @Override
-                    public void run() {
-                        fightSkill.execute(entity);
-                        timer.cancel();
-                    }
-                },
-                1000);
+                    new TimerTask() {
+                        @Override
+                        public void run() {
+                            fightSkill.execute(entity);
+                            timer.cancel();
+                        }
+                    },
+                    1000);
 
         } else {
             if (timeSinceLastUpdate >= delay) {

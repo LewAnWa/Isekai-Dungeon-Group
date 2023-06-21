@@ -85,7 +85,7 @@ public class MonsterFactory {
      * @param currentLevel the generated map.
      * @return one Necromancer
      */
-    public static Entity spawnNecromancer(int playerLevel, Point playerPos, ILevel currentLevel){
+    public static Entity spawnNecromancer(int playerLevel, Point playerPos, ILevel currentLevel) {
         int flux = (int) (Math.random() * (playerLevel * 2));
         return new Necromancer(0.1f, flux, playerPos, currentLevel);
     }

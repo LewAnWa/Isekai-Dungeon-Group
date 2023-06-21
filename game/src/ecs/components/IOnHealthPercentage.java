@@ -2,7 +2,10 @@ package ecs.components;
 
 import ecs.entities.Entity;
 
-/** Functional interfaces for implementing a function that is called when an entity only has a certain amount of Health left */
+/**
+ * Functional interfaces for implementing a function that is called when an entity only has a
+ * certain amount of Health left
+ */
 public interface IOnHealthPercentage {
 
     /**

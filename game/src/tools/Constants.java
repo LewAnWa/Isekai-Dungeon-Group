@@ -49,8 +49,6 @@ public final class Constants {
         return modifiedPath;
     }
 
-    /**
-     * Dictates at which hero level the boss should be generated..
-     */
+    /** Dictates at which hero level the boss should be generated.. */
     public static final int BOSS_AT_LEVEL = 10;
 }

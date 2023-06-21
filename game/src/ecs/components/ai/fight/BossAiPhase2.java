@@ -6,13 +6,14 @@ import ecs.entities.Entity;
 import java.util.Timer;
 import java.util.TimerTask;
 
-/** the fightbehavior of the boss monster after reaching 50% health*/
+/** the fightbehavior of the boss monster after reaching 50% health */
 public class BossAiPhase2 implements IFightAI {
     private final float attackRange;
     private final Skill meleeSkill;
 
     /**
      * constructor for the BossAiPhase2
+     *
      * @param attackRange range of the used skill
      * @param meleeSkill skill used to attack the hero
      */
@@ -27,14 +28,14 @@ public class BossAiPhase2 implements IFightAI {
             Timer timer = new Timer();
 
             timer.schedule(
-                new TimerTask() {
-                    @Override
-                    public void run() {
-                        meleeSkill.execute(entity);
-                        timer.cancel();
-                    }
-                },
-                1000);
+                    new TimerTask() {
+                        @Override
+                        public void run() {
+                            meleeSkill.execute(entity);
+                            timer.cancel();
+                        }
+                    },
+                    1000);
         }
     }
 }
