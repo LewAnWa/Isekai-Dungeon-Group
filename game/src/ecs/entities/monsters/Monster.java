@@ -20,16 +20,16 @@ import tools.Point;
  */
 public abstract class Monster extends Entity {
 
-    private final float xSpeed;
-    private final float ySpeed;
+    protected final float xSpeed;
+    protected final float ySpeed;
+
     protected Skill skill;
-
-    protected String pathToIdleLeft;
-    protected String pathToIdleRight;
-    protected String pathToRunLeft;
-    protected String pathToRunRight;
+    protected Skill skill2;
+    protected String pathToIdleLeftNormal;
+    protected String pathToIdleRightNormal;
+    protected String pathToRunLeftNormal;
+    protected String pathToRunRightNormal;
     protected String pathToDeathAnim = "deathAnimation/";
-
     private Damage damage;
 
     /**
@@ -49,12 +49,28 @@ public abstract class Monster extends Entity {
         setupXPComponent(lootAmount);
     }
 
+    /**
+     * Another constructor for the monster
+     *
+     * @param movementSpeed the speed of the monster.
+     * @param lootAmount the amount of loot that should be dropped on death.
+     */
+    public Monster(float movementSpeed, long lootAmount) {
+        super();
+
+        xSpeed = ySpeed = movementSpeed;
+        setupXPComponent(lootAmount);
+    }
+
+    /** Sets up the damageComponent for the monster with the needed parameters */
     protected void setUpDamageComponent(int damageAmount) {
         damage = new Damage(damageAmount, DamageType.PHYSICAL, this);
     }
 
-    // Sets up the positionComponent of the Monster with a random point, which has a minimum
-    // distance to the player
+    /**
+     * Sets up the positionComponent of the Monster with a random point, which has minimum distance
+     * to the player
+     */
     protected void setUpPositionComponent(Point playerPos, ILevel currentLevel) {
         Point randomPoint;
 
@@ -65,11 +81,16 @@ public abstract class Monster extends Entity {
         new PositionComponent(this, randomPoint);
     }
 
+    /** Sets up the XPComponent for the monster with the needed parameters */
     protected void setupXPComponent(long lootAmount) {
         XPComponent xpComponent = new XPComponent(this);
         xpComponent.setLootXP(lootAmount);
     }
 
+    /**
+     * Sets up the HealthComponent for the monster with the needed parameters sets the onDeath
+     * function sets the onHealthPercentage function
+     */
     protected void setUpHealthComponent(int maxHealthPoints) {
         HealthComponent healthComponent = new HealthComponent(this);
         healthComponent.setMaximalHealthpoints(maxHealthPoints);
@@ -87,20 +108,33 @@ public abstract class Monster extends Entity {
                     }
                 });
         // entity -> new AnimationComponent(entity, deathAnim)); // does nothing
+        healthComponent.setOnHealthPercentage(
+                new IOnHealthPercentage() {
+                    @Override
+                    public void onHealthPercentage(Entity entity) {
+                        inreaseMoveSpeed(entity);
+                    }
+                });
     }
 
+    /**
+     * Sets up the VelocityComponent for the monster with the needed parameters and walking
+     * animation
+     */
     protected void setupVelocityComponent() {
-        Animation moveRight = AnimationBuilder.buildAnimation(pathToRunRight);
-        Animation moveLeft = AnimationBuilder.buildAnimation(pathToRunLeft);
+        Animation moveRight = AnimationBuilder.buildAnimation(pathToRunRightNormal);
+        Animation moveLeft = AnimationBuilder.buildAnimation(pathToRunLeftNormal);
         new VelocityComponent(this, xSpeed, ySpeed, moveLeft, moveRight);
     }
 
+    /** Sets up the AnimationComponent for the monster with the needed paths and idle animation */
     protected void setupAnimationComponent() {
-        Animation idleRight = AnimationBuilder.buildAnimation(pathToIdleRight);
-        Animation idleLeft = AnimationBuilder.buildAnimation(pathToIdleLeft);
+        Animation idleRight = AnimationBuilder.buildAnimation(pathToIdleRightNormal);
+        Animation idleLeft = AnimationBuilder.buildAnimation(pathToIdleLeftNormal);
         new AnimationComponent(this, idleLeft, idleRight);
     }
 
+    /** Sets up the HitboxComponent for the monster */
     protected void setupHitboxComponent() {
         new HitboxComponent(
                 this,
@@ -134,5 +168,20 @@ public abstract class Monster extends Entity {
                 (PositionComponent) entity.getComponent(PositionComponent.class).get();
 
         droppedItem.triggerDrop(entity, psC.getPosition());
+    }
+
+    /**
+     * increases the Entities movementspeed
+     *
+     * @param entity entity that will receive more movementspeed
+     */
+    public void inreaseMoveSpeed(Entity entity) {
+        entity.getComponent(VelocityComponent.class)
+                .ifPresent(
+                        component -> {
+                            VelocityComponent vc = (VelocityComponent) component;
+                            vc.setYVelocity(vc.getYVelocity() + 0.05f);
+                            vc.setXVelocity(vc.getXVelocity() + 0.05f);
+                        });
     }
 }

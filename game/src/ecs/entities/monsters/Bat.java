@@ -7,6 +7,7 @@ import ecs.components.ai.transition.RangeTransition;
 import level.elements.ILevel;
 import tools.Point;
 
+/** the Bat is an Enemy which always flys to the Heros location */
 public class Bat extends Monster {
 
     /**
@@ -20,10 +21,10 @@ public class Bat extends Monster {
     public Bat(float movementSpeed, int flux, Point playerPos, ILevel currentLevel) {
         super(movementSpeed, 7 + flux, playerPos, currentLevel);
 
-        pathToIdleLeft = "monster/bat/idleLeft";
-        pathToIdleRight = "monster/bat/idleRight";
-        pathToRunLeft = "monster/bat/runLeft";
-        pathToRunRight = "monster/bat/runRight";
+        pathToIdleLeftNormal = "monster/bat/idleLeft";
+        pathToIdleRightNormal = "monster/bat/idleRight";
+        pathToRunLeftNormal = "monster/bat/runLeft";
+        pathToRunRightNormal = "monster/bat/runRight";
 
         setupVelocityComponent();
         setupAnimationComponent();

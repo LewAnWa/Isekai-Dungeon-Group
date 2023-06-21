@@ -63,4 +63,30 @@ public class MonsterFactory {
         Monster mimic = new Mimic(0.12f, flux, playerPos, currentLevel);
         return mimic;
     }
+
+    /**
+     * Generates the Boss Monster of this Game
+     *
+     * @param playerLevel current level of the player.
+     * @param playerPos the current position of the player in the level.
+     * @param currentLevel the generated map.
+     * @return a Boss
+     */
+    public static Entity spawnBoss(int playerLevel, Point playerPos, ILevel currentLevel) {
+        int flux = (int) (Math.random() * (playerLevel * 2));
+        return new Boss(0.12f, flux);
+    }
+
+    /**
+     * Generates one Necromancer
+     *
+     * @param playerLevel current level of the player.
+     * @param playerPos the current position of the player in the level.
+     * @param currentLevel the generated map.
+     * @return one Necromancer
+     */
+    public static Entity spawnNecromancer(int playerLevel, Point playerPos, ILevel currentLevel) {
+        int flux = (int) (Math.random() * (playerLevel * 2));
+        return new Necromancer(0.1f, flux, playerPos, currentLevel);
+    }
 }

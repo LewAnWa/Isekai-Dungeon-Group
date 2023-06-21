@@ -1,17 +1,19 @@
-package graphic.hud;
+package graphic.hud.mainMenu;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import controller.AbstractController;
 import controller.ScreenController;
 import ecs.entities.heros.*;
+import graphic.hud.ScreenImage;
+import graphic.hud.ScreenText;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import level.tools.LevelSize;
 import starter.Game;
 import tools.Constants;
 import tools.Point;
@@ -25,41 +27,58 @@ import tools.Point;
  *
  * @param <T> An element that can be drawn on the screen.
  * @author Kirill Kuhn
- * @version 1.2
+ * @version 2.0
  */
 public class MainMenuUI<T extends Actor> extends ScreenController<T> {
 
     private final Logger logger = Logger.getLogger("MainMenuUI");
 
+    private SettingsMenu<T> settingsMenu;
+
     private ScreenImage logo, characterCard, menuArrow;
-    private ScreenText newGame, settings, characterDescription, info, chooseCharacter;
+    private ScreenText newGame, settings, characterDescription, chooseCharacter;
     private final List<CharacterNode> characters = new ArrayList<>();
     private int pointer = 0;
     private final Point characterIconPosition = new Point(70, 40);
     private final Point menuOption1 = new Point(235, 140);
     private final Point menuOption2 = new Point(190, 90);
-    private LevelSize levelSize = LevelSize.SMALL;
-    private int maxMonster = 10;
-    private float fadeCounter = 0;
 
     /** Creates a main menu. NOTE: ACTORS CAN ONLY BE HIDDEN BY DELETING THE INSTANCE! */
-    public MainMenuUI() {
+    public MainMenuUI(List<AbstractController<?>> controller) {
         super(new SpriteBatch());
         setupMainMenu();
         setupCharScreen();
+        controller.add(this);
+
+        settingsMenu = new SettingsMenu<>(this);
+        controller.add(settingsMenu);
     }
 
     /**
-     * Listens for keystrokes and updates the UI accordingly. Should the title screen be invisible,
-     * it then will then initialize the character screen.
+     * Removes itself and the settings menu from the controller.
      *
-     * <p>It also handles the logic for changing the character icon and description relative to what
-     * the user has selected now. After selection, it gives the Game class the selected character.
+     * @param controller the controller in which the settings menu and main menu is contained.
      */
-    public void updateUI() {
-        if (fadeCounter > 0) {
-            fadeCounter -= 0.005f;
-            info.setColor(255, 255, 255, fadeCounter);
+    public void cleanUp(List<AbstractController<?>> controller) {
+        controller.remove(settingsMenu);
+        settingsMenu = null;
+        controller.remove(this);
+    }
+
+    /** Makes the elements of the main menu visible again. */
+    protected void setFocused() {
+        newGame.setVisible(true);
+        settings.setVisible(true);
+        menuArrow.setVisible(true);
+    }
+
+    @Override
+    public void update() {
+        super.update();
+
+        if (settingsMenu.isFocused()) {
+            settingsMenu.update();
+            return;
         }
 
         if (!logo.isVisible()
@@ -79,8 +98,6 @@ public class MainMenuUI<T extends Actor> extends ScreenController<T> {
                 Game.setHeroType(CharacterType.ROGUE);
             }
             Game.makeCharacterSet();
-            Game.setMaxMonster(maxMonster);
-            Game.setLevelSize(levelSize);
         }
 
         if (logo.isVisible()) {
@@ -99,7 +116,10 @@ public class MainMenuUI<T extends Actor> extends ScreenController<T> {
                     characterDescription.setVisible(true);
                     characters.get(pointer).character.setVisible(true);
                 } else if (menuArrow.getX() == menuOption2.x) {
-                    toggleSettings();
+                    settingsMenu.showScreen();
+                    newGame.setVisible(false);
+                    settings.setVisible(false);
+                    menuArrow.setVisible(false);
                 }
             }
 
@@ -143,26 +163,6 @@ public class MainMenuUI<T extends Actor> extends ScreenController<T> {
         }
     }
 
-    private void toggleSettings() {
-        if (levelSize == LevelSize.SMALL) {
-            levelSize = LevelSize.MEDIUM;
-            maxMonster = 15;
-            info.setText("LevelSize = MEDIUM (maxMonster: 15)");
-            logger.fine("Level size set to medium (maxMonster: 15)");
-        } else if (levelSize == LevelSize.MEDIUM) {
-            levelSize = LevelSize.LARGE;
-            maxMonster = 20;
-            info.setText("LevelSize = LARGE (maxMonster: 20) !!! STRONG CPU REQUIRED");
-            logger.fine("Level size set to large (maxMonster: 10)");
-        } else {
-            levelSize = LevelSize.SMALL;
-            maxMonster = 10;
-            info.setText("LevelSize = SMALL (maxMonster: 10)");
-            logger.fine("Level size set to small (maxMonster: 20)");
-        }
-        fadeCounter = 1;
-    }
-
     /*
     Sets up the mainMenu containing the title screen.
      */
@@ -203,11 +203,6 @@ public class MainMenuUI<T extends Actor> extends ScreenController<T> {
         settings.setFontScale(1.5f);
         add((T) settings);
         logger.log(Level.FINE, "CHANGE_SETTINGS-ScreenText initialized.");
-
-        info = new ScreenText("SAMPLE", new Point(2, 2), 1f);
-        info.setColor(255, 255, 255, fadeCounter);
-        add((T) info);
-        logger.log(Level.FINE, "info-ScreenText initialized.");
     }
 
     /*

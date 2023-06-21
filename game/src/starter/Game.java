@@ -4,7 +4,6 @@ import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 import static logging.LoggerConfig.initBaseLogger;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -18,13 +17,16 @@ import ecs.components.skill.InvisibilitySkill;
 import ecs.components.xp.XPComponent;
 import ecs.entities.Chest;
 import ecs.entities.Entity;
+import ecs.entities.LightSource;
 import ecs.entities.heros.*;
+import ecs.entities.monsters.Boss;
 import ecs.entities.monsters.MonsterFactory;
 import ecs.entities.traps.TrapFactory;
 import ecs.systems.*;
 import graphic.DungeonCamera;
 import graphic.Painter;
 import graphic.hud.*;
+import graphic.hud.mainMenu.MainMenuUI;
 import java.io.IOException;
 import java.util.*;
 import java.util.logging.Logger;
@@ -36,17 +38,15 @@ import level.generator.IGenerator;
 import level.generator.postGeneration.WallGenerator;
 import level.generator.randomwalk.RandomWalkGenerator;
 import level.tools.DesignLabel;
-import level.tools.LevelSize;
 import tools.Constants;
 import tools.Point;
+import tools.Settings;
 
 /** The heart of the framework. From here all strings are pulled. */
 public class Game extends ScreenAdapter implements IOnLevelLoader {
 
     private DesignLabel LEVELDESIGN = DesignLabel.LUSH;
-    private static LevelSize levelSize = LevelSize.SMALL;
-    private static int maxMonster = 20;
-    private int floor = 0;
+    private int floor = 1;
 
     /**
      * The batch is necessary to draw ALL the stuff. Every object that uses draw need to know the
@@ -139,14 +139,11 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
             controller.add(systems);
             pauseMenu = new PauseMenu<>();
             controller.add(pauseMenu);
-            mainMenuUI = new MainMenuUI<>();
-            controller.add(mainMenuUI);
+            mainMenuUI = new MainMenuUI<>(controller);
         }
         mainMenuUI.update();
-        mainMenuUI.updateUI();
         if (characterSet) { // only do this if character is set
-
-            controller.remove(mainMenuUI);
+            mainMenuUI.cleanUp(controller);
             mainMenuUI = null;
 
             heroUI = new HeroUI<>((Hero) hero);
@@ -159,7 +156,7 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
             levelAPI =
                     new LevelAPI(
                             batch, painter, new WallGenerator(new RandomWalkGenerator()), this);
-            levelAPI.loadLevel(levelSize, LEVELDESIGN);
+            levelAPI.loadLevel(Settings.levelSize, LEVELDESIGN);
             createSystems();
         }
     }
@@ -188,13 +185,14 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         gameOverScreen = new GameOverScreen<>(this);
         controller.add(gameOverScreen);
 
-        floor = 0;
-        levelAPI.loadLevel(levelSize, LEVELDESIGN);
+        floor = 1;
+        levelAPI.loadLevel(Settings.levelSize, LEVELDESIGN);
     }
 
     /** Generates an array of Monsters */
     protected void generateMonsters() {
-        int monsterAmount = Math.min(currentLevel.getFloorTiles().size() / 20, maxMonster);
+        int monsterAmount =
+                Math.min(currentLevel.getFloorTiles().size() / 20, Settings.setMaxMonsterAmount);
         monsters = new Entity[monsterAmount];
 
         hero.getComponent(XPComponent.class)
@@ -245,6 +243,26 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
                         });
     }
 
+    /** spawns a Necromancer in the Dungeon */
+    public static void spawnNecromancer() {
+        hero.getComponent(XPComponent.class)
+                .ifPresent(
+                        component -> {
+                            XPComponent comp = (XPComponent) component;
+
+                            hero.getComponent(PositionComponent.class)
+                                    .ifPresent(
+                                            component1 -> {
+                                                PositionComponent posComp =
+                                                        (PositionComponent) component1;
+                                                MonsterFactory.spawnNecromancer(
+                                                        (int) comp.getCurrentLevel(),
+                                                        posComp.getPosition(),
+                                                        currentLevel);
+                                            });
+                        });
+    }
+
     /** Generates an arrays of traps depending on the current level size. */
     protected void generateTraps() {
         traps = new Entity[currentLevel.getFloorTiles().size() / 30];
@@ -271,13 +289,33 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
                         });
     }
 
+    /** Generates the Boss Monster for the Dungeon */
+    protected void generateBoss() {
+        hero.getComponent(XPComponent.class)
+                .ifPresent(
+                        component -> {
+                            XPComponent comp = (XPComponent) component;
+
+                            hero.getComponent(PositionComponent.class)
+                                    .ifPresent(
+                                            component1 -> {
+                                                PositionComponent posComp =
+                                                        (PositionComponent) component1;
+                                                MonsterFactory.spawnBoss(
+                                                        (int) comp.getCurrentLevel(),
+                                                        posComp.getPosition(),
+                                                        currentLevel);
+                                            });
+                        });
+    }
+
     /** Called at the beginning of each frame. Before the controllers call <code>update</code>. */
     protected void frame() {
         setCameraFocus();
         manageEntitiesSets();
         getHero().ifPresent(this::loadNextLevelIfEntityIsOnEndTile);
         if (heroType == CharacterType.ROGUE) InvisibilitySkill.applyInvisibilityCost(hero);
-        if (Gdx.input.isKeyJustPressed(Input.Keys.P)) togglePause();
+        if (Gdx.input.isKeyJustPressed(KeyboardConfig.TOGGLE_PAUSE.get())) togglePause();
         if (Gdx.input.isKeyJustPressed(KeyboardConfig.INVENTORY_OPEN.get())) toggleInventory();
     }
 
@@ -302,6 +340,14 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         currentLevel = levelAPI.getCurrentLevel();
         entities.clear();
         getHero().ifPresent(this::placeOnLevelStart);
+
+        if (((XPComponent) hero.getComponent(XPComponent.class).orElseThrow()).getCurrentLevel()
+                        % Constants.BOSS_AT_LEVEL
+                == 0) {
+            generateBoss();
+            return;
+        }
+
         generateMonsters();
         spawnChest();
         generateTraps();
@@ -337,11 +383,33 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
     }
 
     private void loadNextLevelIfEntityIsOnEndTile(Entity hero) {
-        if (isOnEndTile(hero)) {
-            levelAPI.loadLevel(levelSize, LEVELDESIGN);
+        if (!isOnEndTile(hero)) return;
+        if (getEntities().stream().anyMatch(entity -> entity instanceof Boss)) return;
+
+        if (floor == 6) LEVELDESIGN = DesignLabel.DEFAULT;
+
+        if (((XPComponent) hero.getComponent(XPComponent.class).orElseThrow()).getCurrentLevel()
+                        % Constants.BOSS_AT_LEVEL
+                == 0) {
+            levelAPI.loadBossLevel();
+            placeLights();
             floor++;
-            if (floor == 6) LEVELDESIGN = DesignLabel.DEFAULT;
+
+            return;
         }
+
+        levelAPI.loadLevel(Settings.levelSize, LEVELDESIGN);
+        floor++;
+    }
+
+    /*
+    Places four lightSources in the corner of the boss level.
+     */
+    private void placeLights() {
+        new LightSource(5, new Point(3, 3));
+        new LightSource(5, new Point(3, 11));
+        new LightSource(5, new Point(11, 3));
+        new LightSource(5, new Point(11, 11));
     }
 
     private boolean isOnEndTile(Entity entity) {
@@ -361,6 +429,14 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
                         hero.getComponent(PositionComponent.class)
                                 .orElseThrow(
                                         () -> new MissingComponentException("PositionComponent"));
+
+        if (((XPComponent) hero.getComponent(XPComponent.class).orElseThrow()).getCurrentLevel()
+                        % Constants.BOSS_AT_LEVEL
+                == 0) {
+            pc.setPosition(new Point(7, 1));
+            return;
+        }
+
         pc.setPosition(currentLevel.getStartTile().getCoordinate().toPoint());
     }
 
@@ -489,13 +565,5 @@ public class Game extends ScreenAdapter implements IOnLevelLoader {
         new XPSystem();
         new SkillSystem();
         new ProjectileSystem();
-    }
-
-    public static void setLevelSize(LevelSize levelSize) {
-        Game.levelSize = levelSize;
-    }
-
-    public static void setMaxMonster(int maxMonster) {
-        Game.maxMonster = maxMonster;
     }
 }

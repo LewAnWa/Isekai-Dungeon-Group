@@ -39,8 +39,7 @@ public class Painter {
 
     /**
      * This method is an extension of the base draw method in this class. This draw method allows to
-     * also change the alpha value of the sprite, which is used for drawing the player if he is
-     * invisible.
+     * also change the alpha value of the sprite.
      *
      * @param position The position of the sprite on the screen.
      * @param texturePath The texture path of the to be drawn picture.

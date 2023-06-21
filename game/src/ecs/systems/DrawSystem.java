@@ -1,16 +1,23 @@
 package ecs.systems;
 
 import ecs.components.AnimationComponent;
+import ecs.components.LightSourceComponent;
 import ecs.components.MissingComponentException;
 import ecs.components.PositionComponent;
 import ecs.entities.Entity;
+import ecs.entities.heros.Hero;
+import ecs.entities.heros.Rogue;
 import ecs.entities.traps.Warhead;
 import graphic.Animation;
 import graphic.Painter;
 import graphic.PainterConfig;
 import java.util.HashMap;
 import java.util.Map;
+import level.LevelAPI;
+import level.elements.tile.Tile;
 import starter.Game;
+import tools.Point;
+import tools.Settings;
 
 /** used to draw entities */
 public class DrawSystem extends ECS_System {
@@ -41,26 +48,140 @@ public class DrawSystem extends ECS_System {
         final Animation animation = dsd.ac.getCurrentAnimation();
         String currentAnimationTexture = animation.getNextAnimationTexturePath();
 
+        PositionComponent heroPositionComp =
+                (PositionComponent)
+                        Game.getHero()
+                                .orElseThrow()
+                                .getComponent(PositionComponent.class)
+                                .orElseThrow(
+                                        () ->
+                                                new MissingComponentException(
+                                                        "Missing "
+                                                                + PositionComponent.class.getName()
+                                                                + " of Hero, which is required for "
+                                                                + DrawSystem.class.getName()));
+
+        Tile tileUnderEntity = Game.currentLevel.getTileAt(dsd.pc.getPosition().toCoordinate());
+
         if (!configs.containsKey(currentAnimationTexture)) {
             configs.put(currentAnimationTexture, new PainterConfig(currentAnimationTexture));
         }
-        if (!dsd.e.isVisible()) { // draw the sprite slightly invisible
+
+        // for rogue going invisible
+        if (dsd.e instanceof Hero) {
+            if (!dsd.e.isVisible() && dsd.e instanceof Rogue) {
+                painter.draw(
+                        dsd.pc().getPosition(),
+                        currentAnimationTexture,
+                        configs.get(currentAnimationTexture),
+                        0.4f);
+                return;
+            }
+
             painter.draw(
-                    dsd.pc().getPosition(),
+                    dsd.pc.getPosition(),
                     currentAnimationTexture,
-                    configs.get(currentAnimationTexture),
-                    0.4f);
+                    configs.get(currentAnimationTexture));
+
             return;
         }
-        painter.draw( // draw the sprite fully visible
-                dsd.pc.getPosition(),
-                currentAnimationTexture,
-                configs.get(currentAnimationTexture));
+
+        // for invisible entities
+        if (!dsd.e.isVisible()) return;
+
+        if (Settings.potatoMode) {
+            painter.draw(
+                    dsd.pc.getPosition(),
+                    currentAnimationTexture,
+                    configs.get(currentAnimationTexture));
+
+            // FIXME: THIS SOLUTION IS FOR ANIMATIONS REPEATING EVEN THOUGH THEY ARE SET NOT TO!
+            // This solution is hardcoded. Must be changed, when new set of Textures are added
+            if (dsd.e instanceof Warhead && animation.getCurrentFrameIndex() == 8)
+                ((Warhead) dsd.e).setIdleAnimation();
+
+            return;
+        }
+
+        if (LevelAPI.getDrawList() != null) {
+            if (!LevelAPI.getDrawList().contains(tileUnderEntity)) {
+                return;
+            }
+        }
+
+        float alphaFromLightSource = Settings.allowDynamicLighting ? checkIfLit(dsd) : 0;
+
+        float distance =
+                Point.calculateDistance(dsd.pc().getPosition(), heroPositionComp.getPosition());
+
+        // if entity is in range
+        if (distance <= Settings.PLAYER_LIGHT_RANGE || alphaFromLightSource > 0) {
+            float alpha = 1 - (distance / Settings.PLAYER_LIGHT_RANGE);
+
+            // normal draw for other entities
+            float finalAlpha = alpha + alphaFromLightSource + 0.1f;
+            if (finalAlpha > 1) finalAlpha = 1;
+            painter.draw(
+                    dsd.pc.getPosition(),
+                    currentAnimationTexture,
+                    configs.get(currentAnimationTexture),
+                    finalAlpha);
+        }
 
         // FIXME: THIS SOLUTION IS FOR ANIMATIONS REPEATING EVEN THOUGH THEY ARE SET NOT TO!
         // This solution is hardcoded. Must be changed, when new set of Textures are added
         if (dsd.e instanceof Warhead && animation.getCurrentFrameIndex() == 8)
             ((Warhead) dsd.e).setIdleAnimation();
+    }
+
+    /*
+    Checks if a given entity is lit by any entity acting as a lightSource.
+    It sums up all lights hitting a tile and then returns the calculated alpha value.
+     */
+    private float checkIfLit(DSData dsd) {
+        // var is used to be able to access an object outside a lambda expression
+        var reference =
+                new Object() {
+                    float alpha = 0;
+                };
+
+        Game.getEntities()
+                .forEach(
+                        entity -> {
+                            entity.getComponent(LightSourceComponent.class)
+                                    .ifPresent(
+                                            lsC -> {
+                                                if (reference.alpha >= 1) {
+                                                    return;
+                                                }
+
+                                                PositionComponent psC =
+                                                        (PositionComponent)
+                                                                entity.getComponent(
+                                                                                PositionComponent
+                                                                                        .class)
+                                                                        .orElseThrow();
+
+                                                float distance =
+                                                        Point.calculateDistance(
+                                                                dsd.pc().getPosition(),
+                                                                psC.getPosition());
+
+                                                if (distance
+                                                        <= ((LightSourceComponent) lsC)
+                                                                .getLightRadius()) {
+                                                    reference.alpha +=
+                                                            1
+                                                                    - (distance
+                                                                            / ((LightSourceComponent)
+                                                                                            lsC)
+                                                                                    .getLightRadius());
+                                                }
+                                            });
+                        });
+
+        if (reference.alpha > 1) return 1;
+        return reference.alpha;
     }
 
     private DSData buildDataObject(AnimationComponent ac) {

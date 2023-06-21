@@ -2,7 +2,6 @@ package ecs.entities.monsters;
 
 import ecs.components.PositionComponent;
 import ecs.components.ai.AIComponent;
-import ecs.components.ai.fight.CollideAI;
 import ecs.components.ai.fight.MeleeAI;
 import ecs.components.ai.idle.RadiusWalk;
 import ecs.components.ai.transition.RangeTransition;
@@ -13,6 +12,7 @@ import level.elements.ILevel;
 import starter.Game;
 import tools.Point;
 
+/** the Necromancer is an Enemy which shoots fireballs */
 public class Necromancer extends Monster {
 
     /**
@@ -26,10 +26,10 @@ public class Necromancer extends Monster {
     public Necromancer(float movementSpeed, int flux, Point playerPos, ILevel currentLevel) {
         super(movementSpeed, 10 + flux, playerPos, currentLevel);
 
-        pathToIdleLeft = "monster/necromancer/idleLeft";
-        pathToIdleRight = "monster/necromancer/idleRight";
-        pathToRunLeft = "monster/necromancer/runLeft";
-        pathToRunRight = "monster/necromancer/runRight";
+        pathToIdleLeftNormal = "monster/necromancer/idleLeft";
+        pathToIdleRightNormal = "monster/necromancer/idleRight";
+        pathToRunLeftNormal = "monster/necromancer/runLeft";
+        pathToRunRightNormal = "monster/necromancer/runRight";
 
         setupSkillComponent();
 
@@ -44,10 +44,21 @@ public class Necromancer extends Monster {
     /* Sets up the Skill that the Necromancer will use */
     private void setupSkillComponent() {
         SkillComponent skillComp = new SkillComponent(this);
-        skill = new Skill(new FireballSkill(
-            () -> ((PositionComponent) Game.getHero().flatMap(hero -> hero.getComponent(PositionComponent.class)).orElseThrow()).getPosition(),
-            this
-        ), 5);
+        skill =
+                new Skill(
+                        new FireballSkill(
+                                () ->
+                                        ((PositionComponent)
+                                                        Game.getHero()
+                                                                .flatMap(
+                                                                        hero ->
+                                                                                hero.getComponent(
+                                                                                        PositionComponent
+                                                                                                .class))
+                                                                .orElseThrow())
+                                                .getPosition(),
+                                this),
+                        5);
         skillComp.addSkill(skill);
     }
 

@@ -4,6 +4,8 @@ import com.badlogic.gdx.ai.pfa.GraphPath;
 import ecs.components.ai.AITools;
 import ecs.components.skill.Skill;
 import ecs.entities.Entity;
+import java.util.Timer;
+import java.util.TimerTask;
 import level.elements.tile.Tile;
 import tools.Constants;
 
@@ -11,6 +13,7 @@ public class MeleeAI implements IFightAI {
     private final float attackRange;
     private final int delay = Constants.FRAME_RATE;
     private int timeSinceLastUpdate = 0;
+    private int timeSinceLastAttack = 0;
     private final Skill fightSkill;
     private GraphPath<Tile> path;
 
@@ -29,7 +32,18 @@ public class MeleeAI implements IFightAI {
     @Override
     public void fight(Entity entity) {
         if (AITools.playerInRange(entity, attackRange)) {
-            fightSkill.execute(entity);
+            Timer timer = new Timer();
+
+            timer.schedule(
+                    new TimerTask() {
+                        @Override
+                        public void run() {
+                            fightSkill.execute(entity);
+                            timer.cancel();
+                        }
+                    },
+                    1000);
+
         } else {
             if (timeSinceLastUpdate >= delay) {
                 path = AITools.calculatePathToHero(entity);
